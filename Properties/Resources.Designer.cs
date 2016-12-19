@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace msbuildtools.Properties
+namespace msbuildrefactor.Properties
 {
 
 

@@ -1,7 +1,7 @@
-﻿<Application x:Class="msbuildtools.App"
+﻿<Application x:Class="msbuildrefactor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:msbuildtools"
+             xmlns:local="clr-namespace:msbuildrefactor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
