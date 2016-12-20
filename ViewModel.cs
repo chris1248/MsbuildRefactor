@@ -7,6 +7,8 @@ using Microsoft.Build.Evaluation;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Diagnostics;
+using System.Xml.Linq;
+using System.Xml;
 
 namespace msbuildrefactor
 {
@@ -55,6 +57,49 @@ namespace msbuildrefactor
 						toBeRemoved.Add(proj);
 						proj.Save();
 					}
+				}
+
+				bool isCommonPropAttached = false;
+				string name = Path.GetFileName(_propSheet.FullPath).ToLower();
+				// Add in the import to the common property sheet
+				foreach(ResolvedImport import in proj.Imports)
+				{
+					if (import.ImportedProject.FullPath.ToLower().Contains(name))
+					{
+						isCommonPropAttached = true;
+					}
+				}
+				if (!isCommonPropAttached)
+				{
+					// Method one
+					XDocument doc = XDocument.Load(proj.FullPath);
+					Uri uc = new Uri(_propSheet.FullPath);
+					Uri ui = new Uri(proj.FullPath);
+					Uri dif = ui.MakeRelativeUri(uc);
+					string relative = dif.OriginalString;
+					XNamespace ns = doc.Root.Name.Namespace;
+					XElement import = new XElement(ns + "Import", new XAttribute("Project", relative));
+					IXmlLineInfo info = import as IXmlLineInfo;
+					doc.Root.AddFirst(import);
+					doc.Save(proj.FullPath);
+					proj.MarkDirty();
+					proj.ReevaluateIfNecessary();
+
+					// Method three
+					// This takes empty elements and puts them on two lines. Not what I want.
+					/*
+					XmlDocument doc = new XmlDocument();
+					doc.PreserveWhitespace = true;
+					doc.Load(proj.FullPath);
+					var import = doc.CreateElement(String.Empty, "Import", doc.DocumentElement.NamespaceURI);
+					Uri uc = new Uri(_propSheet.FullPath);
+					Uri ui = new Uri(proj.FullPath);
+					Uri dif = ui.MakeRelativeUri(uc);
+					string relative = dif.OriginalString;
+					import.SetAttribute("Project", relative);
+					doc.DocumentElement.InsertBefore(import, doc.DocumentElement.FirstChild);
+					doc.Save(proj.FullPath);
+					*/
 				}
 			}
 
