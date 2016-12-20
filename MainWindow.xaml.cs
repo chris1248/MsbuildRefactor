@@ -39,7 +39,7 @@ namespace msbuildrefactor
 
 		private Dictionary<string, string> global_properties = new Dictionary<string, string>();
 
-		private void button_Click(object sender, RoutedEventArgs e)
+		private void Click_choose_prop_sheet(object sender, RoutedEventArgs e)
 		{
 			if (global_properties.Count == 0)
 			{
@@ -66,7 +66,7 @@ namespace msbuildrefactor
 			}
 		}
 
-		private void searchChoose_Click(object sender, RoutedEventArgs e)
+		private void Click_choose_directory(object sender, RoutedEventArgs e)
 		{
 			if (global_properties.Count == 0)
 			{
