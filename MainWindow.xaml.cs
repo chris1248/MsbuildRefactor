@@ -86,6 +86,16 @@ namespace msbuildrefactor
 			}
 		}
 
+		private void allPropsLV_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			ReferencedProperty item = allPropsLV.SelectedItem as ReferencedProperty;
+			if (item != null)
+			{
+				vm.GetPropertyValues(item);
+				detailsLV.ItemsSource = vm.SelectedValues;
+			}
+		}
+
 		#region sorting
 		private GridViewColumnHeader listViewSortCol = null;
 		private SortAdorner listViewSortAdorner = null;
@@ -110,16 +120,6 @@ namespace msbuildrefactor
 			allPropsLV.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
 		}
 		#endregion
-
-		private void allPropsLV_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			ReferencedProperty item = allPropsLV.SelectedItem as ReferencedProperty;
-			if (item != null)
-			{
-				vm.GetPropertyValues(item);
-				detailsLV.ItemsSource = vm.SelectedValues;
-			}
-		}
 
 		#region drag and drop
 		private void detailsLV_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

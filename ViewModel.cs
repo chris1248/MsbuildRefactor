@@ -40,10 +40,15 @@ namespace msbuildrefactor
 		{
 			ReferencedProperty owner = prop.Owner;
 			ProjectProperty moved = owner.OriginalProperty;
-			CommonProperty newprop = new CommonProperty(moved);
-			_propSheet.SetProperty(moved.Name, moved.UnevaluatedValue);
-			_propSheet.Save();
-			_commonProps.Add(newprop);
+			
+			// Don't re-add a property to the property sheet if the value is already there
+			string propexists = _propSheet.GetPropertyValue(moved.Name);
+			if (string.IsNullOrEmpty(propexists))
+			{
+				_propSheet.SetProperty(moved.Name, moved.UnevaluatedValue);
+				_propSheet.Save();
+				_commonProps.Add(new CommonProperty(moved));
+			}
 
 			// Remove properties from the old files
 			var toBeRemoved = new List<Project>();
@@ -59,55 +64,44 @@ namespace msbuildrefactor
 					}
 				}
 
-				bool isCommonPropAttached = false;
-				string name = Path.GetFileName(_propSheet.FullPath).ToLower();
-				// Add in the import to the common property sheet
-				foreach(ResolvedImport import in proj.Imports)
-				{
-					if (import.ImportedProject.FullPath.ToLower().Contains(name))
-					{
-						isCommonPropAttached = true;
-					}
-				}
-				if (!isCommonPropAttached)
-				{
-					// Method one
-					XDocument doc = XDocument.Load(proj.FullPath);
-					Uri uc = new Uri(_propSheet.FullPath);
-					Uri ui = new Uri(proj.FullPath);
-					Uri dif = ui.MakeRelativeUri(uc);
-					string relative = dif.OriginalString;
-					XNamespace ns = doc.Root.Name.Namespace;
-					XElement import = new XElement(ns + "Import", new XAttribute("Project", relative));
-					IXmlLineInfo info = import as IXmlLineInfo;
-					doc.Root.AddFirst(import);
-					doc.Save(proj.FullPath);
-					proj.MarkDirty();
-					proj.ReevaluateIfNecessary();
-
-					// Method three
-					// This takes empty elements and puts them on two lines. Not what I want.
-					/*
-					XmlDocument doc = new XmlDocument();
-					doc.PreserveWhitespace = true;
-					doc.Load(proj.FullPath);
-					var import = doc.CreateElement(String.Empty, "Import", doc.DocumentElement.NamespaceURI);
-					Uri uc = new Uri(_propSheet.FullPath);
-					Uri ui = new Uri(proj.FullPath);
-					Uri dif = ui.MakeRelativeUri(uc);
-					string relative = dif.OriginalString;
-					import.SetAttribute("Project", relative);
-					doc.DocumentElement.InsertBefore(import, doc.DocumentElement.FirstChild);
-					doc.Save(proj.FullPath);
-					*/
-				}
+				AttachImportIfNecessary(proj);
 			}
 
 			// Remove property from the reference List
 			owner.RemoveProjects(toBeRemoved);
 
 			// Modify the Values in the details List View
-			_selectedVals.Remove(moved.EvaluatedValue);
+			_selectedVals.Remove(prop.Value);
+		}
+
+		private void AttachImportIfNecessary(Project proj)
+		{
+			bool isCommonPropAttached = false;
+			string name = Path.GetFileName(_propSheet.FullPath).ToLower();
+			// Add in the import to the common property sheet
+			foreach (ResolvedImport import in proj.Imports)
+			{
+				if (import.ImportedProject.FullPath.ToLower().Contains(name))
+				{
+					isCommonPropAttached = true;
+				}
+			}
+			if (!isCommonPropAttached)
+			{
+				// Method one
+				XDocument doc = XDocument.Load(proj.FullPath);
+				Uri uc = new Uri(_propSheet.FullPath);
+				Uri ui = new Uri(proj.FullPath);
+				Uri dif = ui.MakeRelativeUri(uc);
+				string relative = dif.OriginalString;
+				XNamespace ns = doc.Root.Name.Namespace;
+				XElement import = new XElement(ns + "Import", new XAttribute("Project", relative));
+				IXmlLineInfo info = import as IXmlLineInfo;
+				doc.Root.AddFirst(import);
+				doc.Save(proj.FullPath);
+				proj.MarkDirty();
+				proj.ReevaluateIfNecessary();
+			}
 		}
 
 		public void LoadPropertySheet(string prop_sheet_path, IDictionary<string,string> props)
@@ -119,13 +113,26 @@ namespace msbuildrefactor
 		private Dictionary<string, ReferencedProperty> refs = new Dictionary<string, ReferencedProperty>();
 		internal int LoadAtDirectory(string directoryPath, IDictionary<string, string> props, string ignorePattern)
 		{
+			// The ignore pattern can contain more than one entry, delimted by comma's:
+			String[] splits = ignorePattern.Split(',');
 			var csprojects = Directory.GetFiles(directoryPath, "*.csproj", SearchOption.AllDirectories);
 			// There are 4 of these
 			// var vcprojects = Directory.GetFiles(directoryPath, "*.vcxproj", SearchOption.AllDirectories);
 			foreach (var file in csprojects)
 			{
-				if (file.ToLower().Contains(ignorePattern.ToLower()))
+				bool do_ignore = false;
+				foreach (var ignore in splits)
+				{
+					if (file.ToLower().Contains(ignore.ToLower()))
+					{
+						do_ignore = true;
+						break;
+					}
+				}
+				if (do_ignore)
+				{
 					continue;
+				}
 
 				IterateFile(file, props);
 			}
@@ -179,6 +186,14 @@ namespace msbuildrefactor
 				if (itemprop != null)
 				{
 					string key = itemprop.EvaluatedValue.ToLower();
+					if (item.Name == "OutputPath")
+					{
+						var relative = itemprop.EvaluatedValue;
+						var basepath = Path.GetDirectoryName(project.FullPath);
+						var combined = Path.GetFullPath(Path.Combine(basepath, relative));
+						key = combined.ToLower();
+					}
+					
 					if (_selectedVals.ContainsKey(key))
 					{
 						_selectedVals[key].Count++;
