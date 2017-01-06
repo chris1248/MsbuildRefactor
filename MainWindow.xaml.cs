@@ -17,16 +17,6 @@ using System.Windows.Shapes;
 
 namespace msbuildrefactor
 {
-	public class User
-	{
-		public string Name { get; set; }
-		public int Age { get; set; }
-		public string EvaluatedValue { get; set; }
-		public override string ToString()
-		{
-			return this.Name + ", " + this.Age + " years old";
-		}
-	}
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
@@ -191,5 +181,15 @@ namespace msbuildrefactor
 			}
 		}
 		#endregion
+
+		private void Click_savePropBtn(object sender, RoutedEventArgs e)
+		{
+			vm.SavePropertySheet();
+		}
+
+		private void Click_saveAllBtn(object sender, RoutedEventArgs e)
+		{
+			vm.SaveAllProjects();
+		}
 	}
 }

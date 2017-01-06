@@ -46,7 +46,7 @@ namespace msbuildrefactor
 			if (string.IsNullOrEmpty(propexists))
 			{
 				_propSheet.SetProperty(moved.Name, moved.UnevaluatedValue);
-				_propSheet.Save();
+				_propSheet.MarkDirty();
 				_commonProps.Add(new CommonProperty(moved));
 			}
 
@@ -60,7 +60,8 @@ namespace msbuildrefactor
 					if (proj.RemoveProperty(local))
 					{
 						toBeRemoved.Add(proj);
-						proj.Save();
+						proj.MarkDirty();
+						//proj.Save();
 					}
 				}
 
@@ -204,6 +205,26 @@ namespace msbuildrefactor
 					}
 				}
 			}
+		}
+
+		internal void SaveAllProjects()
+		{
+			foreach(ReferencedProperty prop in refs.Values)
+			{
+				foreach(Project proj in prop.Projects)
+				{
+					if (proj.IsDirty)
+					{
+						proj.Save();
+						proj.ReevaluateIfNecessary();
+					}
+				}
+			}
+		}
+
+		internal void SavePropertySheet()
+		{
+			_propSheet.Save();
 		}
 	}
 }

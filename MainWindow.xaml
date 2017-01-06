@@ -18,6 +18,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="72"/>
 			<RowDefinition Height="247*"/>
+			<RowDefinition Height="26" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="257*"/>
@@ -78,11 +79,16 @@
 				</ListView.View>
 			</ListView>
 		</Grid>
-		<Label x:Name="label2" Content="Configuration:" Height="26" Margin="0,10,404,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="89"/>
-		<TextBox x:Name="configInput" Height="24" Margin="0,12,317,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="90" Text="Debug" Padding="0" VerticalContentAlignment="Center"/>
-		<Label x:Name="label3" Content="Platform:" Height="24" Margin="0,10,251,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="61"/>
-		<TextBox x:Name="platformInput" Height="24" Margin="0,12,146,0" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Right" Width="105" Text="AnyCPU" VerticalContentAlignment="Center"/>
+		<Label x:Name="label2" Content="Configuration:" Height="26" Margin="6,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="89"/>
+		<TextBox x:Name="configInput" Height="24" Margin="92,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Debug" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="90"/>
+		<Label x:Name="label3" Content="Platform:" Height="23" Margin="187,12,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="61"/>
+		<TextBox x:Name="platformInput" Height="24" Margin="248,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="AnyCPU" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="105"/>
 		<TextBox x:Name="ignorePatternTBx" Grid.Column="1" Height="26" Margin="0,10,10,0" TextWrapping="Wrap" Text="\\Doc\\, Silverlight, Online" VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" VerticalContentAlignment="Center"/>
-		<Label x:Name="label4" Content="Ignore Pattern" Grid.Column="1" HorizontalAlignment="Left" Height="26" Margin="223,10,0,0" VerticalAlignment="Top" Width="90"/>
+		<Label x:Name="label4" Content="Ignore Pattern" Grid.Column="1" Height="26" Margin="0,10,192,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="90"/>
+		<!-- Row Three -->
+		<StatusBar x:Name="status" Grid.Row="2" Grid.ColumnSpan="2" Margin="0" >
+			<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="126" Grid.Column="0" Click="Click_savePropBtn" />
+			<Button x:Name="saveAllBtn" Content="Save All" Grid.Column="1" Width="82" Click="Click_saveAllBtn" />
+		</StatusBar>
 	</Grid>
 </Window>
