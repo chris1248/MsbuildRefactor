@@ -29,7 +29,7 @@ namespace msbuildrefactor
 					foreach (ProjectProperty prop in _propSheet.AllEvaluatedProperties)
 					{
 						if (prop.Xml != null)
-							_commonProps.Add(new CommonProperty(prop));
+							_commonProps.Add(new CommonProperty(prop.Name, prop.EvaluatedValue));
 					}
 				}
 				return _commonProps;
@@ -38,30 +38,31 @@ namespace msbuildrefactor
 
 		public void MoveProperty(ReferencedValues prop)
 		{
-			ReferencedProperty owner = prop.Owner;
-			ProjectProperty moved = owner.OriginalProperty;
+			string moved_name  = prop.Owner.Name;
+			string moved_value = prop.EvaluatedValue;
 			
 			// Don't re-add a property to the property sheet if the value is already there
-			string propexists = _propSheet.GetPropertyValue(moved.Name);
+			string propexists = _propSheet.GetPropertyValue(moved_name);
 			if (string.IsNullOrEmpty(propexists))
 			{
-				_propSheet.SetProperty(moved.Name, moved.UnevaluatedValue);
+				_propSheet.SetProperty(moved_name, moved_value);
 				_propSheet.MarkDirty();
-				_commonProps.Add(new CommonProperty(moved));
+				_propSheet.ReevaluateIfNecessary();
+				_commonProps.Add(new CommonProperty(moved_name, moved_value));
 			}
 
 			// Remove properties from the old files
 			var toBeRemoved = new List<Project>();
-			foreach(Project proj in owner.Projects)
+			foreach (Project proj in prop.Owner.Projects)
 			{
-				var local = proj.GetProperty(moved.Name);
-				if (local != null && String.Compare(moved.EvaluatedValue, local.EvaluatedValue) == 0)
+				var local = proj.GetProperty(moved_name);
+				if (local != null && String.Compare(prop.EvaluatedValue, local.EvaluatedValue, StringComparison.InvariantCultureIgnoreCase) == 0)
 				{
 					if (proj.RemoveProperty(local))
 					{
 						toBeRemoved.Add(proj);
 						proj.MarkDirty();
-						//proj.Save();
+						proj.ReevaluateIfNecessary();
 					}
 				}
 
@@ -69,10 +70,10 @@ namespace msbuildrefactor
 			}
 
 			// Remove property from the reference List
-			owner.RemoveProjects(toBeRemoved);
+			prop.Owner.RemoveProjects(toBeRemoved);
 
 			// Modify the Values in the details List View
-			_selectedVals.Remove(prop.Value);
+			_selectedVals.Remove(prop.EvaluatedValue);
 		}
 
 		private void AttachImportIfNecessary(Project proj)
@@ -99,7 +100,6 @@ namespace msbuildrefactor
 				XElement import = new XElement(ns + "Import", new XAttribute("Project", relative));
 				IXmlLineInfo info = import as IXmlLineInfo;
 				doc.Root.AddFirst(import);
-				doc.Save(proj.FullPath);
 				proj.MarkDirty();
 				proj.ReevaluateIfNecessary();
 			}
@@ -201,7 +201,7 @@ namespace msbuildrefactor
 					}
 					else
 					{
-						_selectedVals[key] = new ReferencedValues() { Value = key, Count = 1, Owner = item };
+						_selectedVals[key] = new ReferencedValues() { EvaluatedValue = key, Count = 1, Owner = item };
 					}
 				}
 			}
@@ -225,6 +225,7 @@ namespace msbuildrefactor
 		internal void SavePropertySheet()
 		{
 			_propSheet.Save();
+			_propSheet.ReevaluateIfNecessary();
 		}
 	}
 }

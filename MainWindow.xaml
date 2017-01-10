@@ -65,12 +65,12 @@
 			<ListView x:Name="detailsLV" Grid.Row="2" RenderTransformOrigin="0.5,0.5" PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" MouseMove="detailsLV_MouseMove">
 				<ListView.View>
 					<GridView>
-						<GridViewColumn Width="135" DisplayMemberBinding="{Binding Value}">
+						<GridViewColumn Width="350" DisplayMemberBinding="{Binding Value}">
 							<GridViewColumn.Header>
 								<GridViewColumnHeader Tag="Value" >Value</GridViewColumnHeader>
 							</GridViewColumn.Header>
 						</GridViewColumn>
-						<GridViewColumn Width="70" DisplayMemberBinding="{Binding Count}" >
+						<GridViewColumn Width="100" DisplayMemberBinding="{Binding Count}" >
 							<GridViewColumn.Header>
 								<GridViewColumnHeader Tag="Count" >Count</GridViewColumnHeader>
 							</GridViewColumn.Header>

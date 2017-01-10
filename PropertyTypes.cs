@@ -5,27 +5,18 @@ namespace msbuildrefactor
 {
 	/// <summary>
 	/// Represents a property that has exists in a single common property sheet
-	/// that many csproj or many msbuild files can reference. There is probably 
-	/// a little too many fields on this class, but I just needed something quick
-	/// to get this up and running.
+	/// that many csproj or many msbuild files can reference.
 	/// </summary>
 	public class CommonProperty : BaseProperty
 	{
-		public CommonProperty(ProjectProperty property)
+		public CommonProperty(string name, string evaluated_value)
 		{
-			this.Name = property.Name;
-			this.EvaluatedValue = property.EvaluatedValue;
-			this.UnEvaluatedValue = property.UnevaluatedValue;
-			if (property.Xml != null)
-			{
-				this.Condition = property.Xml.Condition;
-			}
+			this.Name = name;
+			this.EvaluatedValue = evaluated_value;
 		}
 
 		public string Name { get; set; }
 		public string EvaluatedValue { get; set; }
-		public string UnEvaluatedValue { get; set; }
-		public string Condition { get; set; }
 		public override string ToString()
 		{
 			return string.Format("Property {0} = {1}", Name, EvaluatedValue);
@@ -38,29 +29,44 @@ namespace msbuildrefactor
 	/// </summary>
 	public class ReferencedProperty : BaseProperty
 	{
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		/// <param name="prop">A property instance from the project</param>
 		public ReferencedProperty(ProjectProperty prop)
 		{
 			this.Name = prop.Name;
 			_projects.Add(prop.Project);
-			_originalProp = prop;
 		}
 
-		private ProjectProperty _originalProp;
-
-		public ProjectProperty OriginalProperty { get { return _originalProp; } }
+		/// <summary>
+		/// The name of the property
+		/// </summary>
 		public string Name { get; set; }
 
 		/// <summary>
-		/// How many times it's used in all files
+		/// How many times it's used in all project files
 		/// </summary>
 		public int UsedCount { get; set; }
 
+		public override string ToString()
+		{
+			return string.Format("ReferenceProperty {0}, usedby: {1} projects", Name, UsedCount);
+		}
 		private List<Project> _projects = new List<Project>();
+		/// <summary>
+		/// The array of Projects that use this property
+		/// </summary>
 		public Project[] Projects { get { return _projects.ToArray(); } }
 
+		/// <summary>
+		/// Removes a whole bunch of projects from the list at once
+		/// Updates any listeners at the end.
+		/// </summary>
+		/// <param name="projects"></param>
 		public void RemoveProjects(List<Project> projects)
 		{
-			foreach(var removed in projects)
+			foreach (var removed in projects)
 			{
 				_projects.Remove(removed);
 				UsedCount--;
@@ -76,16 +82,30 @@ namespace msbuildrefactor
 	}
 
 	/// <summary>
-	/// Represents the possibly many different values that a ReferencedProperty can have
-	/// as defined across many different project files. Hence it has a count to indicate 
-	/// how many different values it has. It also has a field pointing back to the
-	/// ReferencedProperty that 'owns' it.
+	/// Represents a value that a ReferencedProperty can have
+	/// as defined across many different project files. So a ReferenceProperty can hold many 
+	/// of these instances. 
+	/// This also has a count to indicate how many of the values it has. 
+	/// It also has a field pointing back to the ReferencedProperty that 'owns' it.
 	/// </summary>
 	public class ReferencedValues : BaseProperty
 	{
 		public ReferencedValues() { }
-		public string Value { get; set; }
+		/// <summary>
+		/// The evaluated value of the property
+		/// </summary>
+		public string EvaluatedValue { get; set; }
+
+		internal string UnEvaluatedValue { get; set; }
+		/// <summary>
+		/// The number of occurances of the Value
+		/// </summary>
 		public int Count { get; set; }
 		public ReferencedProperty Owner;
+
+		public override string ToString()
+		{
+			return string.Format("ReferencedValues {0}, Count: {1} for {2}", EvaluatedValue, Count, Owner.Name);
+		}
 	}
 }
