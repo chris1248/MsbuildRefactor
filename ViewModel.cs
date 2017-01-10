@@ -14,6 +14,7 @@ namespace msbuildrefactor
 {
 	class ViewModel
 	{
+		public DirectoryInfo InputDir { get; set; }
 		private Project _propSheet;
 		public Project PropSheet { get { return _propSheet; } }
 
@@ -56,24 +57,35 @@ namespace msbuildrefactor
 			foreach (Project proj in prop.Owner.Projects)
 			{
 				var local = proj.GetProperty(moved_name);
-				if (local != null && String.Compare(prop.EvaluatedValue, local.EvaluatedValue, StringComparison.InvariantCultureIgnoreCase) == 0)
+				if (local != null) // && String.Compare(prop.EvaluatedValue, local.EvaluatedValue, StringComparison.InvariantCultureIgnoreCase) == 0)
 				{
-					if (proj.RemoveProperty(local))
+					if (local.Xml.Location.File.Contains(InputDir.FullName))
 					{
-						toBeRemoved.Add(proj);
-						proj.MarkDirty();
-						proj.ReevaluateIfNecessary();
+						string local_value = local.EvaluatedValue;
+						if (String.Compare(moved_name, "OutputPath", StringComparison.OrdinalIgnoreCase) == 0)
+						{
+							local_value = ConcatenatePathProp(proj.FullPath, local.UnevaluatedValue);
+						}
+
+						if (String.Compare(moved_value, local_value, StringComparison.OrdinalIgnoreCase) == 0)
+						{
+							if (proj.RemoveProperty(local))
+							{
+								toBeRemoved.Add(proj);
+								proj.MarkDirty();
+							}
+						}
 					}
 				}
 
-				AttachImportIfNecessary(proj);
+				
 			}
 
 			// Remove property from the reference List
 			prop.Owner.RemoveProjects(toBeRemoved);
 
 			// Modify the Values in the details List View
-			_selectedVals.Remove(prop.EvaluatedValue);
+			_selectedVals.Remove(moved_value);
 		}
 
 		private void AttachImportIfNecessary(Project proj)
@@ -100,6 +112,7 @@ namespace msbuildrefactor
 				XElement import = new XElement(ns + "Import", new XAttribute("Project", relative));
 				IXmlLineInfo info = import as IXmlLineInfo;
 				doc.Root.AddFirst(import);
+				doc.Save(proj.FullPath);
 				proj.MarkDirty();
 				proj.ReevaluateIfNecessary();
 			}
@@ -114,6 +127,7 @@ namespace msbuildrefactor
 		private Dictionary<string, ReferencedProperty> refs = new Dictionary<string, ReferencedProperty>();
 		internal int LoadAtDirectory(string directoryPath, IDictionary<string, string> props, string ignorePattern)
 		{
+			InputDir = new DirectoryInfo(directoryPath);
 			// The ignore pattern can contain more than one entry, delimted by comma's:
 			String[] splits = ignorePattern.Split(',');
 			var csprojects = Directory.GetFiles(directoryPath, "*.csproj", SearchOption.AllDirectories);
@@ -172,11 +186,18 @@ namespace msbuildrefactor
 		}
 
 		public List<ReferencedProperty> FoundProperties => refs.Values.ToList();
-
 		
 		private Dictionary<String, ReferencedValues> _selectedVals;
 
 		public List<ReferencedValues> SelectedValues => _selectedVals.Values.ToList();
+
+		internal string ConcatenatePathProp(string projectPath , string property_value )
+		{
+			var relative = property_value;
+			var basepath = Path.GetDirectoryName(projectPath);
+			var combined = Path.GetFullPath(Path.Combine(basepath, relative));
+			return combined.ToLower();
+		}
 
 		internal void GetPropertyValues(ReferencedProperty item)
 		{
@@ -189,10 +210,7 @@ namespace msbuildrefactor
 					string key = itemprop.EvaluatedValue.ToLower();
 					if (item.Name == "OutputPath")
 					{
-						var relative = itemprop.EvaluatedValue;
-						var basepath = Path.GetDirectoryName(project.FullPath);
-						var combined = Path.GetFullPath(Path.Combine(basepath, relative));
-						key = combined.ToLower();
+						key = ConcatenatePathProp(project.FullPath, itemprop.EvaluatedValue);
 					}
 					
 					if (_selectedVals.ContainsKey(key))
@@ -217,6 +235,7 @@ namespace msbuildrefactor
 					{
 						proj.Save();
 						proj.ReevaluateIfNecessary();
+						AttachImportIfNecessary(proj);
 					}
 				}
 			}
