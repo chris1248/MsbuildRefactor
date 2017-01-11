@@ -54,8 +54,8 @@ namespace msbuildrefactor
 			}
 
 			// Remove properties from the old files
-			var toBeRemoved = new List<Project>();
-			foreach (Project proj in prop.Owner.Projects)
+			var toBeRemoved = new List<CSProject>();
+			foreach (CSProject proj in prop.Owner.Projects)
 			{
 				var local = proj.GetProperty(moved_name);
 				if (local != null) // && String.Compare(prop.EvaluatedValue, local.EvaluatedValue, StringComparison.InvariantCultureIgnoreCase) == 0)
@@ -65,7 +65,7 @@ namespace msbuildrefactor
 						string local_value = local.EvaluatedValue;
 						if (String.Compare(moved_name, "OutputPath", StringComparison.OrdinalIgnoreCase) == 0)
 						{
-							local_value = ConcatenatePathProp(proj.FullPath, local.UnevaluatedValue);
+							local_value = proj.OutputPath;
 						}
 
 						if (String.Compare(moved_value, local_value, StringComparison.OrdinalIgnoreCase) == 0)
@@ -185,7 +185,7 @@ namespace msbuildrefactor
 					}
 					else
 					{
-						refs[key] = new ReferencedProperty(prop) { UsedCount = 1 };
+						refs[key] = new ReferencedProperty(prop, project) { UsedCount = 1 };
 					}
 				}
 			}
@@ -196,14 +196,6 @@ namespace msbuildrefactor
 		private Dictionary<String, ReferencedValues> _selectedVals;
 
 		public List<ReferencedValues> SelectedValues => _selectedVals.Values.ToList();
-
-		internal string ConcatenatePathProp(string projectPath , string property_value )
-		{
-			var relative = property_value;
-			var basepath = Path.GetDirectoryName(projectPath);
-			var combined = Path.GetFullPath(Path.Combine(basepath, relative));
-			return combined.ToLower();
-		}
 
 		internal void GetPropertyValues(ReferencedProperty item)
 		{
@@ -216,7 +208,7 @@ namespace msbuildrefactor
 					string key = itemprop.EvaluatedValue.ToLower();
 					if (item.Name == "OutputPath")
 					{
-						key = ConcatenatePathProp(project.FullPath, itemprop.EvaluatedValue);
+						key = project.OutputPath; 
 					}
 					
 					if (_selectedVals.ContainsKey(key))

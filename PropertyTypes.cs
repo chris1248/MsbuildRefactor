@@ -33,10 +33,10 @@ namespace msbuildrefactor
 		/// Constructor.
 		/// </summary>
 		/// <param name="prop">A property instance from the project</param>
-		public ReferencedProperty(ProjectProperty prop)
+		public ReferencedProperty(ProjectProperty prop, CSProject proj)
 		{
 			this.Name = prop.Name;
-			_projects.Add(prop.Project);
+			_projects.Add(proj);
 		}
 
 		/// <summary>
@@ -53,18 +53,18 @@ namespace msbuildrefactor
 		{
 			return string.Format("ReferenceProperty {0}, usedby: {1} projects", Name, UsedCount);
 		}
-		private List<Project> _projects = new List<Project>();
+		private List<CSProject> _projects = new List<CSProject>();
 		/// <summary>
 		/// The array of Projects that use this property
 		/// </summary>
-		public Project[] Projects { get { return _projects.ToArray(); } }
+		public CSProject[] Projects { get { return _projects.ToArray(); } }
 
 		/// <summary>
 		/// Removes a whole bunch of projects from the list at once
 		/// Updates any listeners at the end.
 		/// </summary>
 		/// <param name="projects"></param>
-		public void RemoveProjects(List<Project> projects)
+		public void RemoveProjects(List<CSProject> projects)
 		{
 			foreach (var removed in projects)
 			{
@@ -74,7 +74,7 @@ namespace msbuildrefactor
 			OnPropertyChanged("UsedCount");
 		}
 
-		public void Add(Project proj)
+		public void Add(CSProject proj)
 		{
 			_projects.Add(proj);
 			UsedCount++;

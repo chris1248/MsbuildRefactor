@@ -28,5 +28,21 @@ namespace msbuildrefactor
 		///  Use this file in any sort of calculation that we so desire
 		/// </summary>
 		public bool Included { get; set; }
+
+		private string _outputPath;
+		public string OutputPath
+		{
+			get
+			{
+				if (String.IsNullOrEmpty(_outputPath))
+				{
+					var relative = this.GetProperty("OutputPath").EvaluatedValue;
+					var basepath = Path.GetDirectoryName(this.FullPath);
+					var combined = Path.GetFullPath(Path.Combine(basepath, relative));
+					_outputPath = combined.ToLower();
+				}
+				return _outputPath;
+			}
+		}
 	}
 }
