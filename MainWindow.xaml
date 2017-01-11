@@ -38,52 +38,66 @@
 		<Label x:Name="label1" Content="Projects Directory" Grid.Column="1" HorizontalAlignment="Left" Height="26" Margin="5,38,0,0" VerticalAlignment="Top" Width="110"/>
 		<TextBox x:Name="searchPath" Grid.Column="1" Height="23" Margin="109,39,88,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
 		<Button x:Name="searchChoose" Content="Browse..." Grid.Column="1" Margin="0,39,10,0" VerticalAlignment="Top" Height="23" HorizontalAlignment="Right" Width="74" Click="Click_choose_directory"/>
-		<TextBlock x:Name="projCount" Grid.Column="1" HorizontalAlignment="Left" Margin="109,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="138"/>
-		<Grid x:Name="divider" Grid.Column="1" Grid.Row="1" >
-			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
-				<RowDefinition Height="5" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<ListView x:Name="allPropsLV" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5" SelectionChanged="allPropsLV_SelectionChanged" >
-				<ListView.View>
-					<GridView>
-						<GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}">
-							<GridViewColumn.Header>
-								<GridViewColumnHeader Tag="Name" Click="GridViewColumnHeader_Click">Name</GridViewColumnHeader>
-							</GridViewColumn.Header>
-						</GridViewColumn>
-						<GridViewColumn Width="70" DisplayMemberBinding="{Binding UsedCount}" >
-							<GridViewColumn.Header>
-								<GridViewColumnHeader Tag="UsedCount" Click="GridViewColumnHeader_Click">Count</GridViewColumnHeader>
-							</GridViewColumn.Header>
-						</GridViewColumn>
-					</GridView>
-				</ListView.View>
-			</ListView>
-			<GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
-			<ListView x:Name="detailsLV" Grid.Row="2" RenderTransformOrigin="0.5,0.5" PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" MouseMove="detailsLV_MouseMove">
-				<ListView.View>
-					<GridView>
-						<GridViewColumn Width="350" DisplayMemberBinding="{Binding EvaluatedValue}">
-							<GridViewColumn.Header>
-								<GridViewColumnHeader Tag="Value" >Value</GridViewColumnHeader>
-							</GridViewColumn.Header>
-						</GridViewColumn>
-						<GridViewColumn Width="100" DisplayMemberBinding="{Binding Count}" >
-							<GridViewColumn.Header>
-								<GridViewColumnHeader Tag="Count" >Count</GridViewColumnHeader>
-							</GridViewColumn.Header>
-						</GridViewColumn>
-					</GridView>
-				</ListView.View>
-			</ListView>
-		</Grid>
+		<TextBlock x:Name="projCount" Grid.Column="1" HorizontalAlignment="Left" Margin="10,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213"/>
+		<TabControl Grid.Row="1" Grid.Column="1">
+			<TabItem Header="Project Files" Margin="0">
+				<ListView x:Name="allProjectsLV" Margin="0">
+					<ListView.View>
+						<GridView>
+							<GridViewColumn Width="410" DisplayMemberBinding="{Binding FullPath}">
+								<GridViewColumnHeader Content="FullPath" />
+							</GridViewColumn>
+							<GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Included}">
+								<GridViewColumnHeader Content="Included" />
+							</GridViewColumn>
+						</GridView>
+					</ListView.View>
+				</ListView>
+			</TabItem>
+			<TabItem Header="All Properties" Margin="0" IsSelected="True">
+				<Grid x:Name="divider" >
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="5" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<ListView x:Name="allPropsLV" Grid.Row="0"  Margin="0" SelectionChanged="allPropsLV_SelectionChanged" >
+						<ListView.View>
+							<GridView>
+								<GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}">
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Name" Click="GridViewColumnHeader_Click">Name</GridViewColumnHeader>
+									</GridViewColumn.Header>
+								</GridViewColumn>
+								<GridViewColumn Width="70" DisplayMemberBinding="{Binding UsedCount}" >
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="UsedCount" Click="GridViewColumnHeader_Click">Count</GridViewColumnHeader>
+									</GridViewColumn.Header>
+								</GridViewColumn>
+							</GridView>
+						</ListView.View>
+					</ListView>
+					<GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+					<ListView x:Name="detailsLV" Grid.Row="2" PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" MouseMove="detailsLV_MouseMove">
+						<ListView.View>
+							<GridView>
+								<GridViewColumn Width="350" DisplayMemberBinding="{Binding EvaluatedValue}">
+									<GridViewColumnHeader Tag="Value" Content="Value" />
+								</GridViewColumn>
+								<GridViewColumn Width="100" DisplayMemberBinding="{Binding Count}" >
+									<GridViewColumnHeader Tag="Count" Content="Count" />
+								</GridViewColumn>
+							</GridView>
+						</ListView.View>
+					</ListView>
+				</Grid>
+			</TabItem>
+		</TabControl>
 		<Label x:Name="label2" Content="Configuration:" Height="26" Margin="6,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="89"/>
 		<TextBox x:Name="configInput" Height="24" Margin="92,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Debug" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="90"/>
 		<Label x:Name="label3" Content="Platform:" Height="23" Margin="187,12,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="61"/>
 		<TextBox x:Name="platformInput" Height="24" Margin="248,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="AnyCPU" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="105"/>
-		<TextBox x:Name="ignorePatternTBx" Grid.Column="1" Height="26" Margin="0,10,10,0" TextWrapping="Wrap" Text="\\Doc\\, Silverlight, Online" VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" VerticalContentAlignment="Center"/>
+		<TextBox x:Name="ignorePatternTBx" Grid.Column="1" Height="26" Margin="0,10,10,0" TextWrapping="Wrap" Text="\Doc\,unit_test\UI\UI.csproj" VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" VerticalContentAlignment="Center"/>
 		<Label x:Name="label4" Content="Ignore Pattern" Grid.Column="1" Height="26" Margin="0,10,192,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="90"/>
 		<!-- Row Three -->
 		<StatusBar x:Name="status" Grid.Row="2" Grid.ColumnSpan="2" Margin="0" >

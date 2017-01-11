@@ -9,14 +9,15 @@ using System.IO;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Xml;
+using System.Collections;
 
 namespace msbuildrefactor
 {
 	class ViewModel
 	{
 		public DirectoryInfo InputDir { get; set; }
-		private Project _propSheet;
-		public Project PropSheet { get { return _propSheet; } }
+		private CSProject _propSheet;
+		public CSProject PropSheet { get { return _propSheet; } }
 
 		private ObservableCollection<CommonProperty> _commonProps;
 
@@ -120,11 +121,15 @@ namespace msbuildrefactor
 
 		public void LoadPropertySheet(string prop_sheet_path, IDictionary<string,string> props)
 		{
-			_propSheet = new Project(prop_sheet_path, props, "14.0");
+			_propSheet = new CSProject(prop_sheet_path, props, "14.0");
 		}
 
 
 		private Dictionary<string, ReferencedProperty> refs = new Dictionary<string, ReferencedProperty>();
+		private ObservableCollection<CSProject> _allProjects = new ObservableCollection<CSProject>();
+
+		public ObservableCollection<CSProject> AllProjects => _allProjects;
+
 		internal int LoadAtDirectory(string directoryPath, IDictionary<string, string> props, string ignorePattern)
 		{
 			InputDir = new DirectoryInfo(directoryPath);
@@ -156,10 +161,10 @@ namespace msbuildrefactor
 
 		private void IterateFile(string file, IDictionary<string, string> props)
 		{
-			Project project = null;
+			CSProject project = null;
 			try
 			{
-				project = new Project(file, props, "14.0");
+				project = new CSProject(file, props, "14.0");
 			}
 			catch(Exception e)
 			{
@@ -168,6 +173,7 @@ namespace msbuildrefactor
 				return;
 			}
 
+			_allProjects.Add(project);
 			foreach (ProjectProperty prop in project.AllEvaluatedProperties)
 			{
 				if (!prop.IsImported && !prop.IsEnvironmentProperty && !prop.IsReservedProperty)

@@ -67,6 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CSProject.cs" />
     <Compile Include="PropertyTypes.cs" />
     <Compile Include="BaseProperty.cs" />
     <Compile Include="SortAdorner.cs" />

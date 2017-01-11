@@ -71,8 +71,9 @@ namespace msbuildrefactor
 				string directoryPath = browse.SelectedPath;
 				searchPath.Text = directoryPath;
 				int count = vm.LoadAtDirectory(directoryPath, global_properties, ignorePatternTBx.Text);
-				projCount.Text = String.Format("Number of files: {0}", count);
+				projCount.Text = String.Format("Files Found: {0}, Files Included: {1}", count, vm.AllProjects.Count);
 				allPropsLV.ItemsSource = vm.FoundProperties;
+				allProjectsLV.ItemsSource = vm.AllProjects;
 			}
 		}
 
