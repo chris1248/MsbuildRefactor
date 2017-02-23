@@ -15,9 +15,32 @@ namespace msbuildrefactor
 {
 	class ViewModel
 	{
+		public ViewModel()
+		{
+			GlobalProperties = new ObservableCollection<CommonProperty>()
+			{
+				new CommonProperty("Configuration", "Debug"),
+				new CommonProperty("Platform", "Any CPU")
+			};
+		}
 		public DirectoryInfo InputDir { get; set; }
 		private CSProject _propSheet;
 		public CSProject PropSheet { get { return _propSheet; } }
+
+		/// <summary>
+		/// For setting configuration and platform
+		/// </summary>
+		public ObservableCollection<CommonProperty> GlobalProperties { get; set; }
+
+		private Dictionary<string,string> GetGlobalProperties()
+		{
+			var results = new Dictionary<string, string>();
+			foreach (CommonProperty prop in GlobalProperties)
+			{
+				results.Add(prop.Name, prop.EvaluatedValue);
+			}
+			return results;
+		}
 
 		private ObservableCollection<CommonProperty> _commonProps;
 
@@ -119,9 +142,9 @@ namespace msbuildrefactor
 			}
 		}
 
-		public void LoadPropertySheet(string prop_sheet_path, IDictionary<string,string> props)
+		public void LoadPropertySheet(string prop_sheet_path)
 		{
-			_propSheet = new CSProject(prop_sheet_path, props, "14.0");
+			_propSheet = new CSProject(prop_sheet_path, GetGlobalProperties(), "14.0");
 		}
 
 
@@ -130,7 +153,7 @@ namespace msbuildrefactor
 
 		public ObservableCollection<CSProject> AllProjects => _allProjects;
 
-		internal int LoadAtDirectory(string directoryPath, IDictionary<string, string> props, string ignorePattern)
+		internal int LoadAtDirectory(string directoryPath, string ignorePattern)
 		{
 			InputDir = new DirectoryInfo(directoryPath);
 			// The ignore pattern can contain more than one entry, delimted by comma's:
@@ -154,7 +177,7 @@ namespace msbuildrefactor
 					continue;
 				}
 
-				IterateFile(file, props);
+				IterateFile(file, GetGlobalProperties());
 			}
 			return csprojects.Count();
 		}

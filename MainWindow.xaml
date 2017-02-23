@@ -26,15 +26,30 @@
 		</Grid.ColumnDefinitions>
 		<TextBox x:Name="propSheetPath" Height="23" Margin="92,39,73,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" ToolTip="Property Sheet File Path"/>
 		<Button x:Name="propSheetChoose" Content="Browse..." Height="23" Margin="0,39,5,0" VerticalAlignment="Top" Click="Click_choose_prop_sheet" HorizontalAlignment="Right" Width="63"/>
-		<Label x:Name="label" Content="Property Sheet" HorizontalAlignment="Left" Height="24" Margin="3,38,0,0" VerticalAlignment="Top" Width="89"/>
-		<ListView x:Name="commonLV" Grid.Row="1" AllowDrop="True" Margin="0,0,5,0" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter" >
-			<ListView.View>
-				<GridView>
-					<GridViewColumn Header="Property" Width="135" DisplayMemberBinding="{Binding Name}"/>
-					<GridViewColumn Header="Value" Width="150" DisplayMemberBinding="{Binding EvaluatedValue}"/>
-				</GridView>
-			</ListView.View>
-		</ListView>
+		<Label x:Name="label" Content="Property Sheet" HorizontalAlignment="Left" Height="26" Margin="3,38,0,0" VerticalAlignment="Top" Width="89"/>
+		<TabControl Grid.Row="1" Grid.Column="0">
+			<TabItem Header="Global Properties" Margin="0">
+				<ListView x:Name="globalProps" ItemsSource="{Binding GlobalProperties}">
+					<ListView.View>
+						<GridView>
+							<GridViewColumn Header="Property" Width="200" DisplayMemberBinding="{Binding Name}" />
+							<GridViewColumn Header="Value" Width="285" DisplayMemberBinding="{Binding EvaluatedValue}"/>
+						</GridView>
+					</ListView.View>
+				</ListView>
+			</TabItem>
+			<TabItem Header="Property Sheet" Margin="0">
+				<ListView x:Name="commonLV" Grid.Row="1" AllowDrop="True" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter" >
+					<ListView.View>
+						<GridView>
+							<GridViewColumn Header="Property" Width="200" DisplayMemberBinding="{Binding Name}"/>
+							<GridViewColumn Header="Value" Width="285" DisplayMemberBinding="{Binding EvaluatedValue}"/>
+						</GridView>
+					</ListView.View>
+				</ListView>
+			</TabItem>
+		</TabControl>
+		
 		<Label x:Name="label1" Content="Projects Directory" Grid.Column="1" HorizontalAlignment="Left" Height="26" Margin="5,38,0,0" VerticalAlignment="Top" Width="110"/>
 		<TextBox x:Name="searchPath" Grid.Column="1" Height="23" Margin="109,39,88,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
 		<Button x:Name="searchChoose" Content="Browse..." Grid.Column="1" Margin="0,39,10,0" VerticalAlignment="Top" Height="23" HorizontalAlignment="Right" Width="74" Click="Click_choose_directory"/>
@@ -93,10 +108,6 @@
 				</Grid>
 			</TabItem>
 		</TabControl>
-		<Label x:Name="label2" Content="Configuration:" Height="26" Margin="6,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="89"/>
-		<TextBox x:Name="configInput" Height="24" Margin="92,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="Debug" Padding="0" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="90"/>
-		<Label x:Name="label3" Content="Platform:" Height="23" Margin="187,12,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="61"/>
-		<TextBox x:Name="platformInput" Height="24" Margin="248,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="AnyCPU" VerticalContentAlignment="Center" HorizontalAlignment="Left" Width="105"/>
 		<TextBox x:Name="ignorePatternTBx" Grid.Column="1" Height="26" Margin="0,10,10,0" TextWrapping="Wrap" Text="\Doc\,unit_test\UI\UI.csproj" VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" VerticalContentAlignment="Center"/>
 		<Label x:Name="label4" Content="Ignore Pattern" Grid.Column="1" Height="26" Margin="0,10,192,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="90"/>
 		<!-- Row Three -->

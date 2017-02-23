@@ -27,16 +27,8 @@ namespace msbuildrefactor
 			InitializeComponent();
 		}
 
-		private Dictionary<string, string> global_properties = new Dictionary<string, string>();
-
 		private void Click_choose_prop_sheet(object sender, RoutedEventArgs e)
 		{
-			if (global_properties.Count == 0)
-			{
-				global_properties.Add("Configuration", configInput.Text);
-				global_properties.Add("Platform", platformInput.Text);
-			}
-
 			// Create OpenFileDialog 
 			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 			
@@ -51,26 +43,20 @@ namespace msbuildrefactor
 			if (result == true)
 			{
 				propSheetPath.Text = dlg.FileName;
-				vm.LoadPropertySheet(propSheetPath.Text, global_properties);
+				vm.LoadPropertySheet(propSheetPath.Text);
 				commonLV.ItemsSource = vm.PropSheetProperties;
 			}
 		}
 
 		private void Click_choose_directory(object sender, RoutedEventArgs e)
 		{
-			if (global_properties.Count == 0)
-			{
-				global_properties.Add("Configuration", configInput.Text);
-				global_properties.Add("Platform", platformInput.Text);
-			}
-
 			var browse = new System.Windows.Forms.FolderBrowserDialog();
 			System.Windows.Forms.DialogResult result = browse.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
 				string directoryPath = browse.SelectedPath;
 				searchPath.Text = directoryPath;
-				int count = vm.LoadAtDirectory(directoryPath, global_properties, ignorePatternTBx.Text);
+				int count = vm.LoadAtDirectory(directoryPath, ignorePatternTBx.Text);
 				projCount.Text = String.Format("Files Found: {0}, Files Included: {1}", count, vm.AllProjects.Count);
 				allPropsLV.ItemsSource = vm.FoundProperties;
 				allProjectsLV.ItemsSource = vm.AllProjects;
