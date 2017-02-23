@@ -255,8 +255,8 @@ namespace msbuildrefactor
 					if (proj.IsDirty)
 					{
 						proj.Save();
-						proj.ReevaluateIfNecessary();
 						AttachImportIfNecessary(proj);
+						proj.ReevaluateIfNecessary();
 					}
 				}
 			}
