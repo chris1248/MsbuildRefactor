@@ -157,6 +157,7 @@ namespace msbuildrefactor
 				ListView listView = sender as ListView;
 				vm.MoveProperty(propdata);
 				detailsLV.ItemsSource = vm.SelectedValues;
+				allPropsLV.ItemsSource = vm.FoundProperties;
 			}
 		}
 

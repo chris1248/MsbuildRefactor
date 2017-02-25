@@ -106,7 +106,12 @@ namespace msbuildrefactor
 			}
 
 			// Remove property from the reference List
-			prop.Owner.RemoveProjects(toBeRemoved);
+			ReferencedProperty owner = prop.Owner;
+			owner.RemoveProjects(toBeRemoved);
+			if (owner.UsedCount == 0)
+			{
+				refs.Remove(owner.Name);
+			}
 
 			// Modify the Values in the details List View
 			_selectedVals.Remove(moved_value);
