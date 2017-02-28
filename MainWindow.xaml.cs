@@ -128,7 +128,8 @@ namespace msbuildrefactor
 					if (listViewItem != null)
 					{
 						// Find the data behind the ListViewItem
-						ReferencedValues contact = (ReferencedValues)listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
+						var source = (KeyValuePair<String, ReferencedValues>)listView.ItemContainerGenerator.ItemFromContainer(listViewItem);
+						ReferencedValues contact = source.Value;
 
 						// Initialize the drag & drop operation
 						DataObject dragData = new DataObject("myFormat", contact);
@@ -182,6 +183,15 @@ namespace msbuildrefactor
 		private void Click_saveAllBtn(object sender, RoutedEventArgs e)
 		{
 			vm.SaveAllProjects();
+		}
+
+		private void allPropsLV_KeyUp(object sender, KeyEventArgs e)
+		{
+			if ((allPropsLV.SelectedItem != null) && (e.Key == Key.Delete))
+			{
+				var pair = (KeyValuePair<String, ReferencedProperty>)allPropsLV.SelectedItem;
+				vm.RemoveFoundProp(pair.Key);
+			}
 		}
 	}
 }

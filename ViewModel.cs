@@ -14,6 +14,10 @@ using System.Collections.Concurrent;
 
 namespace msbuildrefactor
 {
+	/// <summary>
+	/// Class used as a DataContext for the Window. This contains most of the UI logic and
+	/// also handles the data binding for the controls.
+	/// </summary>
 	class ViewModel
 	{
 		public ViewModel()
@@ -116,7 +120,7 @@ namespace msbuildrefactor
 			}
 
 			// Modify the Values in the details List View
-			_selectedVals.Remove(moved_value);
+			SelectedValues.Remove(moved_value);
 		}
 
 		private void AttachImportIfNecessary(Project proj)
@@ -189,6 +193,13 @@ namespace msbuildrefactor
 			return csprojects.Count();
 		}
 
+		internal void RemoveFoundProp(string key)
+		{
+			FoundProperties.Remove(key);
+			var selected = (ICollection<KeyValuePair<String, ReferencedValues>>)SelectedValues;
+			selected.Clear();
+		}
+
 		private void IterateFile(string file, IDictionary<string, string> props)
 		{
 			CSProject project = null;
@@ -221,13 +232,11 @@ namespace msbuildrefactor
 			}
 		}
 
-		private Dictionary<String, ReferencedValues> _selectedVals;
-
-		public List<ReferencedValues> SelectedValues => _selectedVals.Values.ToList();
+		public ObservableConcurrentDictionary<String, ReferencedValues> SelectedValues = new ObservableConcurrentDictionary<string, ReferencedValues>();
 
 		internal void GetPropertyValues(ReferencedProperty item)
 		{
-			_selectedVals = new Dictionary<String, ReferencedValues>();
+			SelectedValues = new ObservableConcurrentDictionary<string, ReferencedValues>();
 			foreach (var project in item.Projects)
 			{
 				ProjectProperty itemprop = project.GetProperty(item.Name);
@@ -239,13 +248,13 @@ namespace msbuildrefactor
 						key = project.OutputPath; 
 					}
 					
-					if (_selectedVals.ContainsKey(key))
+					if (SelectedValues.ContainsKey(key))
 					{
-						_selectedVals[key].Count++;
+						SelectedValues[key].Count++;
 					}
 					else
 					{
-						_selectedVals[key] = new ReferencedValues() { EvaluatedValue = key, Count = 1, Owner = item };
+						SelectedValues[key] = new ReferencedValues() { EvaluatedValue = key, Count = 1, Owner = item };
 					}
 				}
 			}

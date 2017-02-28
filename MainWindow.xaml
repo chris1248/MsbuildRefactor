@@ -82,7 +82,7 @@
 						<RowDefinition Height="5" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
-					<ListView x:Name="allPropsLV" Grid.Row="0"  Margin="0" SelectionChanged="allPropsLV_SelectionChanged" >
+					<ListView x:Name="allPropsLV" Grid.Row="0"  Margin="0" SelectionChanged="allPropsLV_SelectionChanged" KeyUp="allPropsLV_KeyUp" >
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Width="200" DisplayMemberBinding="{Binding Key}">
@@ -102,11 +102,11 @@
 					<ListView x:Name="detailsLV" Grid.Row="2" PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" MouseMove="detailsLV_MouseMove">
 						<ListView.View>
 							<GridView>
-								<GridViewColumn Width="350" DisplayMemberBinding="{Binding EvaluatedValue}">
+								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">
 									<GridViewColumnHeader Tag="Value" Content="Value" />
 								</GridViewColumn>
-								<GridViewColumn Width="100" DisplayMemberBinding="{Binding Count}" >
-									<GridViewColumnHeader Tag="Count" Content="Count" />
+								<GridViewColumn Width="100" DisplayMemberBinding="{Binding Value.Count}" >
+									<GridViewColumnHeader Tag="Value.Count" Content="Count" />
 								</GridViewColumn>
 							</GridView>
 						</ListView.View>
