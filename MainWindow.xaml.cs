@@ -65,11 +65,16 @@ namespace msbuildrefactor
 
 		private void allPropsLV_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			ReferencedProperty item = allPropsLV.SelectedItem as ReferencedProperty;
-			if (item != null)
+			if (allPropsLV.SelectedItem != null)
 			{
-				vm.GetPropertyValues(item);
-				detailsLV.ItemsSource = vm.SelectedValues;
+				var pair = (KeyValuePair<String, ReferencedProperty>)allPropsLV.SelectedItem;
+				var item = pair.Value;
+
+				if (item != null)
+				{
+					vm.GetPropertyValues(item);
+					detailsLV.ItemsSource = vm.SelectedValues;
+				}
 			}
 		}
 
@@ -157,7 +162,6 @@ namespace msbuildrefactor
 				ListView listView = sender as ListView;
 				vm.MoveProperty(propdata);
 				detailsLV.ItemsSource = vm.SelectedValues;
-				allPropsLV.ItemsSource = vm.FoundProperties;
 			}
 		}
 

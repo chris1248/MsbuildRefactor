@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Xml.Linq;
 using System.Xml;
 using System.Collections;
+using System.Collections.Concurrent;
 
 namespace msbuildrefactor
 {
@@ -110,7 +111,8 @@ namespace msbuildrefactor
 			owner.RemoveProjects(toBeRemoved);
 			if (owner.UsedCount == 0)
 			{
-				refs.Remove(owner.Name);
+				bool removed = FoundProperties.Remove(owner.Name);
+				Debug.Assert(removed, "Property was not removed from the list");
 			}
 
 			// Modify the Values in the details List View
@@ -152,8 +154,8 @@ namespace msbuildrefactor
 			_propSheet = new CSProject(prop_sheet_path, GetGlobalProperties(), "14.0");
 		}
 
+		public ObservableConcurrentDictionary<String, ReferencedProperty> FoundProperties = new ObservableConcurrentDictionary<string, ReferencedProperty>();
 
-		private Dictionary<string, ReferencedProperty> refs = new Dictionary<string, ReferencedProperty>();
 		private ObservableCollection<CSProject> _allProjects = new ObservableCollection<CSProject>();
 
 		public ObservableCollection<CSProject> AllProjects => _allProjects;
@@ -207,20 +209,18 @@ namespace msbuildrefactor
 				if (!prop.IsImported && !prop.IsEnvironmentProperty && !prop.IsReservedProperty)
 				{
 					string key = prop.Name;
-					if (refs.ContainsKey(key))
+					if (FoundProperties.ContainsKey(key))
 					{
-						refs[key].Add(project);
+						FoundProperties[key].Add(project);
 					}
 					else
 					{
-						refs[key] = new ReferencedProperty(prop, project) { UsedCount = 1 };
+						FoundProperties[key] = new ReferencedProperty(prop, project) { UsedCount = 1 };
 					}
 				}
 			}
 		}
 
-		public List<ReferencedProperty> FoundProperties => refs.Values.ToList();
-		
 		private Dictionary<String, ReferencedValues> _selectedVals;
 
 		public List<ReferencedValues> SelectedValues => _selectedVals.Values.ToList();
@@ -253,7 +253,7 @@ namespace msbuildrefactor
 
 		internal void SaveAllProjects()
 		{
-			foreach(ReferencedProperty prop in refs.Values)
+			foreach(ReferencedProperty prop in FoundProperties.Values)
 			{
 				foreach(Project proj in prop.Projects)
 				{

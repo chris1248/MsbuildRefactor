@@ -85,14 +85,14 @@
 					<ListView x:Name="allPropsLV" Grid.Row="0"  Margin="0" SelectionChanged="allPropsLV_SelectionChanged" >
 						<ListView.View>
 							<GridView>
-								<GridViewColumn Width="200" DisplayMemberBinding="{Binding Name}">
+								<GridViewColumn Width="200" DisplayMemberBinding="{Binding Key}">
 									<GridViewColumn.Header>
-										<GridViewColumnHeader Tag="Name" Click="GridViewColumnHeader_Click">Name</GridViewColumnHeader>
+										<GridViewColumnHeader Tag="Key" Click="GridViewColumnHeader_Click">Name</GridViewColumnHeader>
 									</GridViewColumn.Header>
 								</GridViewColumn>
-								<GridViewColumn Width="70" DisplayMemberBinding="{Binding UsedCount}" >
+								<GridViewColumn Width="70" DisplayMemberBinding="{Binding Value.UsedCount}" >
 									<GridViewColumn.Header>
-										<GridViewColumnHeader Tag="UsedCount" Click="GridViewColumnHeader_Click">Count</GridViewColumnHeader>
+										<GridViewColumnHeader Tag="Value.UsedCount" Click="GridViewColumnHeader_Click">Count</GridViewColumnHeader>
 									</GridViewColumn.Header>
 								</GridViewColumn>
 							</GridView>
