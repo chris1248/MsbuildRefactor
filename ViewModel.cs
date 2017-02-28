@@ -236,7 +236,8 @@ namespace msbuildrefactor
 
 		internal void GetPropertyValues(ReferencedProperty item)
 		{
-			SelectedValues = new ObservableConcurrentDictionary<string, ReferencedValues>();
+			var selected = (ICollection<KeyValuePair<String, ReferencedValues>>)SelectedValues;
+			selected.Clear();
 			foreach (var project in item.Projects)
 			{
 				ProjectProperty itemprop = project.GetProperty(item.Name);
