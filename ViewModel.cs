@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace msbuildrefactor
 {
@@ -25,7 +26,7 @@ namespace msbuildrefactor
 			GlobalProperties = new ObservableCollection<CommonProperty>()
 			{
 				new CommonProperty("Configuration", "Debug"),
-				new CommonProperty("Platform", "Any CPU")
+				new CommonProperty("Platform", "AnyCPU")
 			};
 		}
 		public DirectoryInfo InputDir { get; set; }
@@ -170,6 +171,7 @@ namespace msbuildrefactor
 			// The ignore pattern can contain more than one entry, delimted by comma's:
 			String[] splits = ignorePattern.Split(',');
 			var csprojects = Directory.GetFiles(directoryPath, "*.csproj", SearchOption.AllDirectories);
+			var global_props = GetGlobalProperties();
 			// There are 4 of these
 			// var vcprojects = Directory.GetFiles(directoryPath, "*.vcxproj", SearchOption.AllDirectories);
 			foreach (var file in csprojects)
@@ -188,7 +190,7 @@ namespace msbuildrefactor
 					continue;
 				}
 
-				IterateFile(file, GetGlobalProperties());
+				IterateFile(file, global_props);
 			}
 			return csprojects.Count();
 		}
