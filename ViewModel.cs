@@ -25,7 +25,7 @@ namespace msbuildrefactor
 		{
 			GlobalProperties = new ObservableCollection<CommonProperty>()
 			{
-				new CommonProperty("Configuration", "Debug"),
+				new CommonProperty("Configuration", "Release"),
 				new CommonProperty("Platform", "AnyCPU")
 			};
 		}
@@ -197,7 +197,17 @@ namespace msbuildrefactor
 
 		internal void RemoveFoundProp(string key)
 		{
-			FoundProperties.Remove(key);
+			ReferencedProperty removal = FoundProperties[key];
+			foreach (Project proj in removal.Projects)
+			{
+				ProjectProperty p = proj.GetProperty(key);
+				if (p == null || p.IsImported || p.IsGlobalProperty || p.IsEnvironmentProperty || p.IsReservedProperty)
+					continue;
+				proj.RemoveProperty(p);
+			}
+			bool removed = FoundProperties.Remove(key);
+			Debug.Assert(removed);
+
 			var selected = (ICollection<KeyValuePair<String, ReferencedValues>>)SelectedValues;
 			selected.Clear();
 		}
