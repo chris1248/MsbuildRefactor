@@ -176,18 +176,21 @@ namespace msbuildrefactor
 			// var vcprojects = Directory.GetFiles(directoryPath, "*.vcxproj", SearchOption.AllDirectories);
 			foreach (var file in csprojects)
 			{
-				bool do_ignore = false;
-				foreach (var ignore in splits)
+				if (!string.IsNullOrEmpty(ignorePattern))
 				{
-					if (file.ToLower().Contains(ignore.ToLower()))
+					bool do_ignore = false;
+					foreach (var ignore in splits)
 					{
-						do_ignore = true;
-						break;
+						if (file.ToLower().Contains(ignore.ToLower()))
+						{
+							do_ignore = true;
+							break;
+						}
 					}
-				}
-				if (do_ignore)
-				{
-					continue;
+					if (do_ignore)
+					{
+						continue;
+					}
 				}
 
 				IterateFile(file, global_props);
