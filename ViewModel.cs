@@ -165,6 +165,10 @@ namespace msbuildrefactor
 
 		public ObservableCollection<CSProject> AllProjects => _allProjects;
 
+		public ObservableCollection<string> AllConfigurations = new ObservableCollection<string>();
+
+		public ObservableCollection<string> AllPlatforms = new ObservableCollection<string>();
+
 		internal int LoadAtDirectory(string directoryPath, string ignorePattern)
 		{
 			InputDir = new DirectoryInfo(directoryPath);
@@ -230,6 +234,20 @@ namespace msbuildrefactor
 			}
 
 			_allProjects.Add(project);
+			IDictionary<string, List<string>> conProps = project.ConditionedProperties;
+			List<String> configs = conProps["Configuration"];
+			List<String> platforms = conProps["Platform"];
+			foreach (var config in configs)
+			{
+				if (!AllConfigurations.Contains(config))
+					AllConfigurations.Add(config);
+			}
+			foreach (var platform in platforms)
+			{
+				if (!AllPlatforms.Contains(platform))
+					AllPlatforms.Add(platform);
+			}
+			
 			foreach (ProjectProperty prop in project.AllEvaluatedProperties)
 			{
 				if (!prop.IsImported && !prop.IsEnvironmentProperty && !prop.IsReservedProperty)

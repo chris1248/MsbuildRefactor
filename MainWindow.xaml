@@ -35,14 +35,12 @@
 		<Label x:Name="label" Content="Property Sheet" HorizontalAlignment="Left" Height="26" Margin="3,38,0,0" VerticalAlignment="Top" Width="89"/>
 		<TabControl Grid.Row="1" Grid.Column="0">
 			<TabItem Header="Global Properties" Margin="0">
-				<ListView x:Name="globalProps" ItemsSource="{Binding GlobalProperties}">
-					<ListView.View>
-						<GridView>
-							<GridViewColumn Header="Property" Width="200" DisplayMemberBinding="{Binding Name}" />
-							<GridViewColumn Header="Value" Width="285" DisplayMemberBinding="{Binding EvaluatedValue}"/>
-						</GridView>
-					</ListView.View>
-				</ListView>
+				<Grid>
+					<ListBox x:Name="globalConfigs" Margin="10,35,260,10" AutomationProperties.HelpText="Platform"/>
+					<ListBox x:Name="globalPlatforms" Margin="246,35,10,10"/>
+					<Label HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="200" Height="26">Configurations</Label>
+					<Label Margin="283,4,10,492">Platform</Label>
+				</Grid>
 			</TabItem>
 			<TabItem Header="Property Sheet" Margin="0">
 				<ListView x:Name="commonLV" Grid.Row="1" AllowDrop="True" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter" >
@@ -126,7 +124,7 @@
 				<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="126" Click="Click_savePropBtn" Grid.Column="0"/>
 				<Button x:Name="saveAllBtn" Content="Save Project Files" Click="Click_saveAllBtn" Grid.Column="1" Width="126" />
 			</Grid>
-			
+
 		</StatusBar>
 	</Grid>
 </Window>
