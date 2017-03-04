@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Build.Evaluation;
+using System.Collections.Concurrent;
+using System;
 
-namespace msbuildrefactor
+namespace Refactor
 {
 	/// <summary>
 	/// Represents a property that has exists in a single common property sheet
@@ -69,7 +71,8 @@ namespace msbuildrefactor
 			foreach (var removed in projects)
 			{
 				_projects.Remove(removed);
-				UsedCount--;
+				if (UsedCount > 0)
+					UsedCount--;
 			}
 			OnPropertyChanged("UsedCount");
 		}
@@ -78,6 +81,37 @@ namespace msbuildrefactor
 		{
 			_projects.Add(proj);
 			UsedCount++;
+		}
+
+		private ObservableConcurrentDictionary<String, ReferencedValues> _PropertyValues = new ObservableConcurrentDictionary<string, ReferencedValues>();
+		public ObservableConcurrentDictionary<String, ReferencedValues> PropertyValues
+		{
+			get { return _PropertyValues; }
+		}
+
+		public void GetPropertyValues()
+		{
+			foreach (var project in this.Projects)
+			{
+				ProjectProperty itemprop = project.GetProperty(this.Name);
+				if (itemprop != null)
+				{
+					string key = itemprop.EvaluatedValue.ToLower();
+					if (this.Name == "OutputPath")
+					{
+						key = project.OutputPath;
+					}
+
+					if (_PropertyValues.ContainsKey(key))
+					{
+						_PropertyValues[key].Count++;
+					}
+					else
+					{
+						_PropertyValues[key] = new ReferencedValues() { EvaluatedValue = key, Count = 1, Owner = this };
+					}
+				}
+			}
 		}
 	}
 

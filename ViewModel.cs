@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
+using Refactor;
 
 namespace msbuildrefactor
 {
@@ -23,30 +23,23 @@ namespace msbuildrefactor
 	{
 		public ViewModel()
 		{
-			GlobalProperties = new ObservableCollection<CommonProperty>()
-			{
-				new CommonProperty("Configuration", "Release"),
-				new CommonProperty("Platform", "AnyCPU")
-			};
+			SelectedConfiguration = "Debug";
+			SelectedPlatform = "AnyCPU";
 		}
 		public DirectoryInfo InputDir { get; set; }
 		private CSProject _propSheet;
 		public CSProject PropSheet { get { return _propSheet; } }
 
-		/// <summary>
-		/// For setting configuration and platform
-		/// </summary>
-		public ObservableCollection<CommonProperty> GlobalProperties { get; set; }
-
 		private Dictionary<string,string> GetGlobalProperties()
 		{
 			var results = new Dictionary<string, string>();
-			foreach (CommonProperty prop in GlobalProperties)
-			{
-				results.Add(prop.Name, prop.EvaluatedValue);
-			}
+			results.Add("Configuration", SelectedConfiguration);
+			results.Add("Platform", SelectedPlatform);
 			return results;
 		}
+
+		public String SelectedConfiguration { get; set; }
+		public String SelectedPlatform { get; set; }
 
 		private ObservableCollection<CommonProperty> _commonProps;
 
@@ -57,12 +50,13 @@ namespace msbuildrefactor
 				if (_commonProps == null)
 				{
 					_commonProps = new ObservableCollection<CommonProperty>();
-					foreach (ProjectProperty prop in _propSheet.AllEvaluatedProperties)
-					{
-						if (prop.Xml != null)
-							_commonProps.Add(new CommonProperty(prop.Name, prop.EvaluatedValue));
-					}
 				}
+				foreach (ProjectProperty prop in _propSheet.AllEvaluatedProperties)
+				{
+					if (prop.Xml != null)
+						_commonProps.Add(new CommonProperty(prop.Name, prop.EvaluatedValue));
+				}
+				
 				return _commonProps;
 			}
 		}
@@ -165,9 +159,19 @@ namespace msbuildrefactor
 
 		public ObservableCollection<CSProject> AllProjects => _allProjects;
 
-		public ObservableCollection<string> AllConfigurations = new ObservableCollection<string>();
+		private ObservableCollection<String> _AllConfigurations = new ObservableCollection<String>();
+		public ObservableCollection<string> AllConfigurations
+		{
+			get { return _AllConfigurations; }
+			set { _AllConfigurations = value; }
+		}
 
-		public ObservableCollection<string> AllPlatforms = new ObservableCollection<string>();
+		private ObservableCollection<string> _AllPlatforms = new ObservableCollection<string>();
+		public ObservableCollection<string> AllPlatforms
+		{
+			get { return _AllPlatforms; }
+			set { _AllPlatforms = value; }
+		}
 
 		internal int LoadAtDirectory(string directoryPath, string ignorePattern)
 		{
@@ -226,7 +230,7 @@ namespace msbuildrefactor
 			{
 				project = new CSProject(file, props, "14.0");
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				Debug.Print("Exception opening file: {0}", file);
 				Debug.Print(e.Message);
@@ -234,20 +238,13 @@ namespace msbuildrefactor
 			}
 
 			_allProjects.Add(project);
-			IDictionary<string, List<string>> conProps = project.ConditionedProperties;
-			List<String> configs = conProps["Configuration"];
-			List<String> platforms = conProps["Platform"];
-			foreach (var config in configs)
-			{
-				if (!AllConfigurations.Contains(config))
-					AllConfigurations.Add(config);
-			}
-			foreach (var platform in platforms)
-			{
-				if (!AllPlatforms.Contains(platform))
-					AllPlatforms.Add(platform);
-			}
-			
+			FindConfigAndPlatform(project);
+
+			GetPropertiesFrom(project);
+		}
+
+		private void GetPropertiesFrom(CSProject project)
+		{
 			foreach (ProjectProperty prop in project.AllEvaluatedProperties)
 			{
 				if (!prop.IsImported && !prop.IsEnvironmentProperty && !prop.IsReservedProperty)
@@ -262,6 +259,43 @@ namespace msbuildrefactor
 						FoundProperties[key] = new ReferencedProperty(prop, project) { UsedCount = 1 };
 					}
 				}
+			}
+		}
+
+		public void ResetGlobalProperties()
+		{
+			var selected = (ICollection<KeyValuePair<String, ReferencedProperty>>)FoundProperties;
+			selected.Clear();
+			var values = (ICollection<KeyValuePair<String, ReferencedValues>>)SelectedValues;
+			values.Clear();
+			foreach(CSProject proj in _allProjects)
+			{
+				proj.SetGlobalProperty("Configuration", SelectedConfiguration);
+				proj.SetGlobalProperty("Platform", SelectedPlatform);
+				proj.ReevaluateIfNecessary();
+				GetPropertiesFrom(proj);
+			}
+			_propSheet.SetGlobalProperty("Configuration", SelectedConfiguration);
+			_propSheet.SetGlobalProperty("Platform", SelectedPlatform);
+			_propSheet.ReevaluateIfNecessary();
+			_commonProps.Clear();
+			//var common = PropSheetProperties;
+		}
+
+		private void FindConfigAndPlatform(CSProject project)
+		{
+			IDictionary<string, List<string>> conProps = project.ConditionedProperties;
+			List<String> configs = conProps["Configuration"];
+			List<String> platforms = conProps["Platform"];
+			foreach (var config in configs)
+			{
+				if (!AllConfigurations.Contains(config))
+					AllConfigurations.Add(config);
+			}
+			foreach (var platform in platforms)
+			{
+				if (!AllPlatforms.Contains(platform))
+					AllPlatforms.Add(platform);
 			}
 		}
 

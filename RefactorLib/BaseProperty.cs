@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace msbuildrefactor
+namespace Refactor
 {
 	public abstract class BaseProperty : INotifyPropertyChanged
 	{

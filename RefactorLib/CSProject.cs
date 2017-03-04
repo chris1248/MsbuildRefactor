@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Build.Evaluation;
 
-namespace msbuildrefactor
+namespace Refactor
 {
 	/// <summary>
 	/// An override of Project that allows specific customizatoins
@@ -42,6 +42,23 @@ namespace msbuildrefactor
 					_outputPath = combined.ToLower();
 				}
 				return _outputPath;
+			}
+		}
+		
+		public List<String> AllConfigs
+		{
+			get
+			{
+				IDictionary<string, List<string>> props = this.ConditionedProperties;
+				return props["Configuration"];
+			}
+		}
+		public List<String> AllPlatforms
+		{
+			get
+			{
+				IDictionary<string, List<string>> props = this.ConditionedProperties;
+				return props["Platform"];
 			}
 		}
 	}

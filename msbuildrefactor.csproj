@@ -73,9 +73,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CSProject.cs" />
-    <Compile Include="PropertyTypes.cs" />
-    <Compile Include="BaseProperty.cs" />
     <Compile Include="SortAdorner.cs" />
     <Compile Include="ViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -110,6 +107,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="RefactorLib\RefactorLib.csproj">
+      <Project>{8b24c1d7-29c4-46cf-b923-5865d0476a7d}</Project>
+      <Name>RefactorLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -36,10 +36,10 @@
 		<TabControl Grid.Row="1" Grid.Column="0">
 			<TabItem Header="Global Properties" Margin="0">
 				<Grid>
-					<ListBox x:Name="globalConfigs" Margin="10,35,260,10" AutomationProperties.HelpText="Platform"/>
-					<ListBox x:Name="globalPlatforms" Margin="246,35,10,10"/>
-					<Label HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="200" Height="26">Configurations</Label>
-					<Label Margin="283,4,10,492">Platform</Label>
+					<ListBox x:Name="globalConfigs" Margin="10,35,260,10" SelectedItem="{Binding SelectedConfiguration}" ItemsSource="{Binding AllConfigurations}" SelectionChanged="globalConfigs_SelectionChanged" />
+					<ListBox x:Name="globalPlatforms" Margin="246,35,10,10" SelectedItem="{Binding SelectedPlatform}" ItemsSource="{Binding AllPlatforms}" SelectionChanged="globalPlatforms_SelectionChanged"/>
+					<Label HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="223" Height="26" Padding="2">Configurations</Label>
+					<Label Margin="246,4,10,492" Padding="2">Platform</Label>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Property Sheet" Margin="0">

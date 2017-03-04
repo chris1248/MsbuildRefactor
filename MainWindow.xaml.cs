@@ -13,7 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Refactor;
 
 namespace msbuildrefactor
 {
@@ -60,8 +60,8 @@ namespace msbuildrefactor
 				projCount.Text = String.Format("Files Found: {0}, Files Included: {1}", count, vm.AllProjects.Count);
 				allPropsLV.ItemsSource = vm.FoundProperties;
 				allProjectsLV.ItemsSource = vm.AllProjects;
-				globalConfigs.ItemsSource = vm.AllConfigurations;
-				globalPlatforms.ItemsSource = vm.AllPlatforms;
+				//globalConfigs.ItemsSource = vm.AllConfigurations;
+				//globalPlatforms.ItemsSource = vm.AllPlatforms;
 			}
 		}
 
@@ -194,6 +194,16 @@ namespace msbuildrefactor
 				var pair = (KeyValuePair<String, ReferencedProperty>)allPropsLV.SelectedItem;
 				vm.RemoveFoundProp(pair.Key);
 			}
+		}
+
+		private void globalConfigs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			vm.ResetGlobalProperties();
+		}
+
+		private void globalPlatforms_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			vm.ResetGlobalProperties();
 		}
 	}
 }
