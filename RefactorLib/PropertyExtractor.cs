@@ -14,12 +14,31 @@ namespace Refactor
 {
 	public class PropertyExtractor
 	{
+		#region Input Fields
 		private string config;
 		private string inputDir;
 		private string platform;
 		private string propSheet;
 		private readonly string toolsVersion = "14.0";
+		#endregion
 
+		#region Data Fields
+		private CSProject _propertySheet;
+		private List<CSProject> _allProjects;
+		private Dictionary<String, String> _globalProperties = new Dictionary<string, string>();
+		private Dictionary<String, int> _allConfigurations = new Dictionary<String, int>();
+		private Dictionary<String, int> _allPlatforms = new Dictionary<String, int>();
+		private ObservableConcurrentDictionary<String, ReferencedProperty> _allFoundProperties = new ObservableConcurrentDictionary<string, ReferencedProperty>();
+		#endregion
+
+		#region Properties
+		public Dictionary<String, int> AllConfigurations { get { return _allConfigurations; } }
+		public Dictionary<String, int> AllPlatforms { get { return _allPlatforms; } }
+		public ObservableConcurrentDictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
+		public bool Verbose { get; set; }
+		#endregion
+
+		#region Constructors
 		public PropertyExtractor(string inputDir, string propSheet, string config, string platform)
 		{
 			this.inputDir = inputDir;
@@ -27,30 +46,24 @@ namespace Refactor
 			this.config = config;
 			this.platform = platform;
 
-			defaultProperties.Add("Configuration", "Debug");
-			defaultProperties.Add("Platform", "AnyCPU");
+			_globalProperties.Add("Configuration", "Debug");
+			_globalProperties.Add("Platform", "AnyCPU");
 		}
-
-		public bool Verbose { get; set; }
-
-		private CSProject _propertySheet;
-		private List<CSProject> _AllProjects;
-		private Dictionary<String, String> defaultProperties = new Dictionary<string, string>();
-		private Dictionary<String, int> AllConfigurations = new Dictionary<String, int>();
-		private Dictionary<String, int> AllPlatforms = new Dictionary<String, int>();
-
+		
 		public int Init()
 		{
-			_AllProjects = GetProjects();
-			GetAllConfigsAndPlatforms(_AllProjects);
-			GetAllReferenceProperties(_AllProjects);
-			_propertySheet = new CSProject(propSheet, defaultProperties, toolsVersion);
-			return _AllProjects.Count;
+			_allProjects = GetProjects();
+			GetAllConfigsAndPlatforms(_allProjects);
+			GetAllReferenceProperties(_allProjects);
+			_propertySheet = new CSProject(propSheet, _globalProperties, toolsVersion);
+			return _allProjects.Count;
 		}
+		#endregion
 
+		#region Public Methods
 		public void Move(string name, string val)
 		{
-			Parallel.ForEach(_AllProjects, proj =>
+			Parallel.ForEach(_allProjects, proj =>
 			{
 				ProjectProperty p = proj.GetProperty(name);
 				if (p != null &&
@@ -63,13 +76,13 @@ namespace Refactor
 				}
 			});
 			
-			if (_AllFoundProperties.ContainsKey(name))
+			if (_allFoundProperties.ContainsKey(name))
 			{
-				ReferencedProperty refp = _AllFoundProperties[name];
-				refp.RemoveProjects(_AllProjects);
+				ReferencedProperty refp = _allFoundProperties[name];
+				refp.RemoveProjects(_allProjects);
 				if (refp.UsedCount == 0)
 				{
-					bool removed = _AllFoundProperties.Remove(name);
+					bool removed = _allFoundProperties.Remove(name);
 					Debug.Assert(removed, "Property was not removed from the list");
 				}
 			}
@@ -96,39 +109,19 @@ namespace Refactor
 
 		public void SetGlobalProperty(string name, string val)
 		{
-			defaultProperties[name] = val;
-			Parallel.ForEach(_AllProjects, proj =>
+			_globalProperties[name] = val;
+			Parallel.ForEach(_allProjects, proj =>
 			{
 				proj.SetGlobalProperty(name, val);
 				proj.ReevaluateIfNecessary();
 			});
 		}
 
-		private void GetAllReferenceProperties(List<CSProject> projects)
-		{
-			//Parallel.ForEach(projects, proj => // Unstable. Throws exceptions from deep in the microsoft layer
-			foreach(CSProject proj in projects)
-			{
-				GetPropertiesFrom(proj);
-			}
-			// This can only be called after the properties are crossed referenced.
-			foreach(var pair in _AllFoundProperties)
-			{
-				pair.Value.GetPropertyValues();
-			}
-		}
-
-		public ObservableConcurrentDictionary<String, ReferencedProperty> _AllFoundProperties = new ObservableConcurrentDictionary<string, ReferencedProperty>();
-		public ObservableConcurrentDictionary<String, ReferencedProperty> AllFoundProperties
-		{
-			get { return _AllFoundProperties; }
-		}
-
 		public void PrintFoundProperties()
 		{
-			Utils.WL(ConsoleColor.DarkCyan, String.Format("Global Properties: Configuration => {0}", defaultProperties["Configuration"]));
-			Utils.WL(ConsoleColor.DarkCyan, String.Format("Global Properties: Platform => {0}", defaultProperties["Platform"]));
-			var sorted = from p in _AllFoundProperties orderby p.Value.UsedCount descending select p;
+			Utils.WL(ConsoleColor.DarkCyan, String.Format("Global Properties: Configuration => {0}", _globalProperties["Configuration"]));
+			Utils.WL(ConsoleColor.DarkCyan, String.Format("Global Properties: Platform => {0}", _globalProperties["Platform"]));
+			var sorted = from p in _allFoundProperties orderby p.Value.UsedCount descending select p;
 			foreach(var pair in sorted)
 			{
 				ReferencedProperty prop = pair.Value;
@@ -142,65 +135,6 @@ namespace Refactor
 			}
 		}
 
-		private void GetPropertiesFrom(CSProject project)
-		{
-			foreach (ProjectProperty prop in project.AllEvaluatedProperties)
-			{
-				if (!prop.IsImported && !prop.IsEnvironmentProperty && !prop.IsReservedProperty)
-				{
-					string key = prop.Name;
-					if (_AllFoundProperties.ContainsKey(key))
-					{
-						_AllFoundProperties[key].Add(project);
-					}
-					else
-					{
-						_AllFoundProperties[key] = new ReferencedProperty(prop, project) { UsedCount = 1 };
-					}
-				}
-			}
-		}
-
-		private void GetAllConfigsAndPlatforms(List<CSProject> projects)
-		{
-			foreach(CSProject project in projects)
-			{
-				IDictionary<string, List<string>> conProps = project.ConditionedProperties;
-				List<String> configs = conProps["Configuration"];
-				List<String> platforms = conProps["Platform"];
-				foreach (var config in configs)
-				{
-					if (AllConfigurations.ContainsKey(config))
-						AllConfigurations[config]++;
-					else
-						AllConfigurations.Add(config, 1);
-				}
-				foreach (var platform in platforms)
-				{
-					if (AllPlatforms.ContainsKey(platform))
-						AllPlatforms[platform]++;
-					else
-						AllPlatforms.Add(platform, 1);
-				}
-			}
-			var sortedConfigs = from p in AllConfigurations orderby p.Value descending select p;
-			AllConfigurations = sortedConfigs.ToDictionary(p => p.Key, p => p.Value);
-			if (Verbose)
-			{
-				Utils.WL(ConsoleColor.DarkCyan, "+----- All Configurations -----+");
-				foreach (var p in AllConfigurations)
-					Utils.WL(ConsoleColor.Cyan, String.Format("{0,20} : {1}", p.Key, p.Value));
-			}
-			var sortedPlatforms = from p in AllPlatforms orderby p.Value descending select p;
-			AllPlatforms = sortedPlatforms.ToDictionary(p => p.Key, p => p.Value);
-			if (Verbose)
-			{
-				Utils.WL(ConsoleColor.DarkCyan, "+----- All Platforms -----+");
-				foreach (var p in AllPlatforms)
-					Utils.WL(ConsoleColor.Cyan, String.Format("{0,20} : {1}", p.Key, p.Value));
-			}
-		}
-
 		public List<CSProject> GetProjects()
 		{
 			var fileList = Directory.EnumerateFiles(inputDir, "*.csproj", SearchOption.AllDirectories).AsParallel();
@@ -210,7 +144,7 @@ namespace Refactor
 			{
 				try
 				{
-					var p = new CSProject(file, defaultProperties, toolsVersion);
+					var p = new CSProject(file, _globalProperties, toolsVersion);
 					bag.Add(p);
 				}
 				catch (Exception e)
@@ -221,6 +155,61 @@ namespace Refactor
 			});
 
 			return bag.ToList();
+		}
+
+		public void SaveAll()
+		{
+			Parallel.ForEach(_allProjects, proj =>
+			{
+				try
+				{
+					proj.Save();
+					AttachImportIfNecessary(proj);
+					proj.ReevaluateIfNecessary();
+				}
+				catch (Exception e)
+				{
+					Utils.WL(ConsoleColor.Red, String.Format("Error saving file: {0}", proj.FullPath));
+					Utils.WL(ConsoleColor.DarkGray, e.Message);
+				}
+			});
+			_propertySheet.Save();
+			_propertySheet.ReevaluateIfNecessary();
+		}
+		#endregion
+
+		#region Private Methods
+		private void GetAllReferenceProperties(List<CSProject> projects)
+		{
+			//Parallel.ForEach(projects, proj => // Unstable. Throws exceptions from deep in the microsoft layer
+			foreach (CSProject proj in projects)
+			{
+				GetPropertiesFrom(proj);
+			}
+			// This can only be called after the properties are crossed referenced.
+			foreach (var pair in _allFoundProperties)
+			{
+				pair.Value.GetPropertyValues();
+			}
+		}
+
+		private void GetPropertiesFrom(CSProject project)
+		{
+			foreach (ProjectProperty prop in project.AllEvaluatedProperties)
+			{
+				if (!prop.IsImported && !prop.IsEnvironmentProperty && !prop.IsReservedProperty)
+				{
+					string key = prop.Name;
+					if (_allFoundProperties.ContainsKey(key))
+					{
+						_allFoundProperties[key].Add(project);
+					}
+					else
+					{
+						_allFoundProperties[key] = new ReferencedProperty(prop, project) { UsedCount = 1 };
+					}
+				}
+			}
 		}
 
 		private void AttachImportIfNecessary(Project proj)
@@ -253,24 +242,45 @@ namespace Refactor
 			}
 		}
 
-		public void SaveAll()
+		private void GetAllConfigsAndPlatforms(List<CSProject> projects)
 		{
-			Parallel.ForEach(_AllProjects, proj =>
+			foreach (CSProject project in projects)
 			{
-				try
+				IDictionary<string, List<string>> conProps = project.ConditionedProperties;
+				List<String> configs = conProps["Configuration"];
+				List<String> platforms = conProps["Platform"];
+				foreach (var config in configs)
 				{
-					proj.Save();
-					AttachImportIfNecessary(proj);
-					proj.ReevaluateIfNecessary();
+					if (_allConfigurations.ContainsKey(config))
+						_allConfigurations[config]++;
+					else
+						_allConfigurations.Add(config, 1);
 				}
-				catch (Exception e)
+				foreach (var platform in platforms)
 				{
-					Utils.WL(ConsoleColor.Red, String.Format("Error saving file: {0}", proj.FullPath));
-					Utils.WL(ConsoleColor.DarkGray, e.Message);
+					if (_allPlatforms.ContainsKey(platform))
+						_allPlatforms[platform]++;
+					else
+						_allPlatforms.Add(platform, 1);
 				}
-			});
-			_propertySheet.Save();
-			_propertySheet.ReevaluateIfNecessary();
+			}
+			var sortedConfigs = from p in _allConfigurations orderby p.Value descending select p;
+			_allConfigurations = sortedConfigs.ToDictionary(p => p.Key, p => p.Value);
+			if (Verbose)
+			{
+				Utils.WL(ConsoleColor.DarkCyan, "+----- All Configurations -----+");
+				foreach (var p in _allConfigurations)
+					Utils.WL(ConsoleColor.Cyan, String.Format("{0,20} : {1}", p.Key, p.Value));
+			}
+			var sortedPlatforms = from p in _allPlatforms orderby p.Value descending select p;
+			_allPlatforms = sortedPlatforms.ToDictionary(p => p.Key, p => p.Value);
+			if (Verbose)
+			{
+				Utils.WL(ConsoleColor.DarkCyan, "+----- All Platforms -----+");
+				foreach (var p in _allPlatforms)
+					Utils.WL(ConsoleColor.Cyan, String.Format("{0,20} : {1}", p.Key, p.Value));
+			}
 		}
+		#endregion
 	}
 }
