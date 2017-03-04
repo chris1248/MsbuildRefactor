@@ -14,6 +14,7 @@ namespace Refactor
 {
 	public class PropertyExtractor
 	{
+		#region Fields
 		#region Input Fields
 		private string config;
 		private string inputDir;
@@ -25,17 +26,20 @@ namespace Refactor
 		#region Data Fields
 		private CSProject _propertySheet;
 		private List<CSProject> _allProjects;
-		private Dictionary<String, String> _globalProperties = new Dictionary<string, string>();
-		private Dictionary<String, int> _allConfigurations = new Dictionary<String, int>();
-		private Dictionary<String, int> _allPlatforms = new Dictionary<String, int>();
-		private ObservableConcurrentDictionary<String, ReferencedProperty> _allFoundProperties = new ObservableConcurrentDictionary<string, ReferencedProperty>();
+		private Dictionary<String, String>             _globalProperties   = new Dictionary<string, string>();
+		private Dictionary<String, int>                _allConfigurations  = new Dictionary<String, int>();
+		private Dictionary<String, int>                _allPlatforms       = new Dictionary<String, int>();
+		private Dictionary<String, ReferencedProperty> _allFoundProperties = new Dictionary<string, ReferencedProperty>();
 		#endregion
 
 		#region Properties
+		public List<CSProject>         AllProjects       { get { return _allProjects; } }
 		public Dictionary<String, int> AllConfigurations { get { return _allConfigurations; } }
-		public Dictionary<String, int> AllPlatforms { get { return _allPlatforms; } }
-		public ObservableConcurrentDictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
+		public Dictionary<String, int> AllPlatforms      { get { return _allPlatforms; } }
+		public Dictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
+		public int Count { get { return _allProjects.Count; } }
 		public bool Verbose { get; set; }
+		#endregion
 		#endregion
 
 		#region Constructors
@@ -46,11 +50,13 @@ namespace Refactor
 			this.config = config;
 			this.platform = platform;
 
-			_globalProperties.Add("Configuration", "Debug");
-			_globalProperties.Add("Platform", "AnyCPU");
+			_globalProperties.Add("Configuration", config);
+			_globalProperties.Add("Platform", platform);
+
+			Init();
 		}
 		
-		public int Init()
+		private int Init()
 		{
 			_allProjects = GetProjects();
 			GetAllConfigsAndPlatforms(_allProjects);
@@ -115,6 +121,7 @@ namespace Refactor
 				proj.SetGlobalProperty(name, val);
 				proj.ReevaluateIfNecessary();
 			});
+			GetAllReferenceProperties(_allProjects);
 		}
 
 		public void PrintFoundProperties()
@@ -181,10 +188,15 @@ namespace Refactor
 		#region Private Methods
 		private void GetAllReferenceProperties(List<CSProject> projects)
 		{
+			if (_allFoundProperties.Count() > 0)
+			{
+				var props = (ICollection<KeyValuePair<String, ReferencedProperty>>)_allFoundProperties;
+				props.Clear();
+			}
 			//Parallel.ForEach(projects, proj => // Unstable. Throws exceptions from deep in the microsoft layer
 			foreach (CSProject proj in projects)
 			{
-				GetPropertiesFrom(proj);
+				GetPropertiesFor(proj);
 			}
 			// This can only be called after the properties are crossed referenced.
 			foreach (var pair in _allFoundProperties)
@@ -193,7 +205,7 @@ namespace Refactor
 			}
 		}
 
-		private void GetPropertiesFrom(CSProject project)
+		private void GetPropertiesFor(CSProject project)
 		{
 			foreach (ProjectProperty prop in project.AllEvaluatedProperties)
 			{

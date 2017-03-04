@@ -39,9 +39,8 @@ namespace RefactorConsole
 
 			var refactor = new PropertyExtractor(inputDir, propSheet, config, platform);
 			refactor.Verbose = true;
-			int count = refactor.Init();
 			timer.Stop();
-			Console.WriteLine("{0} files", count);
+			Console.WriteLine("{0} files", refactor.Count);
 			Utils.WL(ConsoleColor.DarkYellow, String.Format("Elapsed Time: {0}\n", timer.Elapsed));
 
 			Console.WriteLine("Change configuration property");
