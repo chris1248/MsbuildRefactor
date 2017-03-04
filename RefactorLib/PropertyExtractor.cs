@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace Refactor
 {
-	public class PropertyExtractor
+	public class PropertyExtractor : BaseProperty
 	{
 		#region Fields
 		#region Input Fields
@@ -39,14 +39,22 @@ namespace Refactor
 		public Dictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
 		public int Count { get { return _allProjects.Count; } }
 		public bool Verbose { get; set; }
+		public string PropertySheetPath
+		{
+			get { return propSheet; }
+			set {
+				propSheet = value;
+				_propertySheet = new CSProject(propSheet, _globalProperties, toolsVersion);
+			}
+		}
+		public CSProject PropertySheet { get { return _propertySheet; } }
 		#endregion
 		#endregion
 
 		#region Constructors
-		public PropertyExtractor(string inputDir, string propSheet, string config, string platform)
+		public PropertyExtractor(string inputDir, string config, string platform)
 		{
 			this.inputDir = inputDir;
-			this.propSheet = propSheet;
 			this.config = config;
 			this.platform = platform;
 
@@ -61,7 +69,7 @@ namespace Refactor
 			_allProjects = GetProjects();
 			GetAllConfigsAndPlatforms(_allProjects);
 			GetAllReferenceProperties(_allProjects);
-			_propertySheet = new CSProject(propSheet, _globalProperties, toolsVersion);
+			
 			return _allProjects.Count;
 		}
 		#endregion

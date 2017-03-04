@@ -70,12 +70,10 @@ namespace msbuildrefactor
 			if (allPropsLV.SelectedItem != null)
 			{
 				var pair = (KeyValuePair<String, ReferencedProperty>)allPropsLV.SelectedItem;
-				var item = pair.Value;
-
-				if (item != null)
+				ReferencedProperty prop = pair.Value;
+				if (prop != null)
 				{
-					vm.GetPropertyValues(item);
-					detailsLV.ItemsSource = vm.SelectedValues;
+					detailsLV.ItemsSource = prop.PropertyValues;
 				}
 			}
 		}
@@ -198,12 +196,12 @@ namespace msbuildrefactor
 
 		private void globalConfigs_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			vm.ResetGlobalProperties();
+			//
 		}
 
 		private void globalPlatforms_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			vm.ResetGlobalProperties();
+			//
 		}
 	}
 }
