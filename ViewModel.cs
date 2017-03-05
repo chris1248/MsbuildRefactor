@@ -19,7 +19,7 @@ namespace msbuildrefactor
 	/// Class used as a DataContext for the Window. This contains most of the UI logic and
 	/// also handles the data binding for the controls.
 	/// </summary>
-	class ViewModel
+	class ViewModel : BaseProperty
 	{
 		private PropertyExtractor model;
 		public ViewModel()
@@ -33,28 +33,61 @@ namespace msbuildrefactor
 
 		public String SelectedConfiguration { get; set; }
 		public String SelectedPlatform { get; set; }
-		public List<CSProject> AllProjects { get { return model.AllProjects; } }
-		public List<string> AllConfigurations { get { return model.AllConfigurations.Keys.ToList(); } }
+		public List<CSProject> AllProjects
+		{
+			get
+			{
+				if (model != null)
+					return model.AllProjects;
+				else
+					return new List<CSProject>();
+			}
+		}
+		public List<String> AllConfigurations
+		{
+			get
+			{
+				if (model != null)
+				{
+					var configs = model.AllConfigurations;
+					return configs.Keys.ToList();
+				}
+				else
+				{
+					return new List<String>();
+				}
+			}
+		}
+		public List<String> AllPlatforms
+		{
+			get
+			{
+				if (model != null)
+				{
+					var platforms = model.AllPlatforms;
+					return platforms.Keys.ToList();
+				}
+				else
+				{
+					return new List<String>();
+				}
+			}
+		}
 
-		private ObservableCollection<CommonProperty> _commonProps;
-
+		private ObservableCollection<CommonProperty> _propSheetProperties = new ObservableCollection<CommonProperty>();
 		public ObservableCollection<CommonProperty> PropSheetProperties
 		{
 			get {
-				// Lazy Initialize
-				if (_commonProps == null)
-				{
-					_commonProps = new ObservableCollection<CommonProperty>();
-				}
 				foreach (ProjectProperty prop in model.PropertySheet.AllEvaluatedProperties)
 				{
 					if (prop.Xml != null)
-						_commonProps.Add(new CommonProperty(prop.Name, prop.EvaluatedValue));
+						_propSheetProperties.Add(new CommonProperty(prop.Name, prop.EvaluatedValue));
 				}
 				
-				return _commonProps;
+				return _propSheetProperties;
 			}
 		}
+		public int CountFoundFiles { get { return model.CountFoundFiles; } }
 
 		public void MoveProperty(ReferencedValues prop)
 		{
@@ -64,17 +97,30 @@ namespace msbuildrefactor
 			model.Move(name, value);
 		}
 
-		public ObservableConcurrentDictionary<String, ReferencedValues> SelectedValues = new ObservableConcurrentDictionary<string, ReferencedValues>();
-		public ObservableConcurrentDictionary<String, ReferencedProperty> FoundProperties = new ObservableConcurrentDictionary<string, ReferencedProperty>();
+		public Dictionary<String, ReferencedProperty> FoundProperties
+		{
+			get
+			{
+				if (model != null)
+					return model.AllFoundProperties;
+				else
+					return new Dictionary<string, ReferencedProperty>();
+			}
+		}
 
 		public void LoadPropertySheet(string prop_sheet_path)
 		{
 			model.PropertySheetPath = prop_sheet_path;
+			OnPropertyChanged("PropSheetProperties");
 		}
 
-		internal int LoadAtDirectory(string directoryPath, string ignorePattern)
+		internal int LoadAtDirectory(string directoryPath)
 		{
 			model = new PropertyExtractor(directoryPath, SelectedConfiguration, SelectedPlatform);
+			OnPropertyChanged("FoundProperties");
+			OnPropertyChanged("AllProjects");
+			OnPropertyChanged("AllConfigurations");
+			OnPropertyChanged("AllPlatforms");
 			return model.Count;
 		}
 

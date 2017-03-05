@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:msbuildrefactor"
         mc:Ignorable="d"
-        Title="Property Sheet Tools" Height="679" Width="1012.144">
+        Title="Property Sheet Tools" Height="679" Width="1012.144" ResizeMode="CanResizeWithGrip">
 	<Window.DataContext>
 		<local:ViewModel x:Name="vm" />
 	</Window.DataContext>
@@ -22,7 +22,7 @@
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="72"/>
+			<RowDefinition Height="40"/>
 			<RowDefinition Height="247*"/>
 			<RowDefinition Height="26" />
 		</Grid.RowDefinitions>
@@ -30,20 +30,38 @@
 			<ColumnDefinition Width="257*"/>
 			<ColumnDefinition Width="260*"/>
 		</Grid.ColumnDefinitions>
-		<TextBox x:Name="propSheetPath" Height="23" Margin="92,39,73,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" ToolTip="Property Sheet File Path"/>
-		<Button x:Name="propSheetChoose" Content="Browse..." Height="23" Margin="0,39,5,0" VerticalAlignment="Top" Click="Click_choose_prop_sheet" HorizontalAlignment="Right" Width="63"/>
-		<Label x:Name="label" Content="Property Sheet" HorizontalAlignment="Left" Height="26" Margin="3,38,0,0" VerticalAlignment="Top" Width="89"/>
-		<TabControl Grid.Row="1" Grid.Column="0">
+		<!-- Row One -->
+		<StackPanel  Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+			<Label x:Name="label" Height="26" Margin="0" HorizontalAlignment="Left" >Property Sheet</Label>
+			<TextBox x:Name="propSheetPath" Height="23" ToolTip="Property Sheet File Path" Margin="10,0,0,0" Width="285" />
+			<Button x:Name="propSheetChoose" Height="23" Width="84" Click="Click_choose_prop_sheet" Content="Browse..." Margin="10,0" />
+		</StackPanel>
+		<StackPanel  Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+			<Label Content="Projects Directory" Height="26" Width="110" Margin="0"/>
+			<TextBox x:Name="searchPath" Height="23" Width="285" Margin="10,0,0,0" />
+			<Button x:Name="searchChoose" Content="Browse..." Height="23" Width="74" Click="Click_choose_directory" Margin="10,0"/>
+		</StackPanel>
+
+		<!-- Row Two -->
+		<TabControl Grid.Row="1" Grid.Column="0" SelectedIndex="1">
 			<TabItem Header="Global Properties" Margin="0">
 				<Grid>
-					<ListBox x:Name="globalConfigs" Margin="10,35,260,10" SelectedItem="{Binding SelectedConfiguration}" ItemsSource="{Binding AllConfigurations}" SelectionChanged="globalConfigs_SelectionChanged" />
-					<ListBox x:Name="globalPlatforms" Margin="246,35,10,10" SelectedItem="{Binding SelectedPlatform}" ItemsSource="{Binding AllPlatforms}" SelectionChanged="globalPlatforms_SelectionChanged"/>
-					<Label HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="223" Height="26" Padding="2">Configurations</Label>
-					<Label Margin="246,4,10,492" Padding="2">Platform</Label>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="30"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="200*" />
+						<ColumnDefinition Width="200*" />
+					</Grid.ColumnDefinitions>
+					<ListBox x:Name="globalConfigs" Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedConfiguration}" ItemsSource="{Binding AllConfigurations}" SelectionChanged="globalConfigs_SelectionChanged" Margin="15"  />
+					<ListBox x:Name="globalPlatforms" Grid.Row="1" Grid.Column="1" SelectedItem="{Binding SelectedPlatform}" ItemsSource="{Binding AllPlatforms}" SelectionChanged="globalPlatforms_SelectionChanged" Margin="15" />
+					<Label Grid.Row="0" Grid.Column="0" Height="26" Margin="2" >Configurations</Label>
+					<Label Grid.Row="0" Grid.Column="1" Height="26" Margin="2" >Platform</Label>
 				</Grid>
 			</TabItem>
 			<TabItem Header="Property Sheet" Margin="0">
-				<ListView x:Name="commonLV" Grid.Row="1" AllowDrop="True" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter" >
+				<ListView x:Name="commonLV" ItemsSource="{Binding PropSheetProperties}" Grid.Row="1" AllowDrop="True" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter"  >
 					<ListView.View>
 						<GridView>
 							<GridViewColumn Header="Property" Width="200" DisplayMemberBinding="{Binding Name}"/>
@@ -53,14 +71,9 @@
 				</ListView>
 			</TabItem>
 		</TabControl>
-
-		<Label x:Name="label1" Content="Projects Directory" Grid.Column="1" HorizontalAlignment="Left" Height="26" Margin="5,38,0,0" VerticalAlignment="Top" Width="110"/>
-		<TextBox x:Name="searchPath" Grid.Column="1" Height="23" Margin="109,39,88,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-		<Button x:Name="searchChoose" Content="Browse..." Grid.Column="1" Margin="0,39,10,0" VerticalAlignment="Top" Height="23" HorizontalAlignment="Right" Width="74" Click="Click_choose_directory"/>
-		<TextBlock x:Name="projCount" Grid.Column="1" HorizontalAlignment="Left" Margin="10,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="213"/>
-		<TabControl Grid.Row="1" Grid.Column="1">
+		<TabControl Grid.Row="1" Grid.Column="1" SelectedIndex="1">
 			<TabItem Header="Project Files" Margin="0">
-				<ListView x:Name="allProjectsLV" Margin="0">
+				<ListView x:Name="allProjectsLV" ItemsSource="{Binding AllProjects}" Margin="0">
 					<ListView.View>
 						<GridView>
 							<GridViewColumn Width="410" DisplayMemberBinding="{Binding FullPath}">
@@ -80,7 +93,7 @@
 						<RowDefinition Height="5" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
-					<ListView x:Name="allPropsLV" Grid.Row="0"  Margin="0" SelectionChanged="allPropsLV_SelectionChanged" KeyUp="allPropsLV_KeyUp" >
+					<ListView x:Name="allPropsLV" ItemsSource="{Binding FoundProperties}" Grid.Row="0"  Margin="0" SelectionChanged="allPropsLV_SelectionChanged" KeyUp="allPropsLV_KeyUp" >
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Width="200" DisplayMemberBinding="{Binding Key}">
@@ -112,19 +125,8 @@
 				</Grid>
 			</TabItem>
 		</TabControl>
-		<TextBox x:Name="ignorePatternTBx" Grid.Column="1" Height="26" Margin="0,10,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" HorizontalAlignment="Right" Width="182" VerticalContentAlignment="Center"/>
-		<Label x:Name="label4" Content="Ignore Pattern" Grid.Column="1" Height="26" Margin="0,10,192,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="90"/>
 		<!-- Row Three -->
-		<StatusBar x:Name="status" Grid.Row="2" Grid.ColumnSpan="2" Margin="0" >
-			<Grid Grid.Row="2" Grid.ColumnSpan="2" Width="994">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="*"/>
-				</Grid.ColumnDefinitions>
-				<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="126" Click="Click_savePropBtn" Grid.Column="0"/>
-				<Button x:Name="saveAllBtn" Content="Save Project Files" Click="Click_saveAllBtn" Grid.Column="1" Width="126" />
-			</Grid>
-
-		</StatusBar>
+		<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="126" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,15,0"/>
+		<Button x:Name="saveAllBtn" Content="Save Project Files" Width="126" Click="Click_saveAllBtn" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,15,0"/>
 	</Grid>
 </Window>

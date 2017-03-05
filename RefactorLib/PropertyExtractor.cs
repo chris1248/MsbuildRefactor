@@ -48,6 +48,7 @@ namespace Refactor
 			}
 		}
 		public CSProject PropertySheet { get { return _propertySheet; } }
+		public int CountFoundFiles { get; private set; }
 		#endregion
 		#endregion
 
@@ -64,13 +65,12 @@ namespace Refactor
 			Init();
 		}
 		
-		private int Init()
+		private void Init()
 		{
 			_allProjects = GetProjects();
+			CountFoundFiles = _allProjects.Count;
 			GetAllConfigsAndPlatforms(_allProjects);
 			GetAllReferenceProperties(_allProjects);
-			
-			return _allProjects.Count;
 		}
 		#endregion
 
@@ -113,6 +113,7 @@ namespace Refactor
 				{
 					pr.UnevaluatedValue = val;
 				}
+				OnPropertyChanged("PropertySheet");
 			}
 		}
 
@@ -130,6 +131,7 @@ namespace Refactor
 				proj.ReevaluateIfNecessary();
 			});
 			GetAllReferenceProperties(_allProjects);
+			OnPropertyChanged("AllFoundProperties");
 		}
 
 		public void PrintFoundProperties()
@@ -153,7 +155,7 @@ namespace Refactor
 		public List<CSProject> GetProjects()
 		{
 			var fileList = Directory.EnumerateFiles(inputDir, "*.csproj", SearchOption.AllDirectories).AsParallel();
-
+			
 			ConcurrentBag<CSProject> bag = new ConcurrentBag<CSProject>();
 			Parallel.ForEach(fileList, (file) =>
 			{

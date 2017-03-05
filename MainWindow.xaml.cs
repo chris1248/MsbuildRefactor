@@ -44,24 +44,19 @@ namespace msbuildrefactor
 			{
 				propSheetPath.Text = dlg.FileName;
 				vm.LoadPropertySheet(propSheetPath.Text);
-				commonLV.ItemsSource = vm.PropSheetProperties;
 			}
 		}
 
 		private void Click_choose_directory(object sender, RoutedEventArgs e)
 		{
 			var browse = new System.Windows.Forms.FolderBrowserDialog();
+			browse.SelectedPath = "F:\\xm8_dev";
 			System.Windows.Forms.DialogResult result = browse.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
 				string directoryPath = browse.SelectedPath;
 				searchPath.Text = directoryPath;
-				int count = vm.LoadAtDirectory(directoryPath, ignorePatternTBx.Text);
-				projCount.Text = String.Format("Files Found: {0}, Files Included: {1}", count, vm.AllProjects.Count);
-				allPropsLV.ItemsSource = vm.FoundProperties;
-				allProjectsLV.ItemsSource = vm.AllProjects;
-				//globalConfigs.ItemsSource = vm.AllConfigurations;
-				//globalPlatforms.ItemsSource = vm.AllPlatforms;
+				int count = vm.LoadAtDirectory(directoryPath);
 			}
 		}
 
@@ -160,9 +155,8 @@ namespace msbuildrefactor
 			if (e.Data.GetDataPresent("myFormat"))
 			{
 				ReferencedValues propdata = e.Data.GetData("myFormat") as ReferencedValues;
-				ListView listView = sender as ListView;
 				vm.MoveProperty(propdata);
-				detailsLV.ItemsSource = vm.SelectedValues;
+				//detailsLV.ItemsSource = vm.SelectedValues;
 			}
 		}
 
@@ -196,7 +190,7 @@ namespace msbuildrefactor
 
 		private void globalConfigs_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			//
+			
 		}
 
 		private void globalPlatforms_SelectionChanged(object sender, SelectionChangedEventArgs e)
