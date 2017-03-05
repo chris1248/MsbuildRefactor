@@ -27,10 +27,9 @@ namespace msbuildrefactor
 			SelectedConfiguration = "Debug";
 			SelectedPlatform = "AnyCPU";
 		}
-		public DirectoryInfo InputDir { get; set; }
-		
-		public CSProject PropSheet { get { return model.PropertySheet; } }
 
+		#region Properties for Data Binding
+		public CSProject PropSheet { get { return model.PropertySheet; } }
 		public String SelectedConfiguration { get; set; }
 		public String SelectedPlatform { get; set; }
 		public List<CSProject> AllProjects
@@ -78,25 +77,18 @@ namespace msbuildrefactor
 		public ObservableCollection<CommonProperty> PropSheetProperties
 		{
 			get {
-				foreach (ProjectProperty prop in model.PropertySheet.AllEvaluatedProperties)
+				if ((model != null) && (model.PropertySheet != null))
 				{
-					if (prop.Xml != null)
-						_propSheetProperties.Add(new CommonProperty(prop.Name, prop.EvaluatedValue));
+					foreach (ProjectProperty prop in model.PropertySheet.AllEvaluatedProperties)
+					{
+						if (prop.Xml != null)
+							_propSheetProperties.Add(new CommonProperty(prop.Name, prop.EvaluatedValue));
+					}
 				}
-				
 				return _propSheetProperties;
 			}
 		}
 		public int CountFoundFiles { get { return model.CountFoundFiles; } }
-
-		public void MoveProperty(ReferencedValues prop)
-		{
-			string name  = prop.Owner.Name;
-			string value = prop.EvaluatedValue;
-
-			model.Move(name, value);
-		}
-
 		public Dictionary<String, ReferencedProperty> FoundProperties
 		{
 			get
@@ -107,14 +99,16 @@ namespace msbuildrefactor
 					return new Dictionary<string, ReferencedProperty>();
 			}
 		}
+		#endregion
 
+		#region Methods for calling from UI Controls
 		public void LoadPropertySheet(string prop_sheet_path)
 		{
 			model.PropertySheetPath = prop_sheet_path;
 			OnPropertyChanged("PropSheetProperties");
 		}
 
-		internal int LoadAtDirectory(string directoryPath)
+		public int LoadAtDirectory(string directoryPath)
 		{
 			model = new PropertyExtractor(directoryPath, SelectedConfiguration, SelectedPlatform);
 			OnPropertyChanged("FoundProperties");
@@ -124,19 +118,30 @@ namespace msbuildrefactor
 			return model.Count;
 		}
 
-		internal void RemoveFoundProp(string key)
+		public void MoveProperty(ReferencedValues prop)
 		{
-			model.Remove(key);
+			string name = prop.Owner.Name;
+			string value = prop.EvaluatedValue;
+
+			model.Move(name, value);
+			OnPropertyChanged("FoundProperties");
 		}
 
-		internal void SaveAllProjects()
+		public void DeleteProperty(string key)
+		{
+			model.Remove(key);
+			OnPropertyChanged("FoundProperties");
+		}
+
+		public void SaveAllProjects()
 		{
 			model.SaveAll();
 		}
 
-		internal void SavePropertySheet()
+		public void SavePropertySheet()
 		{
 			model.PropertySheet.Save();
 		}
+		#endregion
 	}
 }

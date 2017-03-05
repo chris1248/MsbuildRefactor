@@ -184,7 +184,7 @@ namespace msbuildrefactor
 			if ((allPropsLV.SelectedItem != null) && (e.Key == Key.Delete))
 			{
 				var pair = (KeyValuePair<String, ReferencedProperty>)allPropsLV.SelectedItem;
-				vm.RemoveFoundProp(pair.Key);
+				vm.DeleteProperty(pair.Key);
 			}
 		}
 
