@@ -12,7 +12,7 @@ using System.Diagnostics;
 
 namespace Refactor
 {
-	public class PropertyExtractor : BaseProperty
+	public class PropertyExtractor
 	{
 		#region Fields
 		#region Input Fields
@@ -113,7 +113,6 @@ namespace Refactor
 				{
 					pr.UnevaluatedValue = val;
 				}
-				OnPropertyChanged("PropertySheet");
 			}
 		}
 
@@ -131,7 +130,6 @@ namespace Refactor
 				proj.ReevaluateIfNecessary();
 			});
 			GetAllReferenceProperties(_allProjects);
-			OnPropertyChanged("AllFoundProperties");
 		}
 
 		public void PrintFoundProperties()
