@@ -15,9 +15,9 @@ namespace RefactorConsole
 		{
 			var timer = new Stopwatch();
 			timer.Start();
-			if (args.Length != 5)
+			if (args.Length != 4)
 			{
-				Console.WriteLine("RefactorConsole <input_dir> <property_sheet> <config> <platform> <property>");
+				Console.WriteLine("RefactorConsole <input_dir> <property_sheet> <config> <platform>");
 				return;
 			}
 
@@ -35,21 +35,21 @@ namespace RefactorConsole
 			}
 			string config   = args[2];
 			string platform = args[3];
-			string property = args[4];
 
 			bool verbose = true;
 			var refactor = new PropertyExtractor(inputDir, config, platform, verbose);
 			refactor.PropertySheetPath = propSheet;
 			timer.Stop();
-			Console.WriteLine("{0} files", refactor.Count);
+			Console.WriteLine("{0} files", refactor.CountFoundFiles);
+			Console.WriteLine("{0} files valid", refactor.Count);
 			Utils.WL(ConsoleColor.DarkYellow, String.Format("Elapsed Time: {0}\n", timer.Elapsed));
-
+			
 			Console.WriteLine("Change configuration property");
 			timer.Restart();
 			refactor.SetGlobalProperty("Configuration", "Release");
 			timer.Stop();
 			Utils.WL(ConsoleColor.DarkYellow, String.Format("Elapsed Time: {0}\n", timer.Elapsed));
-
+			
 			Console.WriteLine("Moving a property");
 			timer.Restart();
 			refactor.Move("OutputPath", "$(BuildDir)");

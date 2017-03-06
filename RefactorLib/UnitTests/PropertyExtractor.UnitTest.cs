@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Xml.Linq;
 using System.Linq;
 using System.IO;
@@ -290,6 +291,24 @@ namespace UnitTests
 			File.Move(@"TestData\B_backup.csproj", @"TestData\B.csproj");
 			File.Move(@"TestData\C_backup.csproj", @"TestData\C.csproj");
 			File.Move(@"TestData\test_backup.props", @"TestData\test.props");
+		}
+
+		[TestMethod]
+		public void TestCommonProperty()
+		{
+			var prop = new CommonProperty("platform", "anycpu");
+			Assert.AreEqual("platform", prop.Name);
+			Assert.AreEqual("anycpu", prop.EvaluatedValue);
+			Assert.AreEqual("Property platform = anycpu", prop.ToString());
+
+			prop.PropertyChanged += PropOnPropertyChanged;
+			prop.Name = "Foobar";
+			prop.EvaluatedValue = "eggs";
+		}
+
+		private void PropOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
+			// NoOp
 		}
 	}
 }

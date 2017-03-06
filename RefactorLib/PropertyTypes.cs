@@ -13,12 +13,30 @@ namespace Refactor
 	{
 		public CommonProperty(string name, string evaluated_value)
 		{
-			this.Name = name;
-			this.EvaluatedValue = evaluated_value;
+			_name = name;
+			_value = evaluated_value;
 		}
 
-		public string Name { get; set; }
-		public string EvaluatedValue { get; set; }
+		private string _name;
+		private string _value;
+		public string Name {
+			get { return _name; }
+			set
+			{
+				_name = value; 
+				OnPropertyChanged("Name");
+			}
+		}
+
+		public string EvaluatedValue
+		{
+			get { return _value; }
+			set
+			{
+				_value = value;
+				OnPropertyChanged("EvaluatedValue");
+			}
+		}
 		public override string ToString()
 		{
 			return string.Format("Property {0} = {1}", Name, EvaluatedValue);

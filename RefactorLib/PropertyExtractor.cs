@@ -69,7 +69,6 @@ namespace Refactor
 		private void Init()
 		{
 			_allProjects = GetProjects();
-			CountFoundFiles = _allProjects.Count;
 			GetAllConfigsAndPlatforms(_allProjects);
 			GetAllReferenceProperties(_allProjects);
 		}
@@ -154,7 +153,7 @@ namespace Refactor
 		public List<CSProject> GetProjects()
 		{
 			var fileList = Directory.EnumerateFiles(inputDir, "*.csproj", SearchOption.AllDirectories).AsParallel();
-			
+			CountFoundFiles = fileList.Count();
 			ConcurrentBag<CSProject> bag = new ConcurrentBag<CSProject>();
 			Parallel.ForEach(fileList, (file) =>
 			{
@@ -285,6 +284,12 @@ namespace Refactor
 						_allPlatforms.Add(platform, 1);
 				}
 			}
+			PrintConfigsAndPlatforms();
+		}
+
+		[Conditional("DEBUG")]
+		public void PrintConfigsAndPlatforms()
+		{
 			var sortedConfigs = from p in _allConfigurations orderby p.Value descending select p;
 			_allConfigurations = sortedConfigs.ToDictionary(p => p.Key, p => p.Value);
 			if (Verbose)
