@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<PropertyGroup>
+		<AssemblyName>B</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<OutputPath>bin\AnyCPU\Debug\</OutputPath>
+		<TheType>Debug</TheType>
+		<UniqueforDebug>green</UniqueforDebug>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<OutputPath>bin\AnyCPU\Release\</OutputPath>
+		<TheType>Release</TheType>
+		<UniqueforRelease>eggs</UniqueforRelease>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Scooby|AnyCPU' ">
+		<OutputPath>bin\AnyCPU\Scooby\</OutputPath>
+		<TheType>Scooby</TheType>
+		<UniqueforScooby>roof</UniqueforScooby>
+	</PropertyGroup>
+</Project>

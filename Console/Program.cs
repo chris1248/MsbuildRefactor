@@ -37,9 +37,9 @@ namespace RefactorConsole
 			string platform = args[3];
 			string property = args[4];
 
-			var refactor = new PropertyExtractor(inputDir, config, platform);
+			bool verbose = true;
+			var refactor = new PropertyExtractor(inputDir, config, platform, verbose);
 			refactor.PropertySheetPath = propSheet;
-			refactor.Verbose = true;
 			timer.Stop();
 			Console.WriteLine("{0} files", refactor.Count);
 			Utils.WL(ConsoleColor.DarkYellow, String.Format("Elapsed Time: {0}\n", timer.Elapsed));

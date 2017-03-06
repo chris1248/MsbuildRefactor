@@ -129,8 +129,7 @@ namespace Refactor
 		/// The evaluated value of the property
 		/// </summary>
 		public string EvaluatedValue { get; set; }
-
-		internal string UnEvaluatedValue { get; set; }
+		
 		/// <summary>
 		/// The number of occurances of the Value
 		/// </summary>

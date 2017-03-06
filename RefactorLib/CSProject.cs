@@ -13,21 +13,10 @@ namespace Refactor
 	/// </summary>
 	public class CSProject : Project
 	{
-		public CSProject()
-			: base()
-		{
-		}
-
 		public CSProject(string file, IDictionary<string, string> props, string toolsVersion)
 			: base(file, props, toolsVersion)
 		{
-			Included = true;
 		}
-
-		/// <summary>
-		///  Use this file in any sort of calculation that we so desire
-		/// </summary>
-		public bool Included { get; set; }
 
 		private string _outputPath;
 		public string OutputPath
@@ -42,23 +31,6 @@ namespace Refactor
 					_outputPath = combined.ToLower();
 				}
 				return _outputPath;
-			}
-		}
-		
-		public List<String> AllConfigs
-		{
-			get
-			{
-				IDictionary<string, List<string>> props = this.ConditionedProperties;
-				return props["Configuration"];
-			}
-		}
-		public List<String> AllPlatforms
-		{
-			get
-			{
-				IDictionary<string, List<string>> props = this.ConditionedProperties;
-				return props["Platform"];
 			}
 		}
 	}
