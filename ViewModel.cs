@@ -72,7 +72,7 @@ namespace msbuildrefactor
 				}
 			}
 		}
-
+		public string PropertySheetPath { get; set; }
 		private ObservableCollection<CommonProperty> _propSheetProperties = new ObservableCollection<CommonProperty>();
 		public ObservableCollection<CommonProperty> PropSheetProperties
 		{
@@ -104,8 +104,12 @@ namespace msbuildrefactor
 		#region Methods for calling from UI Controls
 		public void LoadPropertySheet(string prop_sheet_path)
 		{
-			model.PropertySheetPath = prop_sheet_path;
-			OnPropertyChanged("PropSheetProperties");
+			PropertySheetPath = prop_sheet_path;
+			if (model != null)
+			{
+				model.PropertySheetPath = prop_sheet_path;
+				OnPropertyChanged("PropSheetProperties");
+			}
 		}
 
 		public int LoadAtDirectory(string directoryPath)

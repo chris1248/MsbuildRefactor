@@ -58,7 +58,9 @@ namespace msbuildrefactor
 			{
 				string directoryPath = browse.SelectedPath;
 				searchPath.Text = directoryPath;
-				int count = vm.LoadAtDirectory(directoryPath);
+				vm.LoadAtDirectory(directoryPath);
+				if (!String.IsNullOrEmpty(propSheetPath.Text) && !String.IsNullOrEmpty(vm.PropertySheetPath) && vm.PropSheetProperties.Count == 0)
+					vm.LoadPropertySheet(propSheetPath.Text);
 			}
 			LoadingDirectory = false;
 		}
