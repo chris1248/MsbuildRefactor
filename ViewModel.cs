@@ -142,6 +142,16 @@ namespace msbuildrefactor
 		{
 			model.PropertySheet.Save();
 		}
+
+		public void UpdateConfigSelection()
+		{
+			model.SetGlobalProperty("Configuration", SelectedConfiguration);
+		}
+
+		public void UpdatePlatformSelection()
+		{
+			model.SetGlobalProperty("Platform", SelectedPlatform);
+		}
 		#endregion
 	}
 }

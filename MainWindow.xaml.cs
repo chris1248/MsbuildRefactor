@@ -22,6 +22,7 @@ namespace msbuildrefactor
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		private bool LoadingDirectory;
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -49,6 +50,7 @@ namespace msbuildrefactor
 
 		private void Click_choose_directory(object sender, RoutedEventArgs e)
 		{
+			LoadingDirectory = true;
 			var browse = new System.Windows.Forms.FolderBrowserDialog();
 			browse.SelectedPath = "F:\\xm8_dev";
 			System.Windows.Forms.DialogResult result = browse.ShowDialog();
@@ -58,6 +60,7 @@ namespace msbuildrefactor
 				searchPath.Text = directoryPath;
 				int count = vm.LoadAtDirectory(directoryPath);
 			}
+			LoadingDirectory = false;
 		}
 
 		private void allPropsLV_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -156,7 +159,6 @@ namespace msbuildrefactor
 			{
 				ReferencedValues propdata = e.Data.GetData("myFormat") as ReferencedValues;
 				vm.MoveProperty(propdata);
-				//detailsLV.ItemsSource = vm.SelectedValues;
 			}
 		}
 
@@ -190,12 +192,17 @@ namespace msbuildrefactor
 
 		private void globalConfigs_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			
+			if (!LoadingDirectory)
+			{
+				vm.UpdateConfigSelection();
+				allPropsLV.ItemsSource = vm.FoundProperties;
+			}
 		}
 
 		private void globalPlatforms_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			//
+			if (!LoadingDirectory)
+				vm.UpdatePlatformSelection();
 		}
 	}
 }
