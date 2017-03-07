@@ -53,6 +53,15 @@ namespace Refactor
 		#endregion
 
 		#region Constructors
+		public PropertyExtractor(string config, string platform, bool verbose = false)
+		{
+			this.config = config;
+			this.platform = platform;
+			this.Verbose = verbose;
+			_globalProperties.Add("Configuration", this.config);
+			_globalProperties.Add("Platform", this.platform);
+		}
+
 		public PropertyExtractor(string inputDir, string config, string platform, bool verbose = false)
 		{
 			this.inputDir = inputDir;
@@ -63,6 +72,12 @@ namespace Refactor
 			_globalProperties.Add("Configuration", this.config);
 			_globalProperties.Add("Platform", this.platform);
 
+			Init();
+		}
+
+		public void SetInputDirectory(string inputDir)
+		{
+			this.inputDir = inputDir;
 			Init();
 		}
 		

@@ -26,59 +26,24 @@ namespace msbuildrefactor
 		{
 			SelectedConfiguration = "Debug";
 			SelectedPlatform = "AnyCPU";
+			model = new PropertyExtractor(SelectedConfiguration, SelectedPlatform);
 		}
 
 		#region Properties for Data Binding
 		public CSProject PropSheet { get { return model.PropertySheet; } }
 		public String SelectedConfiguration { get; set; }
 		public String SelectedPlatform { get; set; }
-		public List<CSProject> AllProjects
-		{
-			get
-			{
-				if (model != null)
-					return model.AllProjects;
-				else
-					return new List<CSProject>();
-			}
-		}
-		public List<String> AllConfigurations
-		{
-			get
-			{
-				if (model != null)
-				{
-					var configs = model.AllConfigurations;
-					return configs.Keys.ToList();
-				}
-				else
-				{
-					return new List<String>();
-				}
-			}
-		}
-		public List<String> AllPlatforms
-		{
-			get
-			{
-				if (model != null)
-				{
-					var platforms = model.AllPlatforms;
-					return platforms.Keys.ToList();
-				}
-				else
-				{
-					return new List<String>();
-				}
-			}
-		}
+		public List<CSProject> AllProjects { get { return model.AllProjects; } }
+		public List<String> AllConfigurations { get { return model.AllConfigurations.Keys.ToList(); } }
+		public List<String> AllPlatforms { get { return model.AllPlatforms.Keys.ToList(); } }
 		public string PropertySheetPath { get; set; }
 		private ObservableCollection<CommonProperty> _propSheetProperties = new ObservableCollection<CommonProperty>();
 		public ObservableCollection<CommonProperty> PropSheetProperties
 		{
 			get {
-				if ((model != null) && (model.PropertySheet != null))
+				if (model.PropertySheet != null)
 				{
+					_propSheetProperties.Clear();
 					foreach (ProjectProperty prop in model.PropertySheet.AllEvaluatedProperties)
 					{
 						if (prop.Xml != null)
@@ -89,32 +54,20 @@ namespace msbuildrefactor
 			}
 		}
 		public int CountFoundFiles { get { return model.CountFoundFiles; } }
-		public ObservableConcurrentDictionary<String, ReferencedProperty> FoundProperties
-		{
-			get
-			{
-				if (model != null)
-					return model.AllFoundProperties;
-				else
-					return new ObservableConcurrentDictionary<string, ReferencedProperty>();
-			}
-		}
+		public ObservableConcurrentDictionary<String, ReferencedProperty> FoundProperties { get { return model.AllFoundProperties; } }
 		#endregion
 
 		#region Methods for calling from UI Controls
 		public void LoadPropertySheet(string prop_sheet_path)
 		{
 			PropertySheetPath = prop_sheet_path;
-			if (model != null)
-			{
-				model.PropertySheetPath = prop_sheet_path;
-				OnPropertyChanged("PropSheetProperties");
-			}
+			model.PropertySheetPath = prop_sheet_path;
+			OnPropertyChanged("PropSheetProperties");
 		}
 
 		public int LoadAtDirectory(string directoryPath)
 		{
-			model = new PropertyExtractor(directoryPath, SelectedConfiguration, SelectedPlatform);
+			model.SetInputDirectory(directoryPath);
 			OnPropertyChanged("FoundProperties");
 			OnPropertyChanged("AllProjects");
 			OnPropertyChanged("AllConfigurations");
