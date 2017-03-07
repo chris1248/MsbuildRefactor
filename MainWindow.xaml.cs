@@ -158,15 +158,9 @@ namespace msbuildrefactor
 		}
 		#endregion
 
-		private void Click_savePropBtn(object sender, RoutedEventArgs e)
-		{
-			vm.SavePropertySheet();
-		}
+		private void Click_savePropBtn(object sender, RoutedEventArgs e) { vm.SavePropertySheet(); }
 
-		private void Click_saveAllBtn(object sender, RoutedEventArgs e)
-		{
-			vm.SaveAllProjects();
-		}
+		private void Click_saveAllBtn(object sender, RoutedEventArgs e) { vm.SaveAllProjects(); }
 
 		private void allPropsLV_KeyUp(object sender, KeyEventArgs e)
 		{
@@ -180,9 +174,7 @@ namespace msbuildrefactor
 		private void globalConfigs_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!LoadingDirectory)
-			{
 				vm.UpdateConfigSelection();
-			}
 		}
 
 		private void globalPlatforms_SelectionChanged(object sender, SelectionChangedEventArgs e)
