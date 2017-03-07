@@ -76,7 +76,7 @@ namespace UnitTests
 		[TestMethod]
 		public void TestAllFoundProperties()
 		{
-			Assert.AreEqual(6, extractor.AllFoundProperties.Count);
+			Assert.AreEqual(6, extractor.AllFoundProperties.Count());
 			var allprops = (from p in extractor.AllFoundProperties
 							 let pl = p.Key
 							 orderby pl ascending
@@ -130,7 +130,7 @@ namespace UnitTests
 		{
 			extractor.SetGlobalProperty("Configuration", "Release");
 
-			Assert.AreEqual(6, extractor.AllFoundProperties.Count);
+			Assert.AreEqual(6, extractor.AllFoundProperties.Count());
 			var allprops = (from p in extractor.AllFoundProperties
 							let pl = p.Key
 							orderby pl ascending
@@ -198,7 +198,7 @@ namespace UnitTests
 		{
 			// Remove one property that exists in one project only
 			extractor.Remove("UniqueforDebug");
-			Assert.AreEqual(5, extractor.AllFoundProperties.Count);
+			Assert.AreEqual(5, extractor.AllFoundProperties.Count());
 			var allprops = (from p in extractor.AllFoundProperties
 							let pl = p.Key
 							orderby pl ascending
@@ -215,7 +215,7 @@ namespace UnitTests
 		{
 			// Remove a property that exists in all projects
 			extractor.Remove("TheType");
-			Assert.AreEqual(5, extractor.AllFoundProperties.Count);
+			Assert.AreEqual(5, extractor.AllFoundProperties.Count());
 			var allprops = (from p in extractor.AllFoundProperties
 							let pl = p.Key
 							orderby pl ascending
@@ -240,7 +240,7 @@ namespace UnitTests
 			var prop = extractor.PropertySheet.GetProperty("TheType");
 			Assert.AreEqual("foobar", prop.EvaluatedValue);
 
-			Assert.AreEqual(5, extractor.AllFoundProperties.Count);
+			Assert.AreEqual(5, extractor.AllFoundProperties.Count());
 			var allprops = (from p in extractor.AllFoundProperties
 							let pl = p.Key
 							orderby pl ascending
@@ -255,7 +255,7 @@ namespace UnitTests
 			prop = extractor.PropertySheet.GetProperty("OutputPath");
 			Assert.AreEqual(@"C:\builds\debug\", prop.EvaluatedValue);
 
-			Assert.AreEqual(4, extractor.AllFoundProperties.Count);
+			Assert.AreEqual(4, extractor.AllFoundProperties.Count());
 			allprops = (from p in extractor.AllFoundProperties
 							let pl = p.Key
 							orderby pl ascending

@@ -2,6 +2,8 @@
 using Microsoft.Build.Evaluation;
 using System.Collections.Concurrent;
 using System;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace Refactor
 {
@@ -133,6 +135,37 @@ namespace Refactor
 		}
 	}
 
+	public class KeyPairToRefPropConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			bool valid = value is KeyValuePair<String, ReferencedProperty>;
+			if (valid)
+			{
+				var pair = (KeyValuePair<String, ReferencedProperty>)value;
+				return pair.Value.PropertyValues;
+			}
+			return null;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			bool valid = value is ObservableConcurrentDictionary<String, ReferencedValues>;
+			if (valid)
+			{
+				var dict = (ObservableConcurrentDictionary<String, ReferencedValues>)value;
+				ReferencedValues refVal;
+				foreach(var pair in dict)
+				{
+					refVal = pair.Value;
+					ReferencedProperty prop = refVal.Owner;
+					return new KeyValuePair<String, ReferencedProperty>(prop.Name, prop);
+				}
+				
+			}
+			return null;
+		}
+	}
 	/// <summary>
 	/// Represents a value that a ReferencedProperty can have
 	/// as defined across many different project files. So a ReferenceProperty can hold many 

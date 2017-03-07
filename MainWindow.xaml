@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:msbuildrefactor"
+        xmlns:lib="clr-namespace:Refactor;assembly=RefactorLib"
         mc:Ignorable="d"
         Title="Property Sheet Tools" Height="679" Width="1012.144" ResizeMode="CanResizeWithGrip">
 	<Window.DataContext>
@@ -19,6 +20,7 @@
 			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 			<Setter Property="VerticalContentAlignment" Value="Stretch" />
 		</Style>
+		<lib:KeyPairToRefPropConverter x:Key="keypair" />
 	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
@@ -93,7 +95,8 @@
 						<RowDefinition Height="5" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
-					<ListView x:Name="allPropsLV" ItemsSource="{Binding FoundProperties}" Grid.Row="0"  Margin="0" SelectionChanged="allPropsLV_SelectionChanged" KeyUp="allPropsLV_KeyUp" >
+					<ListView x:Name="allPropsLV" ItemsSource="{Binding FoundProperties}" 
+							  Grid.Row="0"  Margin="0" KeyUp="allPropsLV_KeyUp" >
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Width="200" DisplayMemberBinding="{Binding Key}">
@@ -110,7 +113,10 @@
 						</ListView.View>
 					</ListView>
 					<GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
-					<ListView x:Name="detailsLV" Grid.Row="2" PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" MouseMove="detailsLV_MouseMove">
+					<ListView x:Name="detailsLV" Grid.Row="2" 
+							  ItemsSource="{Binding ElementName=allPropsLV, Path=SelectedItem, Converter={StaticResource keypair}}" 
+							  PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" 
+							  MouseMove="detailsLV_MouseMove"  >
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">

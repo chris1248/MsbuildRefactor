@@ -29,14 +29,14 @@ namespace Refactor
 		private Dictionary<String, String>             _globalProperties   = new Dictionary<string, string>();
 		private Dictionary<String, int>                _allConfigurations  = new Dictionary<String, int>();
 		private Dictionary<String, int>                _allPlatforms       = new Dictionary<String, int>();
-		private Dictionary<String, ReferencedProperty> _allFoundProperties = new Dictionary<string, ReferencedProperty>();
+		private ObservableConcurrentDictionary<String, ReferencedProperty> _allFoundProperties = new ObservableConcurrentDictionary<string, ReferencedProperty>();
 		#endregion
 
 		#region Properties
 		public List<CSProject>         AllProjects       { get { return _allProjects; } }
 		public Dictionary<String, int> AllConfigurations { get { return _allConfigurations; } }
 		public Dictionary<String, int> AllPlatforms      { get { return _allPlatforms; } }
-		public Dictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
+		public ObservableConcurrentDictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
 		public int Count { get { return _allProjects.Count; } }
 		public bool Verbose { get; set; }
 		public string PropertySheetPath
@@ -127,8 +127,15 @@ namespace Refactor
 			Parallel.ForEach(_allProjects, proj =>
 			{
 				proj.SetGlobalProperty(name, val);
+				proj.MarkDirty();
 				proj.ReevaluateIfNecessary();
 			});
+			if (_propertySheet != null)
+			{
+				_propertySheet.SetGlobalProperty(name, val);
+				_propertySheet.MarkDirty();
+				_propertySheet.ReevaluateIfNecessary();
+			}
 			GetAllReferenceProperties(_allProjects);
 		}
 

@@ -52,7 +52,7 @@ namespace msbuildrefactor
 		{
 			LoadingDirectory = true;
 			var browse = new System.Windows.Forms.FolderBrowserDialog();
-			browse.SelectedPath = "F:\\xm8_dev";
+			browse.SelectedPath = "F:\\msbuildrefactor\\refactorlib\\testdata";
 			System.Windows.Forms.DialogResult result = browse.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
@@ -63,19 +63,6 @@ namespace msbuildrefactor
 					vm.LoadPropertySheet(propSheetPath.Text);
 			}
 			LoadingDirectory = false;
-		}
-
-		private void allPropsLV_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (allPropsLV.SelectedItem != null)
-			{
-				var pair = (KeyValuePair<String, ReferencedProperty>)allPropsLV.SelectedItem;
-				ReferencedProperty prop = pair.Value;
-				if (prop != null)
-				{
-					detailsLV.ItemsSource = prop.PropertyValues;
-				}
-			}
 		}
 
 		#region sorting
@@ -197,7 +184,6 @@ namespace msbuildrefactor
 			if (!LoadingDirectory)
 			{
 				vm.UpdateConfigSelection();
-				allPropsLV.ItemsSource = vm.FoundProperties;
 			}
 		}
 

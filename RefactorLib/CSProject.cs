@@ -16,7 +16,10 @@ namespace Refactor
 		public CSProject(string file, IDictionary<string, string> props, string toolsVersion)
 			: base(file, props, toolsVersion)
 		{
+			Included = true;
 		}
+
+		public bool Included { get; set; }
 
 		private string _outputPath;
 		public string OutputPath

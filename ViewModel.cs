@@ -89,14 +89,14 @@ namespace msbuildrefactor
 			}
 		}
 		public int CountFoundFiles { get { return model.CountFoundFiles; } }
-		public Dictionary<String, ReferencedProperty> FoundProperties
+		public ObservableConcurrentDictionary<String, ReferencedProperty> FoundProperties
 		{
 			get
 			{
 				if (model != null)
 					return model.AllFoundProperties;
 				else
-					return new Dictionary<string, ReferencedProperty>();
+					return new ObservableConcurrentDictionary<string, ReferencedProperty>();
 			}
 		}
 		#endregion
@@ -137,25 +137,10 @@ namespace msbuildrefactor
 			OnPropertyChanged("FoundProperties");
 		}
 
-		public void SaveAllProjects()
-		{
-			model.SaveAll();
-		}
-
-		public void SavePropertySheet()
-		{
-			model.PropertySheet.Save();
-		}
-
-		public void UpdateConfigSelection()
-		{
-			model.SetGlobalProperty("Configuration", SelectedConfiguration);
-		}
-
-		public void UpdatePlatformSelection()
-		{
-			model.SetGlobalProperty("Platform", SelectedPlatform);
-		}
+		public void SaveAllProjects()         { model.SaveAll(); }
+		public void SavePropertySheet()       { model.PropertySheet.Save(); }
+		public void UpdateConfigSelection()   { model.SetGlobalProperty("Configuration", SelectedConfiguration); }
+		public void UpdatePlatformSelection() { model.SetGlobalProperty("Platform", SelectedPlatform); }
 		#endregion
 	}
 }
