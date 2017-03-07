@@ -103,6 +103,35 @@ namespace Refactor
 			UsedCount++;
 		}
 
+		public void Remove(ReferencedValues val)
+		{
+			List<CSProject> tobeRemoved = new List<CSProject>();
+			foreach (CSProject proj in this.Projects)
+			{
+				ProjectProperty p = proj.GetProperty(this.Name);
+				if (p != null &&
+					!p.IsEnvironmentProperty &&
+					!p.IsGlobalProperty &&
+					!p.IsImported &&
+					!p.IsReservedProperty)
+				{
+					if (String.Compare(p.EvaluatedValue, val.EvaluatedValue, true) == 0)
+					{
+						proj.RemoveProperty(p);
+						tobeRemoved.Add(proj);
+					}
+				}
+			}
+
+			RemoveProjects(tobeRemoved);
+			string key = val.EvaluatedValue;
+			if (_PropertyValues.ContainsKey(key))
+			{
+				_PropertyValues.Remove(key);
+			}
+			OnPropertyChanged("PropertyValues");
+		}
+
 		private ObservableConcurrentDictionary<String, ReferencedValues> _PropertyValues = new ObservableConcurrentDictionary<string, ReferencedValues>();
 		public ObservableConcurrentDictionary<String, ReferencedValues> PropertyValues
 		{

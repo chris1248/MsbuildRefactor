@@ -75,13 +75,11 @@ namespace msbuildrefactor
 			return model.Count;
 		}
 
-		public void MoveProperty(ReferencedValues prop)
+		public void MoveProperty(ReferencedValues val)
 		{
-			string name = prop.Owner.Name;
-			string value = prop.EvaluatedValue;
-
-			model.Move(name, value);
+			model.MoveValue(val);
 			OnPropertyChanged("FoundProperties");
+			OnPropertyChanged("PropSheetProperties");
 		}
 
 		public void DeleteProperty(string key)

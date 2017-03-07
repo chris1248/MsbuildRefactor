@@ -267,6 +267,27 @@ namespace UnitTests
 		}
 
 		[TestMethod]
+		public void TestMoveValue()
+		{
+			extractor.PropertySheetPath = "TestData\\test.props";
+			ReferencedProperty refProp = extractor.AllFoundProperties["AssemblyName"];
+			var vals = refProp.PropertyValues;
+			ReferencedValues val = vals["a"];
+			int before = refProp.UsedCount;
+			extractor.MoveValue(val);
+			int after = refProp.UsedCount;
+			Assert.AreEqual(before - 1, after);
+			Assert.AreEqual(2, refProp.Projects.Count());
+			var projs = (from p in refProp.Projects
+						 let name = Path.GetFileName(p.FullPath)
+						 orderby name ascending
+						 select name).ToList();
+			Assert.AreEqual("B.csproj", projs[0]);
+			Assert.AreEqual("C.csproj", projs[1]);
+			Assert.AreEqual(2, refProp.PropertyValues.Count());
+		}
+
+		[TestMethod]
 		public void TestSaveFiles()
 		{
 			// Make backups

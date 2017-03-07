@@ -90,6 +90,12 @@ namespace Refactor
 		#endregion
 
 		#region Public Methods
+		/// <summary>
+		/// Removes all values of a property from all projects 
+		/// (for a given configuration/platform)
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="val"></param>
 		public void Move(string name, string val)
 		{
 			Parallel.ForEach(_allProjects, proj =>
@@ -116,6 +122,11 @@ namespace Refactor
 				}
 			}
 
+			UpdatePropertySheet(name, val);
+		}
+
+		private void UpdatePropertySheet(string name, string val)
+		{
 			if (!String.IsNullOrEmpty(val))
 			{
 				ProjectProperty pr = _propertySheet.GetProperty(name);
@@ -128,7 +139,24 @@ namespace Refactor
 				{
 					pr.UnevaluatedValue = val;
 				}
+				_propertySheet.MarkDirty();
+				_propertySheet.ReevaluateIfNecessary();
 			}
+		}
+
+		/// <summary>
+		/// Moves one particular value of a property
+		/// </summary>
+		/// <param name="val"></param>
+		public void MoveValue(ReferencedValues val)
+		{
+			ReferencedProperty owner = val.Owner;
+			owner.Remove(val);
+			if (owner.UsedCount == 0)
+			{
+				_allFoundProperties.Remove(owner.Name);
+			}
+			UpdatePropertySheet(owner.Name, val.EvaluatedValue);
 		}
 
 		public void Remove(string name)
