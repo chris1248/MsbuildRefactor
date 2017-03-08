@@ -84,8 +84,14 @@ namespace msbuildrefactor
 
 		public void DeleteProperty(string key)
 		{
-			model.Remove(key);
-			OnPropertyChanged("FoundProperties");
+            // First make sure it's not a global property. You can't delete global properties.
+            var proj = AllProjects.First();
+            var prop = proj.GetProperty(key);
+            if (!prop.IsGlobalProperty && !prop.IsEnvironmentProperty && !prop.IsImported && !prop.IsReservedProperty)
+            {
+                model.Remove(key);
+                OnPropertyChanged("FoundProperties");
+            }
 		}
 
 		public void SaveAllProjects()         { model.SaveAll(); }

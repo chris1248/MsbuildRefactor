@@ -35,8 +35,9 @@
 		<!-- Row One -->
 		<StackPanel  Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
 			<Label x:Name="label" Height="26" Margin="0" HorizontalAlignment="Left" >Property Sheet</Label>
-			<TextBox x:Name="propSheetPath" Height="23" ToolTip="Property Sheet File Path" Margin="10,0,0,0" Width="285" />
-			<Button x:Name="propSheetChoose" Height="23" Width="84" Click="Click_choose_prop_sheet" Content="Browse..." Margin="10,0" />
+			<TextBox x:Name="propSheetPath" Height="23" ToolTip="Property Sheet File Path" Margin="10,0,0,0" Width="260" />
+			<Button x:Name="propSheetChoose" Height="23" Width="55" Click="Click_choose_prop_sheet" Content="Browse..." Margin="10,0,0,0" />
+            <Button x:Name="propSheetCreate" Height="23" Width="55" Margin="10,0,0,0" Click="propSheetCreate_Click" >Create...</Button>
 		</StackPanel>
 		<StackPanel  Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
 			<Label Content="Projects Directory" Height="26" Width="110" Margin="0"/>
@@ -66,8 +67,8 @@
 				<ListView x:Name="commonLV" ItemsSource="{Binding PropSheetProperties}" Grid.Row="1" AllowDrop="True" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter"  >
 					<ListView.View>
 						<GridView>
-							<GridViewColumn Header="Property" Width="200" DisplayMemberBinding="{Binding Name}"/>
-							<GridViewColumn Header="Value" Width="285" DisplayMemberBinding="{Binding EvaluatedValue}"/>
+							<GridViewColumn Header="Property" Width="320" DisplayMemberBinding="{Binding Name}"/>
+							<GridViewColumn Header="Value" Width="150" DisplayMemberBinding="{Binding EvaluatedValue}"/>
 						</GridView>
 					</ListView.View>
 				</ListView>
@@ -99,12 +100,12 @@
 							  Grid.Row="0"  Margin="0" KeyUp="allPropsLV_KeyUp" >
 						<ListView.View>
 							<GridView>
-								<GridViewColumn Width="200" DisplayMemberBinding="{Binding Key}">
+								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">
 									<GridViewColumn.Header>
 										<GridViewColumnHeader Tag="Key" Click="GridViewColumnHeader_Click">Name</GridViewColumnHeader>
 									</GridViewColumn.Header>
 								</GridViewColumn>
-								<GridViewColumn Width="70" DisplayMemberBinding="{Binding Value.UsedCount}" >
+								<GridViewColumn Width="100" DisplayMemberBinding="{Binding Value.UsedCount}" >
 									<GridViewColumn.Header>
 										<GridViewColumnHeader Tag="Value.UsedCount" Click="GridViewColumnHeader_Click">Count</GridViewColumnHeader>
 									</GridViewColumn.Header>

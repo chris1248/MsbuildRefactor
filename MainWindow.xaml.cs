@@ -31,7 +31,7 @@ namespace msbuildrefactor
 		private void Click_choose_prop_sheet(object sender, RoutedEventArgs e)
 		{
 			// Create OpenFileDialog 
-			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+			var dlg = new Microsoft.Win32.OpenFileDialog();
 			
 			// Set filter for file extension and default file extension 
 			dlg.DefaultExt = ".props";
@@ -48,11 +48,23 @@ namespace msbuildrefactor
 			}
 		}
 
-		private void Click_choose_directory(object sender, RoutedEventArgs e)
+        private void propSheetCreate_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new Microsoft.Win32.SaveFileDialog();
+            var result = dlg.ShowDialog(this);
+            if (result == true)
+            {
+                propSheetPath.Text = dlg.FileName;
+                // Even though this is not an existing file, it still will work the same
+                vm.LoadPropertySheet(propSheetPath.Text);
+            }
+        }
+
+        private void Click_choose_directory(object sender, RoutedEventArgs e)
 		{
 			LoadingDirectory = true;
 			var browse = new System.Windows.Forms.FolderBrowserDialog();
-			browse.SelectedPath = "F:\\msbuildrefactor\\refactorlib\\testdata";
+			browse.SelectedPath = "F:\\xm8_dev";
 			System.Windows.Forms.DialogResult result = browse.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
@@ -182,5 +194,5 @@ namespace msbuildrefactor
 			if (!LoadingDirectory)
 				vm.UpdatePlatformSelection();
 		}
-	}
+    }
 }

@@ -44,6 +44,11 @@ namespace Refactor
 			get { return propSheet; }
 			set {
 				propSheet = value;
+                if (!File.Exists(propSheet))
+                {
+                    var p = new Project();
+                    p.Save(propSheet);
+                }
 				_propertySheet = new CSProject(propSheet, _globalProperties, toolsVersion);
 			}
 		}
