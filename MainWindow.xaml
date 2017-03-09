@@ -82,7 +82,12 @@
 							<GridViewColumn Width="410" DisplayMemberBinding="{Binding FullPath}">
 								<GridViewColumnHeader Content="FullPath" />
 							</GridViewColumn>
-							<GridViewColumn Width="Auto" DisplayMemberBinding="{Binding Included}">
+							<GridViewColumn Width="Auto" >
+								<GridViewColumn.CellTemplate>
+									<DataTemplate>
+										<CheckBox IsChecked="{Binding Included}" />
+									</DataTemplate>
+								</GridViewColumn.CellTemplate>
 								<GridViewColumnHeader Content="Included" />
 							</GridViewColumn>
 						</GridView>
