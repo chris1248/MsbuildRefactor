@@ -224,7 +224,11 @@ namespace Refactor
 				}
 			});
 
-			return bag.ToList();
+			var sorted = from proj in bag
+						 orderby proj.FullPath
+						 select proj;
+
+			return sorted.ToList();
 		}
 
 		public void SaveAll()
