@@ -87,7 +87,7 @@ namespace msbuildrefactor
             // First make sure it's not a global property. You can't delete global properties.
             var proj = AllProjects.First();
             var prop = proj.GetProperty(key);
-            if (!prop.IsGlobalProperty && !prop.IsEnvironmentProperty && !prop.IsImported && !prop.IsReservedProperty)
+            if (prop != null && !prop.IsGlobalProperty && !prop.IsEnvironmentProperty && !prop.IsImported && !prop.IsReservedProperty)
             {
                 model.Remove(key);
                 OnPropertyChanged("FoundProperties");
@@ -96,8 +96,14 @@ namespace msbuildrefactor
 
 		public void SaveAllProjects()         { model.SaveAll(); }
 		public void SavePropertySheet()       { model.PropertySheet.Save(); }
-		public void UpdateConfigSelection()   { model.SetGlobalProperty("Configuration", SelectedConfiguration); }
-		public void UpdatePlatformSelection() { model.SetGlobalProperty("Platform", SelectedPlatform); }
+		public void UpdateConfigSelection()   {
+			model.SetGlobalProperty("Configuration", SelectedConfiguration);
+			OnPropertyChanged("PropSheetProperties");
+		}
+		public void UpdatePlatformSelection() {
+			model.SetGlobalProperty("Platform", SelectedPlatform);
+			OnPropertyChanged("PropSheetProperties");
+		}
 		#endregion
 	}
 }
