@@ -123,6 +123,11 @@
 							  ItemsSource="{Binding ElementName=allPropsLV, Path=SelectedItem, Converter={StaticResource keypair}}" 
 							  PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" 
 							  MouseMove="detailsLV_MouseMove"  >
+						<ListView.ContextMenu>
+							<ContextMenu x:Name="DetailsRCMenu">
+								<MenuItem Header="Show Projects" Click="ShowProjects_Click" />
+							</ContextMenu>
+						</ListView.ContextMenu>
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">

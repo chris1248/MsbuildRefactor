@@ -140,7 +140,7 @@ namespace Refactor
 
 		public void GetPropertyValues()
 		{
-			foreach (var project in this.Projects)
+			foreach (CSProject project in this.Projects)
 			{
 				ProjectProperty itemprop = project.GetProperty(this.Name);
 				if (itemprop != null)
@@ -153,11 +153,11 @@ namespace Refactor
 
 					if (_PropertyValues.ContainsKey(key))
 					{
-						_PropertyValues[key].Count++;
+						_PropertyValues[key].AddProject(project);
 					}
 					else
 					{
-						_PropertyValues[key] = new ReferencedValues() { EvaluatedValue = key, Count = 1, Owner = this };
+						_PropertyValues[key] = new ReferencedValues(project) { EvaluatedValue = key, Owner = this };
 					}
 				}
 			}
@@ -204,7 +204,20 @@ namespace Refactor
 	/// </summary>
 	public class ReferencedValues : BaseProperty
 	{
-		public ReferencedValues() { }
+		public ReferencedValues(CSProject proj)
+		{
+			_projects.Add(proj);
+			Count++;
+		}
+
+		private List<CSProject> _projects = new List<CSProject>();
+		public List<CSProject> Projects { get { return _projects; } }
+
+		public void AddProject(CSProject p)
+		{
+			Count++;
+			_projects.Add(p);
+		}
 		/// <summary>
 		/// The evaluated value of the property
 		/// </summary>
@@ -213,7 +226,7 @@ namespace Refactor
 		/// <summary>
 		/// The number of occurances of the Value
 		/// </summary>
-		public int Count { get; set; }
+		public int Count { get; private set; }
 		public ReferencedProperty Owner;
 
 		public override string ToString()

@@ -194,5 +194,22 @@ namespace msbuildrefactor
 			if (!LoadingDirectory)
 				vm.UpdatePlatformSelection();
 		}
-    }
+
+		private void ShowProjects_Click(object sender, RoutedEventArgs e)
+		{
+			var pair = (KeyValuePair < string, ReferencedValues> )detailsLV.SelectedItem;
+			ReferencedValues vals = pair.Value;
+			var query = from proj in vals.Projects
+						orderby proj.FullPath ascending
+						select proj;
+			StringBuilder sb = new StringBuilder();
+			foreach (CSProject proj in query)
+			{
+				sb.AppendFormat("{0}\n", proj.FullPath);
+			}
+			string windowTitle = String.Format("Projects definining property value of: {0}", pair.Key);
+			TextWindow stuff = new TextWindow(windowTitle, sb.ToString());
+			stuff.Show();
+		}
+	}
 }
