@@ -131,10 +131,14 @@
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">
-									<GridViewColumnHeader Tag="Value" Content="Value" />
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Key" Content="Value" Click="DetailsViewColumnHeader_Click" />
+									</GridViewColumn.Header>
 								</GridViewColumn>
 								<GridViewColumn Width="100" DisplayMemberBinding="{Binding Value.Count}" >
-									<GridViewColumnHeader Tag="Value.Count" Content="Count" />
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Value.Count" Content="Count" Click="DetailsViewColumnHeader_Click" />
+									</GridViewColumn.Header>
 								</GridViewColumn>
 							</GridView>
 						</ListView.View>

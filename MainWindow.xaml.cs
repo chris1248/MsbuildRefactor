@@ -76,27 +76,39 @@ namespace msbuildrefactor
 		}
 
 		#region sorting
-		private GridViewColumnHeader listViewSortCol = null;
-		private SortAdorner listViewSortAdorner = null;
+		private GridViewColumnHeader allPropsViewSortCol = null;
+		private SortAdorner allPropsViewSortAdorner = null;
 
 		private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
 		{
-			GridViewColumnHeader column = (sender as GridViewColumnHeader);
-			if (listViewSortCol != null)
+			SortColumnBy(sender as GridViewColumnHeader, allPropsLV, ref allPropsViewSortCol, ref allPropsViewSortAdorner);
+		}
+
+		private GridViewColumnHeader detailsViewSortCol = null;
+		private SortAdorner detailsViewSortAdorner = null;
+
+		private void DetailsViewColumnHeader_Click(object sender, RoutedEventArgs e)
+		{
+			SortColumnBy(sender as GridViewColumnHeader, detailsLV, ref detailsViewSortCol, ref detailsViewSortAdorner);
+		}
+
+		private void SortColumnBy(GridViewColumnHeader column, ListView listView, ref GridViewColumnHeader sortColumn, ref SortAdorner sortAdorner)
+		{
+			if (sortColumn != null)
 			{
-				AdornerLayer.GetAdornerLayer(listViewSortCol).Remove(listViewSortAdorner);
-				allPropsLV.Items.SortDescriptions.Clear();
+				AdornerLayer.GetAdornerLayer(sortColumn).Remove(sortAdorner);
+				listView.Items.SortDescriptions.Clear();
 			}
 
 			ListSortDirection newDir = ListSortDirection.Ascending;
-			if (listViewSortCol == column && listViewSortAdorner.Direction == newDir)
+			if (sortColumn == column && sortAdorner.Direction == newDir)
 				newDir = ListSortDirection.Descending;
 
-			listViewSortCol = column;
-			listViewSortAdorner = new SortAdorner(listViewSortCol, newDir);
-			AdornerLayer.GetAdornerLayer(listViewSortCol).Add(listViewSortAdorner);
+			sortColumn = column;
+			sortAdorner = new SortAdorner(sortColumn, newDir);
+			AdornerLayer.GetAdornerLayer(sortColumn).Add(sortAdorner);
 			string sortBy = column.Tag.ToString();
-			allPropsLV.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
+			listView.Items.SortDescriptions.Add(new SortDescription(sortBy, newDir));
 		}
 		#endregion
 
