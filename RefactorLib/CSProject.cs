@@ -21,19 +21,14 @@ namespace Refactor
 
 		public bool Included { get; set; }
 
-		private string _outputPath;
 		public string OutputPath
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(_outputPath))
-				{
-					var relative = this.GetProperty("OutputPath").EvaluatedValue;
-					var basepath = Path.GetDirectoryName(this.FullPath);
-					var combined = Path.GetFullPath(Path.Combine(basepath, relative));
-					_outputPath = combined.ToLower();
-				}
-				return _outputPath;
+				var relative = this.GetProperty("OutputPath").EvaluatedValue;
+				var basepath = Path.GetDirectoryName(this.FullPath);
+				var combined = Path.GetFullPath(Path.Combine(basepath, relative));
+				return combined.ToLower();
 			}
 		}
 	}
