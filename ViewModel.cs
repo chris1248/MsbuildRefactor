@@ -40,7 +40,8 @@ namespace msbuildrefactor
 		private ObservableCollection<CommonProperty> _propSheetProperties = new ObservableCollection<CommonProperty>();
 		public ObservableCollection<CommonProperty> PropSheetProperties
 		{
-			get {
+			get
+			{
 				if (model.PropertySheet != null)
 				{
 					_propSheetProperties.Clear();
@@ -84,23 +85,19 @@ namespace msbuildrefactor
 
 		public void DeleteProperty(string key)
 		{
-            // First make sure it's not a global property. You can't delete global properties.
-            var proj = AllProjects.First();
-            var prop = proj.GetProperty(key);
-            if (prop != null && !prop.IsGlobalProperty && !prop.IsEnvironmentProperty && !prop.IsImported && !prop.IsReservedProperty)
-            {
-                model.Remove(key);
-                OnPropertyChanged("FoundProperties");
-            }
+			model.Remove(key);
+			OnPropertyChanged("FoundProperties");
 		}
 
-		public void SaveAllProjects()         { model.SaveAll(); }
-		public void SavePropertySheet()       { model.PropertySheet.Save(); }
-		public void UpdateConfigSelection()   {
+		public void SaveAllProjects() { model.SaveAll(); }
+		public void SavePropertySheet() { model.PropertySheet.Save(); }
+		public void UpdateConfigSelection()
+		{
 			model.SetGlobalProperty("Configuration", SelectedConfiguration);
 			OnPropertyChanged("PropSheetProperties");
 		}
-		public void UpdatePlatformSelection() {
+		public void UpdatePlatformSelection()
+		{
 			model.SetGlobalProperty("Platform", SelectedPlatform);
 			OnPropertyChanged("PropSheetProperties");
 		}
