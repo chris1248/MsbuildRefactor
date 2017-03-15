@@ -25,11 +25,16 @@ namespace Refactor
 		{
 			get
 			{
-				var relative = this.GetProperty("OutputPath").EvaluatedValue;
-				var basepath = Path.GetDirectoryName(this.FullPath);
-				var combined = Path.GetFullPath(Path.Combine(basepath, relative));
-				return combined.ToLower();
+				return ResolveValue(this.GetProperty("OutputPath"));
 			}
+		}
+		
+		public string ResolveValue(ProjectProperty p)
+		{
+			var relative = p.EvaluatedValue;
+			var basepath = Path.GetDirectoryName(this.FullPath);
+			var combined = Path.GetFullPath(Path.Combine(basepath, relative));
+			return combined.ToLower();
 		}
 	}
 }

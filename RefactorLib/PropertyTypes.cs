@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System;
 using System.Windows.Data;
 using System.Globalization;
+using System.Diagnostics;
 
 namespace Refactor
 {
@@ -105,25 +106,20 @@ namespace Refactor
 
 		public void Remove(ReferencedValues val)
 		{
-			List<CSProject> tobeRemoved = new List<CSProject>();
-			foreach (CSProject proj in this.Projects)
+			foreach (CSProject proj in val.Projects)
 			{
 				ProjectProperty p = proj.GetProperty(this.Name);
-				if (p != null &&
-					!p.IsEnvironmentProperty &&
-					!p.IsGlobalProperty &&
-					!p.IsImported &&
-					!p.IsReservedProperty)
+				Debug.Assert(p != null);
+				if (p != null)
 				{
-					if (String.Compare(p.EvaluatedValue, val.EvaluatedValue, true) == 0)
-					{
-						proj.RemoveProperty(p);
-						tobeRemoved.Add(proj);
-					}
+					Debug.Assert(p.IsImported == false);
+					bool removed = proj.RemoveProperty(p);
+					Debug.Assert(removed);
+					proj.MarkDirty();
 				}
 			}
 
-			RemoveProjects(tobeRemoved);
+			RemoveProjects(val.Projects);
 			string key = val.EvaluatedValue;
 			if (_PropertyValues.ContainsKey(key))
 			{
