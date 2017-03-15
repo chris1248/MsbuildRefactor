@@ -89,6 +89,12 @@ namespace msbuildrefactor
 			OnPropertyChanged("FoundProperties");
 		}
 
+		public void DeleteValue(ReferencedValues val)
+		{
+			model.Remove(val);
+			OnPropertyChanged("FoundProperties");
+		}
+
 		public void SaveAllProjects() { model.SaveAll(); }
 		public void SavePropertySheet() { model.PropertySheet.Save(); }
 		public void UpdateConfigSelection()

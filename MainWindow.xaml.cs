@@ -195,6 +195,15 @@ namespace msbuildrefactor
 			}
 		}
 
+		private void detailsLV_KeyUp(object sender, KeyEventArgs e)
+		{
+			if ((detailsLV.SelectedItem != null) && (e.Key == Key.Delete))
+			{
+				var p = (KeyValuePair<String, ReferencedValues>)detailsLV.SelectedItem;
+				vm.DeleteValue(p.Value);
+			}
+		}
+
 		private void globalConfigs_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!LoadingDirectory)

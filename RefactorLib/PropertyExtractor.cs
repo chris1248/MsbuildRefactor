@@ -169,6 +169,17 @@ namespace Refactor
 			Move(name, null);
 		}
 
+		public void Remove(ReferencedValues val)
+		{
+			ReferencedProperty owner = val.Owner;
+			owner.Remove(val);
+			if (owner.UsedCount == 0)
+			{
+				_allFoundProperties.Remove(owner.Name);
+			}
+			// This is a delete, not a move. Do not update the property sheet here.
+		}
+
 		public void SetGlobalProperty(string name, string val)
 		{
 			_globalProperties[name] = val;

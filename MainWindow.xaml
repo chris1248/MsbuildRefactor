@@ -122,7 +122,7 @@
 					<ListView x:Name="detailsLV" Grid.Row="2" 
 							  ItemsSource="{Binding ElementName=allPropsLV, Path=SelectedItem, Converter={StaticResource keypair}}" 
 							  PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" 
-							  MouseMove="detailsLV_MouseMove"  >
+							  MouseMove="detailsLV_MouseMove" KeyUp="detailsLV_KeyUp"  >
 						<ListView.ContextMenu>
 							<ContextMenu x:Name="DetailsRCMenu">
 								<MenuItem Header="Show Projects" Click="ShowProjects_Click" />

@@ -163,7 +163,7 @@ namespace Refactor
 	/// Used as a markup extension to convert from
 	/// ObservableConcurrentDictionary<String, ReferencedValues>
 	/// to something that can be bound to a listbox. In this case a 
-	/// KeyValuePair<String, ReferencedProperty>
+	/// KeyValuePair<String, ReferencedValues>
 	/// which is used in the details view ListView.
 	/// </summary>
 	public class KeyPairToRefPropConverter : IValueConverter
