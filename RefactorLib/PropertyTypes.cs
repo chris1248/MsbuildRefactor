@@ -109,7 +109,6 @@ namespace Refactor
 			foreach (CSProject proj in val.Projects)
 			{
 				ProjectProperty p = proj.GetProperty(this.Name);
-				Debug.Assert(p != null);
 				if (p != null)
 				{
 					Debug.Assert(p.IsImported == false);

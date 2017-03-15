@@ -25,8 +25,8 @@
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40"/>
-			<RowDefinition Height="247*"/>
-			<RowDefinition Height="26" />
+			<RowDefinition/>
+			<RowDefinition Height="34" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="257*"/>
@@ -37,7 +37,7 @@
 			<Label x:Name="label" Height="26" Margin="0" HorizontalAlignment="Left" >Property Sheet</Label>
 			<TextBox x:Name="propSheetPath" Height="23" ToolTip="Property Sheet File Path" Margin="10,0,0,0" Width="260" />
 			<Button x:Name="propSheetChoose" Height="23" Width="55" Click="Click_choose_prop_sheet" Content="Browse..." Margin="10,0,0,0" />
-            <Button x:Name="propSheetCreate" Height="23" Width="55" Margin="10,0,0,0" Click="propSheetCreate_Click" >Create...</Button>
+			<Button x:Name="propSheetCreate" Height="23" Width="55" Margin="10,0,0,0" Click="propSheetCreate_Click" >Create...</Button>
 		</StackPanel>
 		<StackPanel  Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
 			<Label Content="Projects Directory" Height="26" Width="110" Margin="0"/>
@@ -147,7 +147,7 @@
 			</TabItem>
 		</TabControl>
 		<!-- Row Three -->
-		<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="126" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,15,0"/>
-		<Button x:Name="saveAllBtn" Content="Save Project Files" Width="126" Click="Click_saveAllBtn" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,15,0"/>
+		<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="126" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,10,6" Padding="0"/>
+		<Button x:Name="saveAllBtn" Content="Save Project Files" Width="126" Click="Click_saveAllBtn" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,15,6"/>
 	</Grid>
 </Window>
