@@ -37,7 +37,7 @@
 			<Label x:Name="label" Height="26" Margin="0" HorizontalAlignment="Left" >Property Sheet</Label>
 			<TextBox x:Name="propSheetPath" Height="23" ToolTip="Property Sheet File Path" Margin="10,0,0,0" Width="260" />
 			<Button x:Name="propSheetChoose" Height="23" Width="55" Click="Click_choose_prop_sheet" Content="Browse..." Margin="10,0,0,0" />
-			<Button x:Name="propSheetCreate" Height="23" Width="55" Margin="10,0,0,0" Click="propSheetCreate_Click" >Create...</Button>
+			<Button x:Name="propSheetCreate" Height="23" Width="55" Margin="10,0,0,0" Click="Click_create_prop_sheet" >Create...</Button>
 		</StackPanel>
 		<StackPanel  Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
 			<Label Content="Projects Directory" Height="26" Width="110" Margin="0"/>

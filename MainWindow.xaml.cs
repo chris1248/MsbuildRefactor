@@ -48,7 +48,7 @@ namespace msbuildrefactor
 			}
 		}
 
-		private void propSheetCreate_Click(object sender, RoutedEventArgs e)
+		private void Click_create_prop_sheet(object sender, RoutedEventArgs e)
 		{
 			var dlg = new Microsoft.Win32.SaveFileDialog();
 			var result = dlg.ShowDialog(this);
