@@ -26,29 +26,30 @@ namespace Refactor
 		#region Data Fields
 		private CSProject _propertySheet;
 		private List<CSProject> _allProjects;
-		private Dictionary<String, String>             _globalProperties   = new Dictionary<string, string>();
-		private Dictionary<String, int>                _allConfigurations  = new Dictionary<String, int>();
-		private Dictionary<String, int>                _allPlatforms       = new Dictionary<String, int>();
+		private Dictionary<String, String> _globalProperties = new Dictionary<string, string>();
+		private Dictionary<String, int> _allConfigurations = new Dictionary<String, int>();
+		private Dictionary<String, int> _allPlatforms = new Dictionary<String, int>();
 		private ObservableConcurrentDictionary<String, ReferencedProperty> _allFoundProperties = new ObservableConcurrentDictionary<string, ReferencedProperty>();
 		#endregion
 
 		#region Properties
-		public List<CSProject>         AllProjects       { get { return _allProjects; } }
+		public List<CSProject> AllProjects { get { return _allProjects; } }
 		public Dictionary<String, int> AllConfigurations { get { return _allConfigurations; } }
-		public Dictionary<String, int> AllPlatforms      { get { return _allPlatforms; } }
+		public Dictionary<String, int> AllPlatforms { get { return _allPlatforms; } }
 		public ObservableConcurrentDictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
 		public int Count { get { return _allProjects.Count; } }
 		public bool Verbose { get; set; }
 		public string PropertySheetPath
 		{
 			get { return propSheet; }
-			set {
+			set
+			{
 				propSheet = value;
-                if (!File.Exists(propSheet))
-                {
-                    var p = new Project();
-                    p.Save(propSheet);
-                }
+				if (!File.Exists(propSheet))
+				{
+					var p = new Project();
+					p.Save(propSheet);
+				}
 				_propertySheet = new CSProject(propSheet, _globalProperties, toolsVersion);
 			}
 		}
@@ -85,7 +86,7 @@ namespace Refactor
 			this.inputDir = inputDir;
 			Init();
 		}
-		
+
 		private void Init()
 		{
 			_allProjects = GetProjects();
@@ -115,7 +116,7 @@ namespace Refactor
 					proj.RemoveProperty(p);
 				}
 			});
-			
+
 			if (_allFoundProperties.ContainsKey(name))
 			{
 				ReferencedProperty refp = _allFoundProperties[name];
@@ -203,12 +204,12 @@ namespace Refactor
 			Utils.WL(ConsoleColor.DarkCyan, String.Format("Global Properties: Configuration => {0}", _globalProperties["Configuration"]));
 			Utils.WL(ConsoleColor.DarkCyan, String.Format("Global Properties: Platform => {0}", _globalProperties["Platform"]));
 			var sorted = from p in _allFoundProperties orderby p.Value.UsedCount descending select p;
-			foreach(var pair in sorted)
+			foreach (var pair in sorted)
 			{
 				ReferencedProperty prop = pair.Value;
 				Utils.WL(ConsoleColor.Cyan, String.Format("{0} : {1}", prop.UsedCount, prop.Name));
 				var sortedVals = from p in prop.PropertyValues orderby p.Value.Count descending select p;
-				foreach(var vp in sortedVals)
+				foreach (var vp in sortedVals)
 				{
 					ReferencedValues val = vp.Value;
 					Utils.WL(ConsoleColor.DarkCyan, String.Format("\t{0} : {1}", val.Count, val.EvaluatedValue));

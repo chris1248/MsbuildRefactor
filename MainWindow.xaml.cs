@@ -32,7 +32,7 @@ namespace msbuildrefactor
 		{
 			// Create OpenFileDialog 
 			var dlg = new Microsoft.Win32.OpenFileDialog();
-			
+
 			// Set filter for file extension and default file extension 
 			dlg.DefaultExt = ".props";
 			dlg.Filter = "Property Sheet files (*.props, *.xml)|*.props;*.xml|All files (*.*)|*.*";
@@ -48,23 +48,22 @@ namespace msbuildrefactor
 			}
 		}
 
-        private void propSheetCreate_Click(object sender, RoutedEventArgs e)
-        {
-            var dlg = new Microsoft.Win32.SaveFileDialog();
-            var result = dlg.ShowDialog(this);
-            if (result == true)
-            {
-                propSheetPath.Text = dlg.FileName;
-                // Even though this is not an existing file, it still will work the same
-                vm.LoadPropertySheet(propSheetPath.Text);
-            }
-        }
+		private void propSheetCreate_Click(object sender, RoutedEventArgs e)
+		{
+			var dlg = new Microsoft.Win32.SaveFileDialog();
+			var result = dlg.ShowDialog(this);
+			if (result == true)
+			{
+				propSheetPath.Text = dlg.FileName;
+				// Even though this is not an existing file, it still will work the same
+				vm.LoadPropertySheet(propSheetPath.Text);
+			}
+		}
 
-        private void Click_choose_directory(object sender, RoutedEventArgs e)
+		private void Click_choose_directory(object sender, RoutedEventArgs e)
 		{
 			LoadingDirectory = true;
 			var browse = new System.Windows.Forms.FolderBrowserDialog();
-			browse.SelectedPath = "F:\\xm8_dev";
 			System.Windows.Forms.DialogResult result = browse.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
@@ -218,7 +217,7 @@ namespace msbuildrefactor
 
 		private void ShowProjects_Click(object sender, RoutedEventArgs e)
 		{
-			var pair = (KeyValuePair < string, ReferencedValues> )detailsLV.SelectedItem;
+			var pair = (KeyValuePair<string, ReferencedValues>)detailsLV.SelectedItem;
 			ReferencedValues vals = pair.Value;
 			var query = from proj in vals.Projects
 						orderby proj.FullPath ascending
