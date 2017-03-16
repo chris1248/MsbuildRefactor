@@ -165,7 +165,7 @@ namespace msbuildrefactor
 
 		private void commonLV_Drop(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent("myFormat"))
+			if (vm.PropSheet != null && e.Data.GetDataPresent("myFormat"))
 			{
 				ReferencedValues propdata = e.Data.GetData("myFormat") as ReferencedValues;
 				vm.MoveProperty(propdata);
