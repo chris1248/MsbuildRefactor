@@ -259,8 +259,11 @@ namespace Refactor
 					Utils.WL(ConsoleColor.DarkGray, e.Message);
 				}
 			});
-			_propertySheet.Save();
-			_propertySheet.ReevaluateIfNecessary();
+			if (_propertySheet != null)
+			{
+				_propertySheet.Save();
+				_propertySheet.ReevaluateIfNecessary();
+			}
 		}
 		#endregion
 
