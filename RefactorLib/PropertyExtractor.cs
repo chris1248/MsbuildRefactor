@@ -313,9 +313,11 @@ namespace Refactor
 			// Add in the import to the common property sheet
 			foreach (ResolvedImport import in proj.Imports)
 			{
-				if (import.ImportedProject.FullPath.ToLower().Contains(name))
+				string importedName = Path.GetFileName(import.ImportedProject.FullPath);
+				if (String.Compare(importedName, name, StringComparison.OrdinalIgnoreCase) == 0)
 				{
 					isCommonPropAttached = true;
+					break;
 				}
 			}
 			if (!isCommonPropAttached)
