@@ -21,11 +21,11 @@ On the left you choose an existing poperty sheet, or create a new one.
 On the right half you choose the directory where your project files reside.
 Once loaded it if you click on the *Project Files* on the right you will see the projects that were discovered in the directory and any subdirectories.
 
-![Loaded with Data](docs\msbuildrefactor_loaded_screen.PNG)
+![Loaded with Data](docs/msbuildrefactor_loaded_screen.PNG)
 
 After that you can click on the *All Properties* tab to display *ALL* the properties in *ALL* the projects.
 
-![All Properites](docs\msbuildrefactor_loaded_properties.PNG)
+![All Properites](docs/msbuildrefactor_loaded_properties.PNG)
 
 The *All Properties* tab is split into two different views:
   1. On the top is the list of all the properties in all the project files. Along with that is the count of how many project files that property was found in. 
