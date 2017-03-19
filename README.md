@@ -19,24 +19,28 @@ Launching the app will display this window:
 
 On the left you choose an existing poperty sheet, or create a new one. 
 On the right half you choose the directory where your project files reside.
-Once loaded it if you click on the *Project Files* on the right you will see the projects that were discovered in the directory and any subdirectories.
+Once loaded, if you click on the tab *Project Files*, on the right, you will see the projects that were discovered in the directory and any subdirectories.
 
 ![Loaded with Data](docs/msbuildrefactor_loaded_screen.PNG)
 
-After that you can click on the *All Properties* tab to display *ALL* the properties in *ALL* the projects.
+The tab *All Properties* displays *ALL* the properties in *ALL* the projects.
 
 ![All Properites](docs/msbuildrefactor_loaded_properties.PNG)
 
 The *All Properties* tab is split into two different views:
   1. On the top is the list of all the properties in all the project files. Along with that is the count of how many project files that property was found in. 
-  2. On the bottom is the details of each selected property. The details views show each of the unique that have been assigned to the property in *ALL* of the projects files. Along with that it shows how many times the property has been assigned that value.
+  2. On the bottom is the details of each selected property. The details views show each of the unique values that have been assigned to the property in *ALL* of the projects files. Along with that it shows how many times the property has been assigned that value.
 
-Both windows are fully sortable on both columns. Therefore you can sort the list of all the properties by name or by count. The details view is invaluable for showing projects that have non-standard values that don't conform with the rest of the projects.
+Both windows are fully sortable on both columns. Therefore you can sort the lists of all the properties by name or by count. The details view is invaluable for showing projects that have non-standard values that don't conform with the rest of the projects.
 
 In the image above the property AssemblyName is selected. Therefore the bottom details view shows 3 different values for the property.
 
+## Show a list of projects defining that value:
+
+In the details view, you can find out *which* projects define a property with the specified value. Simply right click over the value, and a popup menu will appear. Currently it has only one menu item: 'Show Projects'. Select it, and a window will display showing the list of projects.
+
 # What this is NOT
-This tool is not a property sheet editor. You cannot edit values in the property sheet view (on the left part of the app). It is best to use a text editor for that. MSBuild has a lot of power in it's declaritive XML markup that this tool doesn't need to encapsulate.
+This tool is not a property sheet editor. You cannot edit values in the property sheet view (on the left part of the app). It is best to use a text editor for that. MSBuild has a lot of power in it's declaritive XML markup that this tool doesn't need to encapsulate. This tool is meant for working on a large number of project files at a time. A single property sheet does not fit that definition, and is trivial to edit since it's only one file.
 
 ## Drag and Drop Properties
 
@@ -56,4 +60,4 @@ element to the project files.
 
 ## Delete Properties
 
-It is possible for a propety to take on many different values in all the project files. That is manifest in the details view on the bottom. After having dragged a property to the property sheet, is is possible for many other values to be 'left over' that you do *not* want. There is no need to drag those over as well. Instead just delete them using the `Delete` key. Delete works in both the top and bottom views on the right hand side of the application. There is no delete action in the property sheet view on the left.
+It is possible for a propety to take on many different values in all the project files. That is manifest in the details view on the bottom. After having dragged a property to the property sheet, is is possible for many other values to be 'left over' that you do *not* want. There is no need to drag those over as well. Instead just delete the left over values by selecting them and deleting them using the `Delete` key. Delete works in both the top and bottom views. There is no delete action in the property sheet view on the left.
