@@ -1,19 +1,12 @@
 # MsbuildRefactor
 A Tool to refactor many msbuild files at once
 
-This helps to manage a property sheet for *.csproj files. Years ago, Visual Studio added property sheets for Visual C/C++ projects. 
-There were tools to refactor build settings out to a common property sheet. The effort involves 
-  1. Removing an msbuild property from a given project file. 
-  2. Moving the property to a property sheet (commonly called *.props). 
-  3. Importing the property sheet into the project file.
+Refactoring an existing code base of hundreds of projects can be a made easier using this tool. Using MSBuild .NET API's it loads msbuild project files (i.e. *.csproj) displaying their build properties. A common msbuild file used to store all global properties (Which I call a property sheet) can also be loaded. Then it is up to the user to choose which build properties to move to the property sheet.
+Moving properties is simply done with a drag *drag and drop*. 
+The tool then takes care of 
+  1. removing the property from all the project files
+  2. adding the property to the common property sheet
+  3. Adding an import statement to all the projects
 
-Visual studio provided tools to operate on one project at a time. _Which was not enough_. 
-This can be especially tedious for hundreds of project files. Something even visual studio never even attempted to solve. 
+If this operation was done manually, it would be especially tedious, and fragile since usual text search/replace operations do not respect different build configurations manifest in the msbuild project files. This tool does respect build configurations thus limiting operations to specific configurations and platforms that you choose.
 
-This tool performs all of the above tasks on multiple files at once. It requires as input:
-  1. An existing, common, msbuild property sheet file
-  2. A directory containing the projects you want to modify.
-  3. The global configuration property
-  4. The global platform property
-  5. An ignore pattern
-  
