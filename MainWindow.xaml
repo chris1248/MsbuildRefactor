@@ -103,6 +103,11 @@
 					</Grid.RowDefinitions>
 					<ListView x:Name="allPropsLV" ItemsSource="{Binding FoundProperties}" 
 							  Grid.Row="0"  Margin="0" KeyUp="allPropsLV_KeyUp" >
+						<ListView.ContextMenu>
+							<ContextMenu x:Name="AllPropsRCMenu">
+								<MenuItem Header="Show Projects" Click="MenuItem_Click" />
+							</ContextMenu>
+						</ListView.ContextMenu>
 						<ListView.View>
 							<GridView>
 								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">

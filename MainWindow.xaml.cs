@@ -222,13 +222,35 @@ namespace msbuildrefactor
 			var query = from proj in vals.Projects
 						orderby proj.FullPath ascending
 						select proj;
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			foreach (CSProject proj in query)
 			{
 				sb.AppendFormat("{0}\n", proj.FullPath);
 			}
-			string windowTitle = String.Format("Projects definining property value of: {0}", pair.Key);
-			TextWindow stuff = new TextWindow(windowTitle, sb.ToString());
+			string windowTitle = String.Format("Projects defining property value of: {0} for property: {1}", pair.Key, vals.Owner.Name);
+			var stuff = new TextWindow(windowTitle, sb.ToString());
+			stuff.Show();
+		}
+
+		private void MenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			var pair = (KeyValuePair<string, ReferencedProperty>)allPropsLV.SelectedItem;
+			ReferencedProperty prop = pair.Value;
+			var sb = new StringBuilder();
+			foreach (ReferencedValues val in prop.PropertyValues.Values)
+			{
+				if (String.IsNullOrEmpty(val.EvaluatedValue))
+					sb.AppendFormat("<blank>\n");
+				else
+					sb.AppendFormat("{0}\n", val.EvaluatedValue);
+
+				foreach(CSProject proj in val.Projects)
+				{
+					sb.AppendFormat("\t{0}\n", proj.FullPath);
+				}
+			}
+			string windowTitle = String.Format("All Properties values for property: {0}", prop.Name);
+			var stuff = new TextWindow(windowTitle, sb.ToString());
 			stuff.Show();
 		}
 	}
