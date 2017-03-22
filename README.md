@@ -60,4 +60,9 @@ element to the project files.
 
 ## Delete Properties
 
-It is possible for a propety to take on many different values in all the project files. That is manifest in the details view on the bottom. After having dragged a property to the property sheet, is is possible for many other values to be 'left over' that you do *not* want. There is no need to drag those over as well. Instead just delete the left over values by selecting them and deleting them using the `Delete` key. Delete works in both the top and bottom views. There is no delete action in the property sheet view on the left.
+Properties on the right hand side of the application can be deleted or removed easily. This can be done in two ways:
+
+1. Select a property value in the details view and press the `Delete` key.
+2. Alt-Drag a property to the property sheet.
+
+Delete works in both the top and bottom views. There is no delete action in the property sheet view on the left.

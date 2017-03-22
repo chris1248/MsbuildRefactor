@@ -151,7 +151,8 @@ namespace Refactor
 		}
 
 		/// <summary>
-		/// Moves one particular value of a property
+		/// Moves one particular value of a property to the property sheet
+		/// By default it over writes the existing value in the property sheet
 		/// </summary>
 		/// <param name="val"></param>
 		public void MoveValue(ReferencedValues val)

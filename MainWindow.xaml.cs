@@ -168,7 +168,15 @@ namespace msbuildrefactor
 			if (vm.PropSheet != null && e.Data.GetDataPresent("myFormat"))
 			{
 				ReferencedValues propdata = e.Data.GetData("myFormat") as ReferencedValues;
-				vm.MoveProperty(propdata);
+				if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+				{
+					// Same as deleting a property
+					vm.DeleteValue(propdata);
+				}
+				else
+				{
+					vm.MoveProperty(propdata);
+				}
 			}
 		}
 
