@@ -110,14 +110,25 @@
 						</ListView.ContextMenu>
 						<ListView.View>
 							<GridView>
-								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">
+								<GridViewColumn Width="320" DisplayMemberBinding="{Binding Key}">
 									<GridViewColumn.Header>
-										<GridViewColumnHeader Tag="Key" Click="GridViewColumnHeader_Click">Name</GridViewColumnHeader>
+										<GridViewColumnHeader Tag="Key" Click="GridViewColumnHeader_Click" 
+															  ToolTip="The name of the MSBuild Property that was found" 
+															  Padding="5,0,2,0">Name</GridViewColumnHeader>
 									</GridViewColumn.Header>
 								</GridViewColumn>
-								<GridViewColumn Width="100" DisplayMemberBinding="{Binding Value.UsedCount}" >
+								<GridViewColumn Width="55" DisplayMemberBinding="{Binding Value.UsedCount}" >
 									<GridViewColumn.Header>
-										<GridViewColumnHeader Tag="Value.UsedCount" Click="GridViewColumnHeader_Click">Count</GridViewColumnHeader>
+										<GridViewColumnHeader Tag="Value.UsedCount" Click="GridViewColumnHeader_Click" 
+															  ToolTip="The number of files this property was found in" 
+															  Padding="5,0,2,0">Count</GridViewColumnHeader>
+									</GridViewColumn.Header>
+								</GridViewColumn>
+								<GridViewColumn Width="95" DisplayMemberBinding="{Binding Value.PropertyValues.Count}" >
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Value.PropertyValues.Count" Click="GridViewColumnHeader_Click" 
+															  ToolTip="The number of unique values this property takes in all the project files" 
+															  Padding="5,0,2,0" >Count Unique</GridViewColumnHeader>
 									</GridViewColumn.Header>
 								</GridViewColumn>
 							</GridView>
