@@ -39,8 +39,11 @@ In the image above the property AssemblyName is selected. Therefore the bottom d
 
 In the details view, you can find out *which* projects define a property with the specified value. 
 Simply right click over the value, and a popup menu will appear:
+
 ![Right Click Menu](docs/allpropsLV_right_click_menu.PNG)
-Currently it has only one menu item: 'Show Projects'. Select it, and a window will display showing the list of projects.
+
+Currently it has only one menu item: 'Show Projects'. Select it, and a window will display showing the list of projects:
+
 ![Projects sorted by value](docs/list_of_projects.PNG)
 
 # What this is NOT
