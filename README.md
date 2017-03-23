@@ -37,7 +37,11 @@ In the image above the property AssemblyName is selected. Therefore the bottom d
 
 ## Show a list of projects defining that value:
 
-In the details view, you can find out *which* projects define a property with the specified value. Simply right click over the value, and a popup menu will appear. Currently it has only one menu item: 'Show Projects'. Select it, and a window will display showing the list of projects.
+In the details view, you can find out *which* projects define a property with the specified value. 
+Simply right click over the value, and a popup menu will appear:
+![Right Click Menu](docs/allpropsLV_right_click_menu.PNG)
+Currently it has only one menu item: 'Show Projects'. Select it, and a window will display showing the list of projects.
+![Projects sorted by value](docs/list_of_projects.PNG)
 
 # What this is NOT
 This tool is not a property sheet editor. You cannot edit values in the property sheet view (on the left part of the app). It is best to use a text editor for that. MSBuild has a lot of power in it's declaritive XML markup that this tool doesn't need to encapsulate. This tool is meant for working on a large number of project files at a time. A single property sheet does not fit that definition, and is trivial to edit since it's only one file.
