@@ -261,5 +261,17 @@ namespace msbuildrefactor
 			var stuff = new TextWindow(windowTitle, sb.ToString());
 			stuff.Show();
 		}
+
+		private void OpenFile_Click(object sender, RoutedEventArgs e)
+		{
+			CSProject proj = (CSProject)allProjectsLV.SelectedItem;
+			Process.Start(proj.FullPath);
+		}
+
+		private void allProjectsLV_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			CSProject proj = (CSProject)allProjectsLV.SelectedItem;
+			Process.Start(proj.FullPath);
+		}
 	}
 }

@@ -76,7 +76,12 @@
 		</TabControl>
 		<TabControl Grid.Row="1" Grid.Column="1" SelectedIndex="1">
 			<TabItem Header="Project Files" Margin="0">
-				<ListView x:Name="allProjectsLV" ItemsSource="{Binding AllProjects}" Margin="0">
+				<ListView x:Name="allProjectsLV" ItemsSource="{Binding AllProjects}" Margin="0" MouseDoubleClick="allProjectsLV_MouseDoubleClick">
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Open File" Click="OpenFile_Click" />
+						</ContextMenu>
+					</ListView.ContextMenu>
 					<ListView.View>
 						<GridView>
 							<GridViewColumn Width="410" DisplayMemberBinding="{Binding FullPath}">
