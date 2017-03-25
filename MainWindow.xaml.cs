@@ -273,5 +273,10 @@ namespace msbuildrefactor
 			CSProject proj = (CSProject)allProjectsLV.SelectedItem;
 			Process.Start(proj.FullPath);
 		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			vm.RemovePropertiesFromProjects();
+		}
 	}
 }

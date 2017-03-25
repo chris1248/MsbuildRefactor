@@ -131,6 +131,14 @@ namespace Refactor
 			UpdatePropertySheet(name, val);
 		}
 
+		public void Remove(List<string> propNames)
+		{
+			foreach(var name in propNames)
+			{
+				Remove(name);
+			}
+		}
+
 		private void UpdatePropertySheet(string name, string val)
 		{
 			if (!String.IsNullOrEmpty(val))

@@ -107,6 +107,13 @@ namespace msbuildrefactor
 			model.SetGlobalProperty("Platform", SelectedPlatform);
 			OnPropertyChanged("PropSheetProperties");
 		}
+
+		internal void RemovePropertiesFromProjects()
+		{
+			var names = from p in PropSheet.Properties
+						select p.Name;
+			model.Remove(names.ToList());
+		}
 		#endregion
 	}
 }

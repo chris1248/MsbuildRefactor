@@ -168,7 +168,8 @@
 			</TabItem>
 		</TabControl>
 		<!-- Row Three -->
-		<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="126" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,10,6" Padding="0"/>
+		<Button x:Name="savePropBtn" Content="Save Property Sheet" Width="135" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,354,6" Padding="0"/>
 		<Button x:Name="saveAllBtn" Content="Save Project Files" Width="126" Click="Click_saveAllBtn" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,15,6"/>
+		<Button Content="Replace Right with Left" Grid.Column="0" Grid.Row="2" VerticalAlignment="Top" Margin="0,6,5,0" HorizontalAlignment="Right" Width="146" Click="Button_Click" ToolTip="Remove all properties in projects which are already in the property sheet" Height="22"/>
 	</Grid>
 </Window>
