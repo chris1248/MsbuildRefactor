@@ -320,7 +320,7 @@ namespace Refactor
 		private void AttachImportIfNecessary(Project proj)
 		{
 			bool isCommonPropAttached = false;
-			string name = Path.GetFileName(_propertySheet.FullPath).ToLower();
+			string name = Path.GetFileName(_propertySheet.FullPath);
 			// Add in the import to the common property sheet
 			foreach (ResolvedImport import in proj.Imports)
 			{
