@@ -24,8 +24,8 @@ namespace Refactor
 		#endregion
 
 		#region Data Fields
-		private CSProject _propertySheet;
-		private List<CSProject> _allProjects;
+		private MSBProject _propertySheet;
+		private List<MSBProject> _allProjects;
 		private Dictionary<String, String> _globalProperties = new Dictionary<string, string>();
 		private Dictionary<String, int> _allConfigurations = new Dictionary<String, int>();
 		private Dictionary<String, int> _allPlatforms = new Dictionary<String, int>();
@@ -33,7 +33,7 @@ namespace Refactor
 		#endregion
 
 		#region Properties
-		public List<CSProject> AllProjects { get { return _allProjects; } }
+		public List<MSBProject> AllProjects { get { return _allProjects; } }
 		public Dictionary<String, int> AllConfigurations { get { return _allConfigurations; } }
 		public Dictionary<String, int> AllPlatforms { get { return _allPlatforms; } }
 		public ObservableConcurrentDictionary<String, ReferencedProperty> AllFoundProperties { get { return _allFoundProperties; } }
@@ -50,10 +50,10 @@ namespace Refactor
 					var p = new Project();
 					p.Save(propSheet);
 				}
-				_propertySheet = new CSProject(propSheet, _globalProperties, toolsVersion);
+				_propertySheet = new MSBProject(propSheet, _globalProperties, toolsVersion);
 			}
 		}
-		public CSProject PropertySheet { get { return _propertySheet; } }
+		public MSBProject PropertySheet { get { return _propertySheet; } }
 		public int CountFoundFiles { get; private set; }
 		#endregion
 		#endregion
@@ -226,16 +226,18 @@ namespace Refactor
 			}
 		}
 
-		public List<CSProject> GetProjects()
+		public List<MSBProject> GetProjects()
 		{
-			var fileList = Directory.EnumerateFiles(inputDir, "*.csproj", SearchOption.AllDirectories).AsParallel();
+			var csfileList = Directory.EnumerateFiles(inputDir, "*.csproj", SearchOption.AllDirectories).AsParallel();
+			var vcfileList = Directory.EnumerateFiles(inputDir, "*.vcxproj", SearchOption.AllDirectories).AsParallel();
+			var fileList = csfileList.Concat(vcfileList);
 			CountFoundFiles = fileList.Count();
-			ConcurrentBag<CSProject> bag = new ConcurrentBag<CSProject>();
+			ConcurrentBag<MSBProject> bag = new ConcurrentBag<MSBProject>();
 			Parallel.ForEach(fileList, (file) =>
 			{
 				try
 				{
-					var p = new CSProject(file, _globalProperties, toolsVersion);
+					var p = new MSBProject(file, _globalProperties, toolsVersion);
 					bag.Add(p);
 				}
 				catch (Exception e)
@@ -277,7 +279,7 @@ namespace Refactor
 		#endregion
 
 		#region Private Methods
-		private void GetAllReferenceProperties(List<CSProject> projects)
+		private void GetAllReferenceProperties(List<MSBProject> projects)
 		{
 			if (_allFoundProperties.Count() > 0)
 			{
@@ -285,7 +287,7 @@ namespace Refactor
 				props.Clear();
 			}
 			//Parallel.ForEach(projects, proj => // Unstable. Throws exceptions from deep in the microsoft layer
-			foreach (CSProject proj in projects)
+			foreach (MSBProject proj in projects)
 			{
 				GetPropertiesFor(proj);
 			}
@@ -296,7 +298,7 @@ namespace Refactor
 			}
 		}
 
-		private void GetPropertiesFor(CSProject project)
+		private void GetPropertiesFor(MSBProject project)
 		{
 			foreach (ProjectProperty prop in project.AllEvaluatedProperties)
 			{
@@ -347,9 +349,9 @@ namespace Refactor
 			}
 		}
 
-		private void GetAllConfigsAndPlatforms(List<CSProject> projects)
+		private void GetAllConfigsAndPlatforms(List<MSBProject> projects)
 		{
-			foreach (CSProject project in projects)
+			foreach (MSBProject project in projects)
 			{
 				IDictionary<string, List<string>> conProps = project.ConditionedProperties;
 				List<String> configs = conProps["Configuration"];

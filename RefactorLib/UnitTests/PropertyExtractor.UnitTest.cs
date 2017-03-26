@@ -112,7 +112,7 @@ namespace UnitTests
 		public void TestPropertySheet()
 		{
 			extractor.PropertySheetPath = "TestData\\test.props";
-			CSProject file = extractor.PropertySheet;
+			MSBProject file = extractor.PropertySheet;
 			Assert.AreEqual("TestData\\test.props", extractor.PropertySheetPath);
 			Assert.IsNotNull(file);
 			Assert.AreEqual("test.props", Path.GetFileName(file.FullPath));

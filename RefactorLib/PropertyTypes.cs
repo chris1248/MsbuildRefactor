@@ -56,7 +56,7 @@ namespace Refactor
 		/// Constructor.
 		/// </summary>
 		/// <param name="prop">A property instance from the project</param>
-		public ReferencedProperty(ProjectProperty prop, CSProject proj)
+		public ReferencedProperty(ProjectProperty prop, MSBProject proj)
 		{
 			this.Name = prop.Name;
 			_projects.Add(proj);
@@ -76,18 +76,18 @@ namespace Refactor
 		{
 			return string.Format("ReferenceProperty {0}, usedby: {1} projects", Name, UsedCount);
 		}
-		private List<CSProject> _projects = new List<CSProject>();
+		private List<MSBProject> _projects = new List<MSBProject>();
 		/// <summary>
 		/// The array of Projects that use this property
 		/// </summary>
-		public CSProject[] Projects { get { return _projects.ToArray(); } }
+		public MSBProject[] Projects { get { return _projects.ToArray(); } }
 
 		/// <summary>
 		/// Removes a whole bunch of projects from the list at once
 		/// Updates any listeners at the end.
 		/// </summary>
 		/// <param name="projects"></param>
-		public void RemoveProjects(List<CSProject> projects)
+		public void RemoveProjects(List<MSBProject> projects)
 		{
 			foreach (var removed in projects)
 			{
@@ -98,7 +98,7 @@ namespace Refactor
 			OnPropertyChanged("UsedCount");
 		}
 
-		public void Add(CSProject proj)
+		public void Add(MSBProject proj)
 		{
 			_projects.Add(proj);
 			UsedCount++;
@@ -106,7 +106,7 @@ namespace Refactor
 
 		public void Remove(ReferencedValues val)
 		{
-			foreach (CSProject proj in val.Projects)
+			foreach (MSBProject proj in val.Projects)
 			{
 				ProjectProperty p = proj.GetProperty(this.Name);
 				if (p != null && (!p.IsImported))
@@ -134,7 +134,7 @@ namespace Refactor
 
 		public void GetPropertyValues()
 		{
-			foreach (CSProject project in this.Projects)
+			foreach (MSBProject project in this.Projects)
 			{
 				ProjectProperty itemprop = project.GetProperty(this.Name);
 				if (itemprop != null)
@@ -205,16 +205,16 @@ namespace Refactor
 	/// </summary>
 	public class ReferencedValues : BaseProperty
 	{
-		public ReferencedValues(CSProject proj)
+		public ReferencedValues(MSBProject proj)
 		{
 			_projects.Add(proj);
 			Count++;
 		}
 
-		private List<CSProject> _projects = new List<CSProject>();
-		public List<CSProject> Projects { get { return _projects; } }
+		private List<MSBProject> _projects = new List<MSBProject>();
+		public List<MSBProject> Projects { get { return _projects; } }
 
-		public void AddProject(CSProject p)
+		public void AddProject(MSBProject p)
 		{
 			Count++;
 			_projects.Add(p);

@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseProperty.cs" />
-    <Compile Include="CSProject.cs" />
+    <Compile Include="MSBProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyExtractor.cs" />
     <Compile Include="PropertyTypes.cs" />

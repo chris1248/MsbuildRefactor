@@ -30,10 +30,10 @@ namespace msbuildrefactor
 		}
 
 		#region Properties for Data Binding
-		public CSProject PropSheet { get { return model.PropertySheet; } }
+		public MSBProject PropSheet { get { return model.PropertySheet; } }
 		public String SelectedConfiguration { get; set; }
 		public String SelectedPlatform { get; set; }
-		public List<CSProject> AllProjects { get { return model.AllProjects; } }
+		public List<MSBProject> AllProjects { get { return model.AllProjects; } }
 		public List<String> AllConfigurations { get { return model.AllConfigurations.Keys.ToList(); } }
 		public List<String> AllPlatforms { get { return model.AllPlatforms.Keys.ToList(); } }
 		public string PropertySheetPath { get; set; }

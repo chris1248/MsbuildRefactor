@@ -231,7 +231,7 @@ namespace msbuildrefactor
 						orderby proj.FullPath ascending
 						select proj;
 			var sb = new StringBuilder();
-			foreach (CSProject proj in query)
+			foreach (MSBProject proj in query)
 			{
 				sb.AppendFormat("{0}\n", proj.FullPath);
 			}
@@ -252,7 +252,7 @@ namespace msbuildrefactor
 				else
 					sb.AppendFormat("{0}\n", val.EvaluatedValue);
 
-				foreach(CSProject proj in val.Projects)
+				foreach(MSBProject proj in val.Projects)
 				{
 					sb.AppendFormat("\t{0}\n", proj.FullPath);
 				}
@@ -264,14 +264,20 @@ namespace msbuildrefactor
 
 		private void OpenFile_Click(object sender, RoutedEventArgs e)
 		{
-			CSProject proj = (CSProject)allProjectsLV.SelectedItem;
-			Process.Start(proj.FullPath);
+			MSBProject proj = (MSBProject)allProjectsLV.SelectedItem;
+			if (proj != null)
+			{
+				Process.Start(proj.FullPath);
+			}
 		}
 
 		private void allProjectsLV_MouseDoubleClick(object sender, MouseButtonEventArgs e)
 		{
-			CSProject proj = (CSProject)allProjectsLV.SelectedItem;
-			Process.Start(proj.FullPath);
+			MSBProject proj = (MSBProject)allProjectsLV.SelectedItem;
+			if (proj != null)
+			{
+				Process.Start(proj.FullPath);
+			}
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)

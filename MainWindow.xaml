@@ -87,6 +87,10 @@
 							<GridViewColumn Width="410" DisplayMemberBinding="{Binding FullPath}">
 								<GridViewColumnHeader Content="FullPath" />
 							</GridViewColumn>
+							<GridViewColumn Width="60" DisplayMemberBinding="{Binding Extension}">
+								<GridViewColumnHeader Content="Extension" />
+							</GridViewColumn>
+							<!--
 							<GridViewColumn Width="Auto" >
 								<GridViewColumn.CellTemplate>
 									<DataTemplate>
@@ -95,6 +99,7 @@
 								</GridViewColumn.CellTemplate>
 								<GridViewColumnHeader Content="Included" />
 							</GridViewColumn>
+							-->
 						</GridView>
 					</ListView.View>
 				</ListView>
