@@ -289,5 +289,10 @@ namespace msbuildrefactor
 		{
 			vm.RemoveAllPropertiesFromProjects();
 		}
+
+		private void RemoveEmptyProps_Click(object sender, RoutedEventArgs e)
+		{
+			vm.RemoveEmptyProps();
+		}
 	}
 }

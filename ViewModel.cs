@@ -124,6 +124,13 @@ namespace msbuildrefactor
 						where !p.IsEnvironmentProperty
 						select p.Name;
 			model.RemoveXml(names.ToList());
+			OnPropertyChanged("FoundProperties");
+		}
+
+		public void RemoveEmptyProps()
+		{
+			model.RemoveEmptyProps();
+			OnPropertyChanged("FoundProperties");
 		}
 		#endregion
 	}

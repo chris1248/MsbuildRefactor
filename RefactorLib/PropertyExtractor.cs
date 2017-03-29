@@ -141,6 +141,34 @@ namespace Refactor
 		}
 
 		/// <summary>
+		/// The bain of all old msbuild projects are empty property values. 
+		/// This function gets rid of them, in all build configs and in all the projects.
+		/// Good riddance empty properties! We never knew ye!
+		/// </summary>
+		public void RemoveEmptyProps()
+		{
+			foreach(var project in _allProjects)
+			{
+				ProjectRootElement root = project.Xml;
+				var tobedeleted = new List<ProjectPropertyElement>();
+				foreach (ProjectPropertyElement prop in root.Properties)
+				{
+					if (String.IsNullOrEmpty(prop.Value))
+					{
+						tobedeleted.Add(prop);
+					}
+				}
+				foreach (var prop in tobedeleted)
+				{
+					prop.Parent.RemoveChild(prop);
+				}
+				project.Save();
+				project.ReevaluateIfNecessary();
+			}
+			GetAllReferenceProperties(_allProjects);
+		}
+
+		/// <summary>
 		/// Removes properties from all configurations in all files.
 		/// It actually ignores the global configuration and global platform
 		/// and operates on just the raw XML elements.
