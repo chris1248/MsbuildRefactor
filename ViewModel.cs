@@ -89,6 +89,17 @@ namespace msbuildrefactor
 			OnPropertyChanged("FoundProperties");
 		}
 
+		/// <summary>
+		/// Deletes one property across all projects for all configurations and all platforms
+		/// </summary>
+		/// <param name="key"></param>
+		public void DeletePropertyXML(string key)
+		{
+			var props = new List<string>() { key };
+			model.RemoveXml(props);
+			OnPropertyChanged("FoundProperties");
+		}
+
 		public void DeleteValue(ReferencedValues val)
 		{
 			model.Remove(val);
