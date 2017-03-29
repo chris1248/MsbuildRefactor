@@ -147,7 +147,7 @@ namespace Refactor
 		/// </summary>
 		public void RemoveEmptyProps()
 		{
-			foreach(var project in _allProjects)
+			Parallel.ForEach(_allProjects, project =>
 			{
 				ProjectRootElement root = project.Xml;
 				var tobedeleted = new List<ProjectPropertyElement>();
@@ -164,7 +164,7 @@ namespace Refactor
 				}
 				project.Save();
 				project.ReevaluateIfNecessary();
-			}
+			});
 			GetAllReferenceProperties(_allProjects);
 		}
 
