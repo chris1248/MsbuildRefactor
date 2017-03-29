@@ -9,6 +9,7 @@ using Microsoft.Build.Evaluation;
 using System.Xml.Linq;
 using System.Xml;
 using System.Diagnostics;
+using Microsoft.Build.Construction;
 
 namespace Refactor
 {
@@ -136,6 +137,63 @@ namespace Refactor
 			foreach(var name in propNames)
 			{
 				Remove(name);
+			}
+		}
+
+		/// <summary>
+		/// Removes properties from all configurations in all files.
+		/// It actually ignores the global configuration and global platform
+		/// and operates on just the raw XML elements.
+		/// </summary>
+		/// <param name="propNames"></param>
+		public void RemoveXml(List<string> propNames)
+		{
+			foreach(var name in propNames)
+			{
+				foreach(var project in _allProjects)
+				{
+					ProjectRootElement root = project.Xml;
+					var tobedeleted = new List<ProjectPropertyElement>();
+					foreach(ProjectPropertyElement prop in root.Properties)
+					{
+						if (String.Compare(prop.Name, name, true) ==0)
+						{
+							tobedeleted.Add(prop);
+						}
+					}
+
+					foreach (var prop in tobedeleted)
+					{
+						prop.Parent.RemoveChild(prop);
+					}
+
+					var emptyGroups = new List<ProjectPropertyGroupElement>();
+					foreach(var group in root.PropertyGroups)
+					{
+						if (group.Children.Count == 0)
+						{
+							emptyGroups.Add(group);
+						}
+					}
+
+					foreach(var group in emptyGroups)
+					{
+						group.Parent.RemoveChild(group);
+					}
+
+					project.Save();
+				}
+
+				if (_allFoundProperties.ContainsKey(name))
+				{
+					ReferencedProperty refp = _allFoundProperties[name];
+					refp.RemoveProjects(_allProjects);
+					if (refp.UsedCount == 0)
+					{
+						bool removed = _allFoundProperties.Remove(name);
+						Debug.Assert(removed, "Property was not removed from the list");
+					}
+				}
 			}
 		}
 

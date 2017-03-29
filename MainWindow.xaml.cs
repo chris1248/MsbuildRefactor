@@ -284,5 +284,10 @@ namespace msbuildrefactor
 		{
 			vm.RemovePropertiesFromProjects();
 		}
+
+		private void Button_Click_1(object sender, RoutedEventArgs e)
+		{
+			vm.RemoveAllPropertiesFromProjects();
+		}
 	}
 }

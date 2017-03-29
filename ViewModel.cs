@@ -108,11 +108,22 @@ namespace msbuildrefactor
 			OnPropertyChanged("PropSheetProperties");
 		}
 
-		internal void RemovePropertiesFromProjects()
+		public void RemovePropertiesFromProjects()
 		{
 			var names = from p in PropSheet.Properties
 						select p.Name;
 			model.Remove(names.ToList());
+		}
+
+		public void RemoveAllPropertiesFromProjects()
+		{
+			var names = from p in PropSheet.Properties
+						where !p.IsGlobalProperty
+						where !p.IsReservedProperty
+						where !p.IsImported
+						where !p.IsEnvironmentProperty
+						select p.Name;
+			model.RemoveXml(names.ToList());
 		}
 		#endregion
 	}
