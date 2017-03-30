@@ -190,7 +190,7 @@ namespace UnitTests
 			Assert.AreEqual("ReferenceProperty Configuration, usedby: 3 projects", p.ToString());
 
 			var propVals = p.PropertyValues;
-			Assert.AreEqual("ReferencedValues debug, Count: 3 for Configuration", propVals["debug"].ToString());
+			Assert.AreEqual("ReferencedValues Debug, Count: 3 for Configuration", propVals["Debug"].ToString());
 		}
 
 		[TestMethod]

@@ -126,7 +126,7 @@ namespace Refactor
 			OnPropertyChanged("PropertyValues");
 		}
 
-		private ObservableConcurrentDictionary<String, ReferencedValues> _PropertyValues = new ObservableConcurrentDictionary<string, ReferencedValues>();
+		private ObservableConcurrentDictionary<String, ReferencedValues> _PropertyValues = new ObservableConcurrentDictionary<string, ReferencedValues>(StringComparer.OrdinalIgnoreCase);
 		public ObservableConcurrentDictionary<String, ReferencedValues> PropertyValues
 		{
 			get { return _PropertyValues; }
@@ -139,8 +139,8 @@ namespace Refactor
 				ProjectProperty itemprop = project.GetProperty(this.Name);
 				if (itemprop != null)
 				{
-					string key = itemprop.EvaluatedValue.ToLower();
-					if (this.Name == "OutputPath")
+					string key = itemprop.EvaluatedValue;
+					if (String.Compare(this.Name, "OutputPath", true) ==0)
 					{
 						key = project.OutputPath;
 					}

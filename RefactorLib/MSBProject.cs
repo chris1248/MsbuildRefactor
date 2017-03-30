@@ -44,12 +44,12 @@ namespace Refactor
 			}
 		}
 		
-		public string ResolveValue(ProjectProperty p)
+		private string ResolveValue(ProjectProperty p)
 		{
 			var relative = p.EvaluatedValue;
 			var basepath = Path.GetDirectoryName(this.FullPath);
 			var combined = Path.GetFullPath(Path.Combine(basepath, relative));
-			return combined.ToLower();
+			return combined;
 		}
 	}
 }
