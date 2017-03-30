@@ -140,7 +140,7 @@ namespace msbuildrefactor
 
 		public void RemoveEmptyProps()
 		{
-			model.RemoveEmptyProps();
+			model.RemoveEmptyXMLElements();
 			OnPropertyChanged("FoundProperties");
 		}
 		#endregion

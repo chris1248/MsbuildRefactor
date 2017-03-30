@@ -134,34 +134,29 @@ namespace Refactor
 
 		public void Remove(List<string> propNames)
 		{
-			foreach(var name in propNames)
+			foreach (var name in propNames)
 			{
 				Remove(name);
 			}
 		}
 
 		/// <summary>
-		/// The bain of all old msbuild projects are empty property values. 
+		/// The bain of all old msbuild projects are empty property XML elements. 
 		/// This function gets rid of them, in all build configs and in all the projects.
-		/// Good riddance empty properties! We never knew ye!
+		/// Good riddance empty xml elements! We never knew ye!
 		/// </summary>
-		public void RemoveEmptyProps()
+		public void RemoveEmptyXMLElements()
 		{
 			Parallel.ForEach(_allProjects, project =>
 			{
 				ProjectRootElement root = project.Xml;
-				var tobedeleted = new List<ProjectPropertyElement>();
-				foreach (ProjectPropertyElement prop in root.Properties)
-				{
-					if (String.IsNullOrEmpty(prop.Value))
-					{
-						tobedeleted.Add(prop);
-					}
-				}
-				foreach (var prop in tobedeleted)
-				{
-					prop.Parent.RemoveChild(prop);
-				}
+
+				RemoveEmptyProperties(root);
+				RemoveEmptyElement<ProjectPropertyGroupElement>(root, root.PropertyGroups);
+				RemoveEmptyElement<ProjectImportGroupElement>(root, root.ImportGroups);
+				RemoveEmptyElement<ProjectItemDefinitionGroupElement>(root, root.ItemDefinitionGroups);
+				RemoveEmptyElement<ProjectItemGroupElement>(root, root.ItemGroups);
+
 				project.Save();
 				project.ReevaluateIfNecessary();
 			});
@@ -176,39 +171,13 @@ namespace Refactor
 		/// <param name="propNames"></param>
 		public void RemoveXml(List<string> propNames)
 		{
-			foreach(var name in propNames)
+			foreach (var name in propNames)
 			{
-				foreach(var project in _allProjects)
+				foreach (var project in _allProjects)
 				{
 					ProjectRootElement root = project.Xml;
-					var tobedeleted = new List<ProjectPropertyElement>();
-					foreach(ProjectPropertyElement prop in root.Properties)
-					{
-						if (String.Compare(prop.Name, name, true) ==0)
-						{
-							tobedeleted.Add(prop);
-						}
-					}
-
-					foreach (var prop in tobedeleted)
-					{
-						prop.Parent.RemoveChild(prop);
-					}
-
-					var emptyGroups = new List<ProjectPropertyGroupElement>();
-					foreach(var group in root.PropertyGroups)
-					{
-						if (group.Children.Count == 0)
-						{
-							emptyGroups.Add(group);
-						}
-					}
-
-					foreach(var group in emptyGroups)
-					{
-						group.Parent.RemoveChild(group);
-					}
-
+					RemoveEmptyProperties(root);
+					RemoveEmptyElement<ProjectPropertyGroupElement>(root, root.PropertyGroups);
 					project.Save();
 				}
 
@@ -222,6 +191,40 @@ namespace Refactor
 						Debug.Assert(removed, "Property was not removed from the list");
 					}
 				}
+			}
+		}
+
+		private static void RemoveEmptyElement<T>(ProjectRootElement root, ICollection<T> items)
+			where T : ProjectElementContainer
+		{
+			var emptyGroups = new List<T>();
+			foreach (var group in items)
+			{
+				if (group.Children.Count == 0)
+				{
+					emptyGroups.Add(group);
+				}
+			}
+
+			foreach (var group in emptyGroups)
+			{
+				group.Parent.RemoveChild(group);
+			}
+		}
+
+		private static void RemoveEmptyProperties(ProjectRootElement root)
+		{
+			var tobedeleted = new List<ProjectPropertyElement>();
+			foreach (ProjectPropertyElement prop in root.Properties)
+			{
+				if (String.IsNullOrEmpty(prop.Value))
+				{
+					tobedeleted.Add(prop);
+				}
+			}
+			foreach (var prop in tobedeleted)
+			{
+				prop.Parent.RemoveChild(prop);
 			}
 		}
 
