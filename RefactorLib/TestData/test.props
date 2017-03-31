@@ -4,7 +4,7 @@
 		<Name>Chris</Name>
 		<Last>Johnson</Last>
 		<OutputPath>c:\builds\$(Configuration)\</OutputPath>
-    <ADebugProp Condition="'$(Configuration)'=='Debug'">Debug</ADebugProp>
-    <AReleaseProp Condition="'$(Configuration)'=='Release'">Release</AReleaseProp>
+		<ADebugProp Condition="'$(Configuration)'=='Debug'">Debug</ADebugProp>
+		<AReleaseProp Condition="'$(Configuration)'=='Release'">Release</AReleaseProp>
 	</PropertyGroup>
 </Project>

@@ -440,6 +440,11 @@ namespace Refactor
 
 		private void GetAllConfigsAndPlatforms(List<MSBProject> projects)
 		{
+			if (_allConfigurations.Count != 0)
+				_allConfigurations.Clear();
+			if (_allPlatforms.Count != 0)
+				_allPlatforms.Clear();
+
 			foreach (MSBProject project in projects)
 			{
 				IDictionary<string, List<string>> conProps = project.ConditionedProperties;
