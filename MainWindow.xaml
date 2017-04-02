@@ -180,15 +180,19 @@
 						<RowDefinition Height="45" />
 						<RowDefinition Height="45" />
 					</Grid.RowDefinitions>
-					<StackPanel Orientation="Horizontal" Grid.Row="0">
-						<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Remove Empty XML Elements for:</Label>
-						<Button Height="25" Margin="0,8" Width="107" Click="RemoveEmptyProps_Click">All Configurations</Button>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal" Grid.Row="1">
-						<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Delete project properties for:</Label>
-						<Button Content="Current Config" Width="91" Click="Button_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For the current configuration)." Height="25" Margin="0,0,10,0"/>
-						<Button Content="All Configurations" Height="25" Width="105" Click="Button_Click_1" ToolTip="Removes all properties from the project files that are already in the property sheet (For ALL configurations)."/>
-					</StackPanel>
+					<Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Gray">
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Remove Empty XML Elements for:</Label>
+							<Button Height="25" Margin="0,8" Width="107" Click="RemoveEmptyProps_Click">All Configurations</Button>
+						</StackPanel>
+					</Border>
+					<Border Grid.Row="1" BorderThickness="0,0,0,1" BorderBrush="Gray">
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Delete project properties for:</Label>
+							<Button Content="Current Config" Width="91" Click="Button_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For the current configuration)." Height="25" Margin="0,0,10,0"/>
+							<Button Content="All Configurations" Height="25" Width="105" Click="Button_Click_1" ToolTip="Removes all properties from the project files that are already in the property sheet (For ALL configurations)."/>
+						</StackPanel>
+					</Border>
 				</Grid>
 			</TabItem>
 		</TabControl>
