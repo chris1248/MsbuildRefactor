@@ -152,6 +152,7 @@ namespace Refactor
 				ProjectRootElement root = project.Xml;
 
 				RemoveEmptyProperties(root);
+				RemoveEmptyItemDefGroupChildren(root);
 				RemoveEmptyElement<ProjectPropertyGroupElement>(root, root.PropertyGroups);
 				RemoveEmptyElement<ProjectImportGroupElement>(root, root.ImportGroups);
 				RemoveEmptyElement<ProjectItemDefinitionGroupElement>(root, root.ItemDefinitionGroups);
@@ -222,6 +223,30 @@ namespace Refactor
 					tobedeleted.Add(prop);
 				}
 			}
+			foreach (var prop in tobedeleted)
+			{
+				prop.Parent.RemoveChild(prop);
+			}
+		}
+
+		private static void RemoveEmptyItemDefGroupChildren(ProjectRootElement root)
+		{
+			var tobedeleted = new List<ProjectElement>();
+			foreach(ProjectItemDefinitionGroupElement group in root.ItemDefinitionGroups)
+			{
+				foreach (ProjectElement child in group.AllChildren)
+				{
+					var elem = child as ProjectMetadataElement;
+					if (elem != null)
+					{
+						if (String.IsNullOrEmpty(elem.Value))
+						{
+							tobedeleted.Add(elem);
+						}
+					}
+				}
+			}
+
 			foreach (var prop in tobedeleted)
 			{
 				prop.Parent.RemoveChild(prop);
