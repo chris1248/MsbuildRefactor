@@ -410,25 +410,32 @@ namespace Refactor
 		{
 			bool isCommonPropAttached = false;
 			string name = Path.GetFileName(_propertySheet.FullPath);
-			// Add in the import to the common property sheet
-			foreach (ResolvedImport import in proj.Imports)
+
+			XDocument doc = XDocument.Load(proj.FullPath);
+			XNamespace ns = doc.Root.Name.Namespace;
+			var imports = doc.Descendants(ns + "Import");
+			foreach(XElement import in imports)
 			{
-				string importedName = Path.GetFileName(import.ImportedProject.FullPath);
-				if (String.Compare(importedName, name, StringComparison.OrdinalIgnoreCase) == 0)
+				XAttribute attr = import.Attribute("Project");
+				if (attr != null)
 				{
-					isCommonPropAttached = true;
-					break;
+					string importedName = Path.GetFileName(attr.Value);
+					if (String.Compare(importedName, name, StringComparison.OrdinalIgnoreCase) == 0)
+					{
+						isCommonPropAttached = true;
+						break;
+					}
 				}
 			}
+
 			if (!isCommonPropAttached)
 			{
 				// Method one
-				XDocument doc = XDocument.Load(proj.FullPath);
 				Uri uc = new Uri(_propertySheet.FullPath);
 				Uri ui = new Uri(proj.FullPath);
 				Uri dif = ui.MakeRelativeUri(uc);
 				string relative = dif.OriginalString;
-				XNamespace ns = doc.Root.Name.Namespace;
+				
 				XElement import = new XElement(ns + "Import", new XAttribute("Project", relative));
 				IXmlLineInfo info = import as IXmlLineInfo;
 				doc.Root.AddFirst(import);

@@ -121,20 +121,25 @@ namespace msbuildrefactor
 
 		public void RemovePropertiesFromProjects()
 		{
-			var names = from p in PropSheet.Properties
-						select p.Name;
-			model.Remove(names.ToList());
+			var names = (from p in PropSheet.Properties
+						where !p.IsEnvironmentProperty
+						where !p.IsGlobalProperty
+						where !p.IsImported
+						where !p.IsReservedProperty
+						select p.Name).ToList();
+			model.Remove(names);
+			OnPropertyChanged("FoundProperties");
 		}
 
 		public void RemoveAllPropertiesFromProjects()
 		{
-			var names = from p in PropSheet.Properties
+			var names = (from p in PropSheet.Properties
 						where !p.IsGlobalProperty
 						where !p.IsReservedProperty
 						where !p.IsImported
 						where !p.IsEnvironmentProperty
-						select p.Name;
-			model.RemoveXml(names.ToList());
+						select p.Name).ToList();
+			model.RemoveXml(names);
 			OnPropertyChanged("FoundProperties");
 		}
 
