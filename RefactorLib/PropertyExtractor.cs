@@ -176,9 +176,23 @@ namespace Refactor
 			{
 				foreach (var project in _allProjects)
 				{
+					var deleteThese = new List<ProjectPropertyElement>();
 					ProjectRootElement root = project.Xml;
-					RemoveEmptyProperties(root);
-					RemoveEmptyElement<ProjectPropertyGroupElement>(root, root.PropertyGroups);
+					foreach (var group in root.PropertyGroups)
+					{
+						foreach (ProjectPropertyElement prop in group.Properties)
+						{
+							if (String.Compare(name, prop.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
+							{
+								deleteThese.Add(prop);
+							}
+						}
+					}
+
+					foreach (var prop in deleteThese)
+					{
+						prop.Parent.RemoveChild(prop);
+					}
 					project.Save();
 				}
 
@@ -480,6 +494,10 @@ namespace Refactor
 			foreach (MSBProject project in projects)
 			{
 				IDictionary<string, List<string>> conProps = project.ConditionedProperties;
+				if (!conProps.ContainsKey("Configuration"))
+					continue;
+				if (!conProps.ContainsKey("Platform"))
+					continue;
 				List<String> configs = conProps["Configuration"];
 				List<String> platforms = conProps["Platform"];
 				foreach (var config in configs)
