@@ -173,6 +173,10 @@ namespace msbuildrefactor
 					// Same as deleting a property
 					vm.DeleteValue(propdata);
 				}
+				else if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+				{
+					vm.MoveValueAllConfigs(propdata);
+				}
 				else
 				{
 					vm.MoveProperty(propdata);

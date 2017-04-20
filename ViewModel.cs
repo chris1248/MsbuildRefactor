@@ -83,6 +83,13 @@ namespace msbuildrefactor
 			OnPropertyChanged("PropSheetProperties");
 		}
 
+		public void MoveValueAllConfigs(ReferencedValues val)
+		{
+			model.MoveValueAllConfigs(val);
+			OnPropertyChanged("FoundProperties");
+			OnPropertyChanged("PropSheetProperties");
+		}
+
 		public void DeleteProperty(string key)
 		{
 			model.Remove(key);

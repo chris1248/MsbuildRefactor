@@ -5,6 +5,7 @@ using System;
 using System.Windows.Data;
 using System.Globalization;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Refactor
 {
@@ -116,6 +117,58 @@ namespace Refactor
 					proj.MarkDirty();
 				}
 			}
+
+			RemoveProjects(val.Projects);
+			string key = val.EvaluatedValue;
+			if (_PropertyValues.ContainsKey(key))
+			{
+				_PropertyValues.Remove(key);
+			}
+			OnPropertyChanged("PropertyValues");
+		}
+		private readonly string CONFIG = "Configuration";
+		private readonly string PLATFORM = "Platform";
+		public void RemoveAllConfigs(ReferencedValues val)
+		{
+			//foreach(MSBProject proj in val.Projects)
+			Parallel.ForEach(val.Projects, proj =>
+			{
+				//Debug.Print("Project: {0}", proj.FullPath);
+				// Iterate through all global properties and set the value
+				IDictionary<string, List<string>> conProps = proj.ConditionedProperties;
+				List<String> configs = conProps[CONFIG];
+				List<String> platforms = conProps[PLATFORM];
+				var previousConfig = proj.GlobalProperties[CONFIG];
+				var previousPlatform = proj.GlobalProperties[PLATFORM];
+
+				foreach (var config in configs)
+				{
+					foreach (var platform in platforms)
+					{
+						proj.SetGlobalProperty(CONFIG, config);
+						proj.SetGlobalProperty(PLATFORM, platform);
+						proj.ReevaluateIfNecessary();
+						ProjectProperty p = proj.GetProperty(this.Name);
+						if (p != null &&
+							(!p.IsImported) &&
+							(!p.IsEnvironmentProperty) &&
+							(!p.IsGlobalProperty) &&
+							(!p.IsReservedProperty))
+						{
+							//Debug.Print("\tRemoving {0} for {1}|{2}", this.Name, config, platform);
+							bool removed = proj.RemoveProperty(p);
+							Debug.Assert(removed);
+							proj.MarkDirty();
+							proj.ReevaluateIfNecessary();
+						}
+					}
+				}
+
+				proj.SetGlobalProperty(CONFIG, previousConfig);
+				proj.SetGlobalProperty(PLATFORM, previousPlatform);
+				proj.ReevaluateIfNecessary();
+				proj.MarkDirty();
+			});
 
 			RemoveProjects(val.Projects);
 			string key = val.EvaluatedValue;

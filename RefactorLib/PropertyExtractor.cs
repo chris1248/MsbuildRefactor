@@ -287,7 +287,8 @@ namespace Refactor
 		}
 
 		/// <summary>
-		/// Moves one particular value of a property to the property sheet
+		/// Moves one particular value of a property to the property sheet.
+		/// This only works for one particular configuration and platform
 		/// By default it over writes the existing value in the property sheet
 		/// </summary>
 		/// <param name="val"></param>
@@ -295,6 +296,17 @@ namespace Refactor
 		{
 			ReferencedProperty owner = val.Owner;
 			owner.Remove(val);
+			if (owner.UsedCount == 0)
+			{
+				_allFoundProperties.Remove(owner.Name);
+			}
+			UpdatePropertySheet(owner.Name, val.EvaluatedValue);
+		}
+
+		public void MoveValueAllConfigs(ReferencedValues val)
+		{
+			ReferencedProperty owner = val.Owner;
+			owner.RemoveAllConfigs(val);
 			if (owner.UsedCount == 0)
 			{
 				_allFoundProperties.Remove(owner.Name);
@@ -388,9 +400,12 @@ namespace Refactor
 			{
 				try
 				{
-					proj.Save();
-					AttachImportIfNecessary(proj);
-					proj.ReevaluateIfNecessary();
+					if (proj.IsDirty)
+					{
+						proj.Save();
+						AttachImportIfNecessary(proj);
+						proj.ReevaluateIfNecessary();
+					}
 				}
 				catch (Exception e)
 				{
