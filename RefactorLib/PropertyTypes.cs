@@ -179,6 +179,9 @@ namespace Refactor
 			OnPropertyChanged("PropertyValues");
 		}
 
+		/// <summary>
+		/// By passing in a comparer instances, this makes this dictionary ignore the case of the keys.
+		/// </summary>
 		private ObservableConcurrentDictionary<String, ReferencedValues> _PropertyValues = new ObservableConcurrentDictionary<string, ReferencedValues>(StringComparer.OrdinalIgnoreCase);
 		public ObservableConcurrentDictionary<String, ReferencedValues> PropertyValues
 		{

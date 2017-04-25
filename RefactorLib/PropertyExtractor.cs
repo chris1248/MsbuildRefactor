@@ -13,6 +13,11 @@ using Microsoft.Build.Construction;
 
 namespace Refactor
 {
+	/// <summary>
+	/// If anything represents the model behind the view, this is it.
+	/// The view model holds an instance of this class, which can perform all the operations
+	/// that can be performed in the UI.
+	/// </summary>
 	public class PropertyExtractor
 	{
 		#region Fields
