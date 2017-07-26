@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections.Concurrent;
@@ -16,7 +15,7 @@ namespace Refactor
 	/// <summary>
 	/// If anything represents the model behind the view, this is it.
 	/// The view model holds an instance of this class, which can perform all the operations
-	/// that can be performed in the UI.
+	/// that can be performed in the UI. The UI is totally agnostic about this class.
 	/// </summary>
 	public class PropertyExtractor
 	{

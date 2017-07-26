@@ -4,15 +4,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using Refactor;
 
 namespace msbuildrefactor
@@ -202,7 +198,7 @@ namespace msbuildrefactor
 			if ((allPropsLV.SelectedItem != null) && (e.Key == Key.Delete))
 			{
 				var pair = (KeyValuePair<String, ReferencedProperty>)allPropsLV.SelectedItem;
-				if (Keyboard.IsKeyDown(Key.LeftShift))
+				if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
 				{
 					vm.DeletePropertyXML(pair.Key);
 				}
@@ -291,17 +287,17 @@ namespace msbuildrefactor
 			}
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void Operation_RemoveProperties_Click(object sender, RoutedEventArgs e)
 		{
 			vm.RemovePropertiesFromProjects();
 		}
 
-		private void Button_Click_1(object sender, RoutedEventArgs e)
+		private void Operation_RemoveProperties_All_Click(object sender, RoutedEventArgs e)
 		{
 			vm.RemoveAllPropertiesFromProjects();
 		}
 
-		private void RemoveEmptyProps_Click(object sender, RoutedEventArgs e)
+		private void Operation_RemoveEmptyProps_Click(object sender, RoutedEventArgs e)
 		{
 			vm.RemoveEmptyProps();
 		}

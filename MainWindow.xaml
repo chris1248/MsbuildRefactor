@@ -27,7 +27,8 @@
 			<RowDefinition Height="40"/>
 			<RowDefinition/>
 			<RowDefinition Height="34" />
-		</Grid.RowDefinitions>
+      <RowDefinition Height="30" />
+    </Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="257*"/>
 			<ColumnDefinition Width="260*"/>
@@ -183,14 +184,14 @@
 					<Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Gray">
 						<StackPanel Orientation="Horizontal">
 							<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Remove Empty XML Elements for:</Label>
-							<Button Height="25" Margin="0,8" Width="107" Click="RemoveEmptyProps_Click">All Configurations</Button>
+							<Button Height="25" Margin="0,8" Width="107" Click="Operation_RemoveEmptyProps_Click">All Configurations</Button>
 						</StackPanel>
 					</Border>
 					<Border Grid.Row="1" BorderThickness="0,0,0,1" BorderBrush="Gray">
 						<StackPanel Orientation="Horizontal">
 							<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Delete project properties for:</Label>
-							<Button Content="Current Config" Width="91" Click="Button_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For the current configuration)." Height="25" Margin="0,0,10,0"/>
-							<Button Content="All Configurations" Height="25" Width="105" Click="Button_Click_1" ToolTip="Removes all properties from the project files that are already in the property sheet (For ALL configurations)."/>
+							<Button Content="Current Config" Width="91" Click="Operation_RemoveProperties_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For the current configuration)." Height="25" Margin="0,0,10,0"/>
+							<Button Content="All Configurations" Height="25" Width="105" Click="Operation_RemoveProperties_All_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For ALL configurations)."/>
 						</StackPanel>
 					</Border>
 				</Grid>
@@ -199,5 +200,32 @@
 		<!-- Row Three -->
 		<Button x:Name="savePropBtn" Content="Save Property Sheet" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" Margin="5,6,0,6" Padding="0" HorizontalAlignment="Left" Width="118"/>
 		<Button x:Name="saveAllBtn" Content="Save Project Files" Width="126" Click="Click_saveAllBtn" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,15,6"/>
-	</Grid>
+    <!-- Row Four -->
+    <StatusBar x:Name="statusBar" Grid.Row="3" Grid.ColumnSpan="2" >
+      <StatusBar.ItemsPanel>
+        <ItemsPanelTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="100" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="200" />
+            </Grid.ColumnDefinitions>
+          </Grid>
+        </ItemsPanelTemplate>
+      </StatusBar.ItemsPanel>
+      <StatusBarItem>
+        <TextBlock Name="lblCursorPosition" />
+      </StatusBarItem>
+      <Separator Grid.Column="1" />
+      <StatusBarItem Grid.Column="2">
+        <TextBlock x:Name="statusMessage" Text="" />
+      </StatusBarItem>
+      <Separator Grid.Column="3" />
+      <StatusBarItem Grid.Column="4">
+        <ProgressBar x:Name="theProgressBar" Value="50" Width="90" Height="16" Visibility="Hidden" />
+      </StatusBarItem>
+    </StatusBar>
+  </Grid>
 </Window>
