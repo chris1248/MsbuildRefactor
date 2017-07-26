@@ -193,6 +193,11 @@ namespace msbuildrefactor
 
 		private void Click_saveAllBtn(object sender, RoutedEventArgs e) { vm.SaveAllProjects(); }
 
+		private void allPropsLV_KeyDown(object sender, KeyEventArgs e)
+		{
+			CommonShiftMessage();
+		}
+
 		private void allPropsLV_KeyUp(object sender, KeyEventArgs e)
 		{
 			if ((allPropsLV.SelectedItem != null) && (e.Key == Key.Delete))
@@ -207,6 +212,16 @@ namespace msbuildrefactor
 					vm.DeleteProperty(pair.Key);
 				}
 			}
+			statusMessage.Text = String.Empty;
+		}
+		private void CommonShiftMessage()
+		{
+			if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+				statusMessage.Text = "Operate on ALL configurations and ALL platforms";
+		}
+		private void detailsLV_KeyDown(object sender, KeyEventArgs e)
+		{
+			CommonShiftMessage();
 		}
 
 		private void detailsLV_KeyUp(object sender, KeyEventArgs e)
@@ -216,6 +231,7 @@ namespace msbuildrefactor
 				var p = (KeyValuePair<String, ReferencedValues>)detailsLV.SelectedItem;
 				vm.DeleteValue(p.Value);
 			}
+			statusMessage.Text = String.Empty;
 		}
 
 		private void globalConfigs_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -300,6 +316,11 @@ namespace msbuildrefactor
 		private void Operation_RemoveEmptyProps_Click(object sender, RoutedEventArgs e)
 		{
 			vm.RemoveEmptyProps();
+		}
+
+		private void commonLV_KeyUp(object sender, KeyEventArgs e)
+		{
+			statusMessage.Text = String.Empty;
 		}
 	}
 }

@@ -113,7 +113,7 @@
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 					<ListView x:Name="allPropsLV" ItemsSource="{Binding FoundProperties}" 
-							  Grid.Row="0"  Margin="0" KeyUp="allPropsLV_KeyUp" >
+							  Grid.Row="0"  Margin="0" KeyUp="allPropsLV_KeyUp" KeyDown="allPropsLV_KeyDown" >
 						<ListView.ContextMenu>
 							<ContextMenu x:Name="AllPropsRCMenu">
 								<MenuItem Header="Show Projects" Click="MenuItem_Click" />
@@ -149,7 +149,7 @@
 					<ListView x:Name="detailsLV" Grid.Row="2" 
 							  ItemsSource="{Binding ElementName=allPropsLV, Path=SelectedItem, Converter={StaticResource keypair}}" 
 							  PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" 
-							  MouseMove="detailsLV_MouseMove" KeyUp="detailsLV_KeyUp"  >
+							  MouseMove="detailsLV_MouseMove" KeyUp="detailsLV_KeyUp" KeyDown="detailsLV_KeyDown"  >
 						<ListView.ContextMenu>
 							<ContextMenu x:Name="DetailsRCMenu">
 								<MenuItem Header="Show Projects" Click="ShowProjects_Click" />
