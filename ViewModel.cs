@@ -187,6 +187,11 @@ namespace msbuildrefactor
 			model.RemoveEmptyXMLElements();
 			OnPropertyChanged("FoundProperties");
 		}
+
+		public void AttachImportForAll()
+		{
+			model.AttachImportForAll();
+		}
 		#endregion
 	}
 }

@@ -423,6 +423,24 @@ namespace Refactor
 				_propertySheet.ReevaluateIfNecessary();
 			}
 		}
+
+		public void AttachImportForAll()
+		{
+			foreach(var proj in _allProjects)
+			{
+				try
+				{
+					proj.Save();
+					AttachImportIfNecessary(proj);
+					proj.ReevaluateIfNecessary();
+				}
+				catch (Exception e)
+				{
+					Utils.WL(ConsoleColor.Red, String.Format("Error saving file: {0}", proj.FullPath));
+					Utils.WL(ConsoleColor.DarkGray, e.Message);
+				}
+			}
+		}
 		#endregion
 
 		#region Private Methods

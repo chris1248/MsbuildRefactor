@@ -322,5 +322,10 @@ namespace msbuildrefactor
 		{
 			statusMessage.Text = String.Empty;
 		}
+
+		private void button_Click(object sender, RoutedEventArgs e)
+		{
+			vm.AttachImportForAll();
+		}
 	}
 }
