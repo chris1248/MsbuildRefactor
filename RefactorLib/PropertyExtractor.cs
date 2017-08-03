@@ -26,6 +26,8 @@ namespace Refactor
 		private string platform;
 		private string propSheet;
 		private readonly string toolsVersion = "14.0";
+		private HashSet<string> inputDirectories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		private FileInfo configFile = new FileInfo("config.txt");
 		#endregion
 
 		#region Data Fields
@@ -60,6 +62,7 @@ namespace Refactor
 		}
 		public MSBProject PropertySheet { get { return _propertySheet; } }
 		public int CountFoundFiles { get; private set; }
+		public string[] InputDirectories { get { return inputDirectories.ToArray(); } }
 		#endregion
 		#endregion
 
@@ -76,6 +79,7 @@ namespace Refactor
 		public PropertyExtractor(string inputDir, string config, string platform, bool verbose = false)
 		{
 			this.inputDir = inputDir;
+			PersistSearchDirectories(inputDir);
 			this.config = config;
 			this.platform = platform;
 			this.Verbose = verbose;
@@ -89,7 +93,15 @@ namespace Refactor
 		public void SetInputDirectory(string inputDir)
 		{
 			this.inputDir = inputDir;
+			PersistSearchDirectories(inputDir);
 			Init();
+		}
+
+		private void PersistSearchDirectories(string directory)
+		{
+			inputDirectories.Add(inputDir);
+			File.Delete(configFile.FullName);
+			File.WriteAllLines(configFile.FullName, inputDirectories.ToArray());
 		}
 
 		private void Init()
@@ -97,6 +109,18 @@ namespace Refactor
 			_allProjects = GetProjects();
 			GetAllConfigsAndPlatforms(_allProjects);
 			GetAllReferenceProperties(_allProjects);
+		}
+
+		public void LoadConfigFile()
+		{
+			if (configFile.Exists)
+			{
+				String[] lines = File.ReadAllLines(configFile.FullName);
+				foreach (var line in lines)
+				{
+					inputDirectories.Add(line);
+				}
+			}
 		}
 		#endregion
 

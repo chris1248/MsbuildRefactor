@@ -42,7 +42,7 @@
     </StackPanel>
     <StackPanel  Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
       <Label Content="Projects Directory" Height="26" Width="110" Margin="0"/>
-      <TextBox x:Name="searchPath" Height="23" Width="285" Margin="10,0,0,0" />
+      <ComboBox x:Name="searchPath" Height="23" Width="285" Margin="10,0,0,0" SelectionChanged="searchPath_SelectionChanged" />
       <Button x:Name="searchChoose" Content="Browse..." Height="23" Width="74" Click="Click_choose_directory" Margin="10,0"/>
     </StackPanel>
 

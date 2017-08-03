@@ -22,6 +22,11 @@ namespace msbuildrefactor
 			model = new PropertyExtractor(SelectedConfiguration, SelectedPlatform);
 		}
 
+		public void LoadConfigFile()
+		{
+			model.LoadConfigFile();
+		}
+
 		#region Properties for Data Binding
 		public MSBProject PropSheet { get { return model.PropertySheet; } }
 		public String SelectedConfiguration { get; set; }
@@ -49,6 +54,7 @@ namespace msbuildrefactor
 		}
 		public int CountFoundFiles { get { return model.CountFoundFiles; } }
 		public ObservableConcurrentDictionary<String, ReferencedProperty> FoundProperties { get { return model.AllFoundProperties; } }
+		public string[] InputDirectories { get { return model.InputDirectories; } }
 		#endregion
 
 		#region Methods are called from UI Controls

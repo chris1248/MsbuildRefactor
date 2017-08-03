@@ -22,6 +22,13 @@ namespace msbuildrefactor
 		public MainWindow()
 		{
 			InitializeComponent();
+			LoadConfigFile();
+		}
+
+		private void LoadConfigFile()
+		{
+			vm.LoadConfigFile();
+			searchPath.ItemsSource = vm.InputDirectories;
 		}
 
 		private void Click_choose_prop_sheet(object sender, RoutedEventArgs e)
@@ -64,9 +71,21 @@ namespace msbuildrefactor
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
 				string directoryPath = browse.SelectedPath;
+				if (!searchPath.Items.Contains(directoryPath))
+				{
+					searchPath.Items.Add(directoryPath);
+				}
 				searchPath.Text = directoryPath;
 				vm.LoadAtDirectory(directoryPath);
 			}
+			LoadingDirectory = false;
+		}
+
+		private void searchPath_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			LoadingDirectory = true;
+			string path = searchPath.SelectedItem as string;
+			vm.LoadAtDirectory(path);
 			LoadingDirectory = false;
 		}
 
