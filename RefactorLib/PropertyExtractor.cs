@@ -205,6 +205,7 @@ namespace Refactor
 				foreach (var project in _allProjects)
 				{
 					var deleteThese = new List<ProjectPropertyElement>();
+					var emptyGroups = new List<ProjectPropertyGroupElement>();
 					ProjectRootElement root = project.Xml;
 					foreach (var group in root.PropertyGroups)
 					{
@@ -220,6 +221,19 @@ namespace Refactor
 					foreach (var prop in deleteThese)
 					{
 						prop.Parent.RemoveChild(prop);
+					}
+
+					foreach (var group in root.PropertyGroups)
+					{
+						if (group.Children.Count == 0)
+						{
+							// Parents have no more children. Mark them for deletion.
+							emptyGroups.Add(group);
+						}
+					}
+					foreach (var group in emptyGroups)
+					{
+						group.Parent.RemoveChild(group);
 					}
 					project.Save();
 				}
