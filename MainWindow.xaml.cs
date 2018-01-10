@@ -71,12 +71,12 @@ namespace msbuildrefactor
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
 				string directoryPath = browse.SelectedPath;
+				vm.LoadAtDirectory(directoryPath);
+				searchPath.Text = directoryPath;
 				if (!searchPath.Items.Contains(directoryPath))
 				{
-					searchPath.Items.Add(directoryPath);
+					searchPath.ItemsSource = vm.InputDirectories;
 				}
-				searchPath.Text = directoryPath;
-				vm.LoadAtDirectory(directoryPath);
 			}
 			LoadingDirectory = false;
 		}
@@ -211,6 +211,8 @@ namespace msbuildrefactor
 		private void Click_savePropBtn(object sender, RoutedEventArgs e) { vm.SavePropertySheet(); }
 
 		private void Click_saveAllBtn(object sender, RoutedEventArgs e) { vm.SaveAllProjects(); }
+
+		private void forceSaveBtn_Click(object sender, RoutedEventArgs e) { vm.ForceSaveAllProjects(); }
 
 		private void allPropsLV_KeyDown(object sender, KeyEventArgs e)
 		{

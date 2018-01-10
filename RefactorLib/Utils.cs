@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Refactor
 {
@@ -10,6 +11,8 @@ namespace Refactor
 			Console.ForegroundColor = col;
 			Console.WriteLine(message);
 			Console.ForegroundColor = prev;
+
+			Debug.Print(message);
 		}
 	}
 }

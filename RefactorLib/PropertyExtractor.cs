@@ -436,13 +436,29 @@ namespace Refactor
 			return sorted.ToList();
 		}
 
-		public void SaveAll()
+		/// <summary>
+		/// Saves all the project files, but only if they are dirty. If you want to 
+		/// save them anyways, perhaps to reformat the document, than pass in true
+		/// to the force parameter.
+		/// </summary>
+		/// <param name="force">True to force resaving the files, even if there are no changes.</param>
+		public void SaveAll(bool force=false)
 		{
 			Parallel.ForEach(_allProjects, proj =>
 			{
 				try
 				{
-					if (proj.IsDirty)
+					if (force)
+					{
+						// The MSBuild API only saves it if something is modified.
+						// So force a modification to enable it to resave as expected.
+						// We do this by setting and removing a property.
+						var transient = proj.SetProperty("not", "used");
+						proj.Save();
+						proj.RemoveProperty(transient);
+					}
+
+					if (force || proj.IsDirty)
 					{
 						proj.Save();
 						AttachImportIfNecessary(proj);
@@ -522,6 +538,11 @@ namespace Refactor
 
 		private void AttachImportIfNecessary(Project proj)
 		{
+			if (_propertySheet == null)
+			{
+				return;
+			}
+
 			bool isCommonPropAttached = false;
 			string name = Path.GetFileName(_propertySheet.FullPath);
 

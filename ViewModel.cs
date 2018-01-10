@@ -143,6 +143,7 @@ namespace msbuildrefactor
 		}
 
 		public void SaveAllProjects() { model.SaveAll(); }
+		public void ForceSaveAllProjects() { model.SaveAll(true); }
 		public void SavePropertySheet() { model.PropertySheet.Save(); }
 		public void UpdateConfigSelection()
 		{
