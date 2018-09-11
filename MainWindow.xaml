@@ -7,91 +7,91 @@
         xmlns:lib="clr-namespace:Refactor;assembly=RefactorLib"
         mc:Ignorable="d"
         Title="Property Sheet Tools" Height="679" Width="1012.144" ResizeMode="CanResizeWithGrip">
-  <Window.DataContext>
-    <local:ViewModel x:Name="vm" />
-  </Window.DataContext>
-  <Window.Resources>
-    <Style TargetType="{x:Type GridViewColumnHeader}">
-      <Setter Property="HorizontalContentAlignment" Value="Left" />
-    </Style>
-    <Style TargetType="{x:Type ListViewItem}">
-      <Setter Property="BorderBrush" Value="LightGray"/>
-      <Setter Property="BorderThickness" Value="0,1,1,0"/>
-      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-      <Setter Property="VerticalContentAlignment" Value="Stretch" />
-    </Style>
-    <lib:KeyPairToRefPropConverter x:Key="keypair" />
-  </Window.Resources>
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="40"/>
-      <RowDefinition/>
-      <RowDefinition Height="34" />
-      <RowDefinition Height="30" />
-    </Grid.RowDefinitions>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="257*"/>
-      <ColumnDefinition Width="260*"/>
-    </Grid.ColumnDefinitions>
-    <!-- Row One -->
-    <StackPanel  Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-      <Label x:Name="label" Height="26" Margin="0" HorizontalAlignment="Left" >Property Sheet</Label>
-      <TextBox x:Name="propSheetPath" Height="23" ToolTip="Property Sheet File Path" Margin="10,0,0,0" Width="260" />
-      <Button x:Name="propSheetChoose" Height="23" Width="55" Click="Click_choose_prop_sheet" Content="Browse..." Margin="10,0,0,0" />
-      <Button x:Name="propSheetCreate" Height="23" Width="55" Margin="10,0,0,0" Click="Click_create_prop_sheet" >Create...</Button>
-    </StackPanel>
-    <StackPanel  Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
-      <Label Content="Projects Directory" Height="26" Width="110" Margin="0"/>
-      <ComboBox x:Name="searchPath" Height="23" Width="285" Margin="10,0,0,0" SelectionChanged="searchPath_SelectionChanged" />
-      <Button x:Name="searchChoose" Content="Browse..." Height="23" Width="74" Click="Click_choose_directory" Margin="10,0"/>
-    </StackPanel>
+	<Window.DataContext>
+		<local:ViewModel x:Name="vm" />
+	</Window.DataContext>
+	<Window.Resources>
+		<Style TargetType="{x:Type GridViewColumnHeader}">
+			<Setter Property="HorizontalContentAlignment" Value="Left" />
+		</Style>
+		<Style TargetType="{x:Type ListViewItem}">
+			<Setter Property="BorderBrush" Value="LightGray"/>
+			<Setter Property="BorderThickness" Value="0,1,1,0"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Stretch" />
+		</Style>
+		<lib:KeyPairToRefPropConverter x:Key="keypair" />
+	</Window.Resources>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40"/>
+			<RowDefinition/>
+			<RowDefinition Height="34" />
+			<RowDefinition Height="30" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="257*"/>
+			<ColumnDefinition Width="260*"/>
+		</Grid.ColumnDefinitions>
+		<!-- Row One -->
+		<StackPanel  Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+			<Label x:Name="label" Height="26" Margin="0" HorizontalAlignment="Left" >Property Sheet</Label>
+			<TextBox x:Name="propSheetPath" Height="23" ToolTip="Property Sheet File Path" Margin="10,0,0,0" Width="260" />
+			<Button x:Name="propSheetChoose" Height="23" Width="55" Click="Click_choose_prop_sheet" Content="Browse..." Margin="10,0,0,0" />
+			<Button x:Name="propSheetCreate" Height="23" Width="55" Margin="10,0,0,0" Click="Click_create_prop_sheet" >Create...</Button>
+		</StackPanel>
+		<StackPanel  Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+			<Label Content="Projects Directory" Height="26" Width="110" Margin="0"/>
+			<ComboBox x:Name="searchPath" Height="23" Width="285" Margin="10,0,0,0" SelectionChanged="searchPath_SelectionChanged" />
+			<Button x:Name="searchChoose" Content="Browse..." Height="23" Width="74" Click="Click_choose_directory" Margin="10,0"/>
+		</StackPanel>
 
-    <!-- Row Two -->
-    <TabControl Grid.Row="1" Grid.Column="0" SelectedIndex="1">
-      <TabItem Header="Global Properties" Margin="0">
-        <Grid>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200*" />
-            <ColumnDefinition Width="200*" />
-          </Grid.ColumnDefinitions>
-          <ListBox x:Name="globalConfigs" Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedConfiguration}" ItemsSource="{Binding AllConfigurations}" SelectionChanged="globalConfigs_SelectionChanged" Margin="15"  />
-          <ListBox x:Name="globalPlatforms" Grid.Row="1" Grid.Column="1" SelectedItem="{Binding SelectedPlatform}" ItemsSource="{Binding AllPlatforms}" SelectionChanged="globalPlatforms_SelectionChanged" Margin="15" />
-          <Label Grid.Row="0" Grid.Column="0" Height="26" Margin="2" >Configurations</Label>
-          <Label Grid.Row="0" Grid.Column="1" Height="26" Margin="2" >Platform</Label>
-        </Grid>
-      </TabItem>
-      <TabItem Header="Property Sheet" Margin="0">
-        <ListView x:Name="commonLV" ItemsSource="{Binding PropSheetProperties}" Grid.Row="1" AllowDrop="True" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter"  >
-          <ListView.View>
-            <GridView>
-              <GridViewColumn Header="Property" Width="320" DisplayMemberBinding="{Binding Name}"/>
-              <GridViewColumn Header="Value" Width="150" DisplayMemberBinding="{Binding EvaluatedValue}"/>
-            </GridView>
-          </ListView.View>
-        </ListView>
-      </TabItem>
-    </TabControl>
-    <TabControl Grid.Row="1" Grid.Column="1" SelectedIndex="1">
-      <TabItem Header="Project Files" Margin="0">
-        <ListView x:Name="allProjectsLV" ItemsSource="{Binding AllProjects}" Margin="0" MouseDoubleClick="allProjectsLV_MouseDoubleClick">
-          <ListView.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="Open File" Click="OpenFile_Click" />
-            </ContextMenu>
-          </ListView.ContextMenu>
-          <ListView.View>
-            <GridView>
-              <GridViewColumn Width="410" DisplayMemberBinding="{Binding FullPath}">
-                <GridViewColumnHeader Content="FullPath" />
-              </GridViewColumn>
-              <GridViewColumn Width="60" DisplayMemberBinding="{Binding Extension}">
-                <GridViewColumnHeader Content="Extension" />
-              </GridViewColumn>
-              <!--
+		<!-- Row Two -->
+		<TabControl Grid.Row="1" Grid.Column="0" SelectedIndex="1">
+			<TabItem Header="Global Properties" Margin="0">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="30"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="200*" />
+						<ColumnDefinition Width="200*" />
+					</Grid.ColumnDefinitions>
+					<ListBox x:Name="globalConfigs" Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedConfiguration}" ItemsSource="{Binding AllConfigurations}" SelectionChanged="globalConfigs_SelectionChanged" Margin="15"  />
+					<ListBox x:Name="globalPlatforms" Grid.Row="1" Grid.Column="1" SelectedItem="{Binding SelectedPlatform}" ItemsSource="{Binding AllPlatforms}" SelectionChanged="globalPlatforms_SelectionChanged" Margin="15" />
+					<Label Grid.Row="0" Grid.Column="0" Height="26" Margin="2" >Configurations</Label>
+					<Label Grid.Row="0" Grid.Column="1" Height="26" Margin="2" >Platform</Label>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Property Sheet" Margin="0">
+				<ListView x:Name="commonLV" ItemsSource="{Binding PropSheetProperties}" Grid.Row="1" AllowDrop="True" Drop="commonLV_Drop" DragEnter="commonLV_DragEnter"  >
+					<ListView.View>
+						<GridView>
+							<GridViewColumn Header="Property" Width="320" DisplayMemberBinding="{Binding Name}"/>
+							<GridViewColumn Header="Value" Width="150" DisplayMemberBinding="{Binding EvaluatedValue}"/>
+						</GridView>
+					</ListView.View>
+				</ListView>
+			</TabItem>
+		</TabControl>
+		<TabControl Grid.Row="1" Grid.Column="1" SelectedIndex="1">
+			<TabItem Header="Project Files" Margin="0">
+				<ListView x:Name="allProjectsLV" ItemsSource="{Binding AllProjects}" Margin="0" MouseDoubleClick="allProjectsLV_MouseDoubleClick">
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Open File" Click="OpenFile_Click" />
+						</ContextMenu>
+					</ListView.ContextMenu>
+					<ListView.View>
+						<GridView>
+							<GridViewColumn Width="410" DisplayMemberBinding="{Binding FullPath}">
+								<GridViewColumnHeader Content="FullPath" />
+							</GridViewColumn>
+							<GridViewColumn Width="60" DisplayMemberBinding="{Binding Extension}">
+								<GridViewColumnHeader Content="Extension" />
+							</GridViewColumn>
+							<!--
 							<GridViewColumn Width="Auto" >
 								<GridViewColumn.CellTemplate>
 									<DataTemplate>
@@ -101,134 +101,145 @@
 								<GridViewColumnHeader Content="Included" />
 							</GridViewColumn>
 							-->
-            </GridView>
-          </ListView.View>
-        </ListView>
-      </TabItem>
-      <TabItem Header="All Properties" Margin="0" IsSelected="True">
-        <Grid x:Name="divider" >
-          <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="5" />
-            <RowDefinition Height="*" />
-          </Grid.RowDefinitions>
-          <ListView x:Name="allPropsLV" ItemsSource="{Binding FoundProperties}" 
+						</GridView>
+					</ListView.View>
+				</ListView>
+			</TabItem>
+			<TabItem Header="All Properties" Margin="0" IsSelected="True">
+				<Grid x:Name="divider" >
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="5" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+					<ListView x:Name="allPropsLV" ItemsSource="{Binding FoundProperties}" 
 							  Grid.Row="0"  Margin="0" KeyUp="allPropsLV_KeyUp" KeyDown="allPropsLV_KeyDown" >
-            <ListView.ContextMenu>
-              <ContextMenu x:Name="AllPropsRCMenu">
-                <MenuItem Header="Show Projects" Click="MenuItem_Click" />
-              </ContextMenu>
-            </ListView.ContextMenu>
-            <ListView.View>
-              <GridView>
-                <GridViewColumn Width="320" DisplayMemberBinding="{Binding Key}">
-                  <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="Key" Click="GridViewColumnHeader_Click" 
+						<ListView.ContextMenu>
+							<ContextMenu x:Name="AllPropsRCMenu">
+								<MenuItem Header="Show Projects" Click="MenuItem_Click" />
+							</ContextMenu>
+						</ListView.ContextMenu>
+						<ListView.View>
+							<GridView>
+								<GridViewColumn Width="320" DisplayMemberBinding="{Binding Key}">
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Key" Click="GridViewColumnHeader_Click" 
 															  ToolTip="The name of the MSBuild Property that was found" 
 															  Padding="5,0,2,0">Name</GridViewColumnHeader>
-                  </GridViewColumn.Header>
-                </GridViewColumn>
-                <GridViewColumn Width="55" DisplayMemberBinding="{Binding Value.UsedCount}" >
-                  <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="Value.UsedCount" Click="GridViewColumnHeader_Click" 
+									</GridViewColumn.Header>
+								</GridViewColumn>
+								<GridViewColumn Width="55" DisplayMemberBinding="{Binding Value.UsedCount}" >
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Value.UsedCount" Click="GridViewColumnHeader_Click" 
 															  ToolTip="The number of files this property was found in" 
 															  Padding="5,0,2,0">Count</GridViewColumnHeader>
-                  </GridViewColumn.Header>
-                </GridViewColumn>
-                <GridViewColumn Width="95" DisplayMemberBinding="{Binding Value.PropertyValues.Count}" >
-                  <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="Value.PropertyValues.Count" Click="GridViewColumnHeader_Click" 
+									</GridViewColumn.Header>
+								</GridViewColumn>
+								<GridViewColumn Width="95" DisplayMemberBinding="{Binding Value.PropertyValues.Count}" >
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Value.PropertyValues.Count" Click="GridViewColumnHeader_Click" 
 															  ToolTip="The number of unique values this property takes in all the project files" 
 															  Padding="5,0,2,0" >Count Unique</GridViewColumnHeader>
-                  </GridViewColumn.Header>
-                </GridViewColumn>
-              </GridView>
-            </ListView.View>
-          </ListView>
-          <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
-          <ListView x:Name="detailsLV" Grid.Row="2" 
+									</GridViewColumn.Header>
+								</GridViewColumn>
+							</GridView>
+						</ListView.View>
+					</ListView>
+					<GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+					<ListView x:Name="detailsLV" Grid.Row="2" 
 							  ItemsSource="{Binding ElementName=allPropsLV, Path=SelectedItem, Converter={StaticResource keypair}}" 
 							  PreviewMouseLeftButtonDown="detailsLV_PreviewMouseLeftButtonDown" 
 							  MouseMove="detailsLV_MouseMove" KeyUp="detailsLV_KeyUp" KeyDown="detailsLV_KeyDown"  >
-            <ListView.ContextMenu>
-              <ContextMenu x:Name="DetailsRCMenu">
-                <MenuItem Header="Show Projects" Click="ShowProjects_Click" />
-              </ContextMenu>
-            </ListView.ContextMenu>
-            <ListView.View>
-              <GridView>
-                <GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">
-                  <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="Key" Content="Value" Click="DetailsViewColumnHeader_Click" />
-                  </GridViewColumn.Header>
-                </GridViewColumn>
-                <GridViewColumn Width="100" DisplayMemberBinding="{Binding Value.Count}" >
-                  <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="Value.Count" Content="Count" Click="DetailsViewColumnHeader_Click" />
-                  </GridViewColumn.Header>
-                </GridViewColumn>
-              </GridView>
-            </ListView.View>
-          </ListView>
-        </Grid>
-      </TabItem>
-      <TabItem Header="Operations" Margin="0" >
-        <Grid >
-          <Grid.RowDefinitions>
-            <RowDefinition Height="45" />
-            <RowDefinition Height="45" />
-            <RowDefinition Height="45" />
-            <RowDefinition Height="45" />
-            <RowDefinition Height="45" />
-          </Grid.RowDefinitions>
-          <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Gray">
-            <StackPanel Orientation="Horizontal">
-              <Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Remove Empty XML Elements for:</Label>
-              <Button Height="25" Margin="0,8" Width="107" Click="Operation_RemoveEmptyProps_Click">All Configurations</Button>
-            </StackPanel>
-          </Border>
-          <Border Grid.Row="1" BorderThickness="0,0,0,1" BorderBrush="Gray">
-            <StackPanel Orientation="Horizontal">
-              <Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Delete project properties for:</Label>
-              <Button Content="Current Config" Width="91" Click="Operation_RemoveProperties_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For the current configuration)." Height="25" Margin="0,0,10,0"/>
-              <Button Content="All Configurations" Height="25" Width="105" Click="Operation_RemoveProperties_All_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For ALL configurations)."/>
-            </StackPanel>
-          </Border>
-        </Grid>
-      </TabItem>
-    </TabControl>
-    <!-- Row Three -->
-    <Button x:Name="savePropBtn" Content="Save Property Sheet" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" Margin="5,6,0,6" Padding="0" HorizontalAlignment="Left" Width="118"/>
-    <Button x:Name="saveAllBtn" Content="Save Project Files" Width="126" Click="Click_saveAllBtn" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,15,6" ToolTip="Saves only if dirty"/>
-    <Button x:Name="forceSaveBtn" Content="Force Save Project Files" Width="134" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,146,6" ToolTip="Force save of files even if they are unchanged" Click="forceSaveBtn_Click"/>
-    <Button x:Name="attachAllBtn" Content="Attach Property Sheet" Grid.Column="1" Margin="0,6,317,6" Grid.Row="2" ToolTip="Attach property sheet to all projects" Click="button_Click" HorizontalAlignment="Right" Width="149"/>
-    <!-- Row Four -->
-    <StatusBar x:Name="statusBar" Grid.Row="3" Grid.ColumnSpan="2" >
-      <StatusBar.ItemsPanel>
-        <ItemsPanelTemplate>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="100" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="200" />
-            </Grid.ColumnDefinitions>
-          </Grid>
-        </ItemsPanelTemplate>
-      </StatusBar.ItemsPanel>
-      <StatusBarItem>
-        <TextBlock Name="lblCursorPosition" />
-      </StatusBarItem>
-      <Separator Grid.Column="1" />
-      <StatusBarItem Grid.Column="2">
-        <TextBlock x:Name="statusMessage" Text="" />
-      </StatusBarItem>
-      <Separator Grid.Column="3" />
-      <StatusBarItem Grid.Column="4">
-        <ProgressBar x:Name="theProgressBar" Value="50" Width="90" Height="16" Visibility="Hidden" />
-      </StatusBarItem>
-    </StatusBar>
+						<ListView.ContextMenu>
+							<ContextMenu x:Name="DetailsRCMenu">
+								<MenuItem Header="Show Projects" Click="ShowProjects_Click" />
+							</ContextMenu>
+						</ListView.ContextMenu>
+						<ListView.View>
+							<GridView>
+								<GridViewColumn Width="350" DisplayMemberBinding="{Binding Key}">
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Key" Content="Value" Click="DetailsViewColumnHeader_Click" />
+									</GridViewColumn.Header>
+								</GridViewColumn>
+								<GridViewColumn Width="100" DisplayMemberBinding="{Binding Value.Count}" >
+									<GridViewColumn.Header>
+										<GridViewColumnHeader Tag="Value.Count" Content="Count" Click="DetailsViewColumnHeader_Click" />
+									</GridViewColumn.Header>
+								</GridViewColumn>
+							</GridView>
+						</ListView.View>
+					</ListView>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Operations" Margin="0" >
+				<Grid >
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="45" />
+						<RowDefinition Height="45" />
+					</Grid.RowDefinitions>
+					<Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Gray" Margin="0,0,0,10">
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Remove Empty XML Elements for:</Label>
+							<Button Height="25" Margin="0,8" Width="107" Click="Operation_RemoveEmptyProps_Click">All Configurations</Button>
+						</StackPanel>
+					</Border>
+					<Border Grid.Row="1" BorderThickness="0,0,0,1" BorderBrush="Gray" Margin="0,0,0,10">
+						<StackPanel Orientation="Horizontal">
+							<Label VerticalAlignment="Center" Margin="10,0" ToolTip="Useful for cleaning empty junk in the files">Delete project properties for:</Label>
+							<Button Content="Current Config" Width="91" Click="Operation_RemoveProperties_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For the current configuration)." Height="25" Margin="0,0,10,0"/>
+							<Button Content="All Configurations" Height="25" Width="105" Click="Operation_RemoveProperties_All_Click" ToolTip="Removes all properties from the project files that are already in the property sheet (For ALL configurations)."/>
+						</StackPanel>
+					</Border>
+					<Border Grid.Row="2" BorderThickness="0,0,0,1" BorderBrush="Gray" Margin="0,0,0,10">
+						<StackPanel Orientation="Vertical">
+							<Label Margin="10,0,0,0">Discover Build</Label>
+							<StackPanel Orientation="Horizontal">
+								<Label Margin="10,0,0,0">Output Directory</Label>
+								<TextBox Name="BuildOutputDir" Width="280" Margin="10,0,0,0" />
+								<Button Name="BrowseOutputDir" Margin="15,0,0,0" Width="57" Click="BrowseOutputDir_Click">Browse...</Button>
+							</StackPanel>
+							<Button x:Name="DiscoverBuildExecute" Width="60" HorizontalAlignment="Left" Margin="220,15,0,15" Content="Execute" Click="DiscoverBuildExecute_Click"/>
+						</StackPanel>
+					</Border>
+				</Grid>
+			</TabItem>
+		</TabControl>
+		<!-- Row Three -->
+		<Button x:Name="savePropBtn" Content="Save Property Sheet" Click="Click_savePropBtn" Grid.Column="0" Grid.Row="2" Margin="5,6,0,6" Padding="0" HorizontalAlignment="Left" Width="118"/>
+		<Button x:Name="saveAllBtn" Content="Save Project Files" Width="126" Click="Click_saveAllBtn" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,15,6" ToolTip="Saves only if dirty"/>
+		<Button x:Name="forceSaveBtn" Content="Force Save Project Files" Width="134" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Right" Margin="0,6,146,6" ToolTip="Force save of files even if they are unchanged" Click="forceSaveBtn_Click"/>
+		<Button x:Name="attachAllBtn" Content="Attach Property Sheet" Grid.Column="1" Margin="0,6,317,6" Grid.Row="2" ToolTip="Attach property sheet to all projects" Click="button_Click" HorizontalAlignment="Right" Width="149"/>
+		<!-- Row Four -->
+		<StatusBar x:Name="statusBar" Grid.Row="3" Grid.ColumnSpan="2" >
+			<StatusBar.ItemsPanel>
+				<ItemsPanelTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="100" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="200" />
+						</Grid.ColumnDefinitions>
+					</Grid>
+				</ItemsPanelTemplate>
+			</StatusBar.ItemsPanel>
+			<StatusBarItem>
+				<TextBlock Name="lblCursorPosition" />
+			</StatusBarItem>
+			<Separator Grid.Column="1" />
+			<StatusBarItem Grid.Column="2">
+				<TextBlock x:Name="statusMessage" Text="" />
+			</StatusBarItem>
+			<Separator Grid.Column="3" />
+			<StatusBarItem Grid.Column="4">
+				<ProgressBar x:Name="theProgressBar" Value="50" Width="90" Height="16" Visibility="Hidden" />
+			</StatusBarItem>
+		</StatusBar>
 
-  </Grid>
+	</Grid>
 </Window>

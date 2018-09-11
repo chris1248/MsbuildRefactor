@@ -348,5 +348,25 @@ namespace msbuildrefactor
 		{
 			vm.AttachImportForAll();
 		}
+
+		private void BrowseOutputDir_Click(object sender, RoutedEventArgs e)
+		{
+			var browse = new System.Windows.Forms.FolderBrowserDialog();
+			System.Windows.Forms.DialogResult result = browse.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK)
+			{
+				string directoryPath = browse.SelectedPath;
+				vm.OutputDirectory = directoryPath;
+				BuildOutputDir.Text = directoryPath;
+			}
+		}
+
+		private void DiscoverBuildExecute_Click(object sender, RoutedEventArgs e)
+		{
+			String builds = vm.DefineBuild();
+			string windowTitle = String.Format("Projects defining build");
+			var stuff = new TextWindow(windowTitle, builds);
+			stuff.Show();
+		}
 	}
 }

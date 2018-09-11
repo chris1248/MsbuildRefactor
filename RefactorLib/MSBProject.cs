@@ -18,6 +18,13 @@ namespace Refactor
 			extension = Path.GetExtension(file);
 		}
 
+		public MSBProject(string file, string toolsVersion)
+			: base(file)
+		{
+			Included = true;
+			extension = Path.GetExtension(file);
+		}
+
 		/// <summary>
 		/// Unused property currently.
 		/// I might use it in the future to implement some sort of selection mechanism perhaps.
@@ -33,11 +40,19 @@ namespace Refactor
 			get
 			{
 				if (String.Compare(".csproj", extension, StringComparison.OrdinalIgnoreCase) == 0)
-					return ResolveValue(this.GetProperty("OutputPath"));
+				{
+					var prop = this.GetProperty("OutputPath");
+					return ResolveValue(prop);
+				}
 				else if (String.Compare(".vcxproj", extension, StringComparison.OrdinalIgnoreCase) == 0)
-					return ResolveValue(this.GetProperty("TargetPath"));
+				{
+					var prop = this.GetProperty("TargetPath");
+					return ResolveValue(prop);
+				}
 				else
+				{
 					return "Unsupported project type";
+				}
 			}
 		}
 		

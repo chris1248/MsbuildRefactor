@@ -8,6 +8,7 @@ using Microsoft.Build.Evaluation;
 using System.Xml.Linq;
 using System.Xml;
 using System.Diagnostics;
+using System.Text;
 using Microsoft.Build.Construction;
 
 namespace Refactor
@@ -63,6 +64,7 @@ namespace Refactor
 		public MSBProject PropertySheet { get { return _propertySheet; } }
 		public int CountFoundFiles { get; private set; }
 		public string[] InputDirectories { get { return inputDirectories.ToArray(); } }
+		public string OutputDirectory { get; set; }
 		#endregion
 		#endregion
 
@@ -408,7 +410,7 @@ namespace Refactor
 			}
 		}
 
-		public List<MSBProject> GetProjects()
+		public List<MSBProject> GetProjects(bool useGlobalProps = true)
 		{
 			var csfileList = Directory.EnumerateFiles(inputDir, "*.csproj", SearchOption.AllDirectories).AsParallel();
 			var vcfileList = Directory.EnumerateFiles(inputDir, "*.vcxproj", SearchOption.AllDirectories).AsParallel();
@@ -419,7 +421,16 @@ namespace Refactor
 			{
 				try
 				{
-					var p = new MSBProject(file, _globalProperties, toolsVersion);
+					MSBProject p = null;
+					if (useGlobalProps)
+					{
+						p = new MSBProject(file, _globalProperties, toolsVersion);
+					}
+					else
+					{
+						p = new MSBProject(file, toolsVersion);
+					}
+					
 					bag.Add(p);
 				}
 				catch (Exception e)
@@ -633,6 +644,41 @@ namespace Refactor
 				foreach (var p in _allPlatforms)
 					Utils.WL(ConsoleColor.Cyan, String.Format("{0,20} : {1}", p.Key, p.Value));
 			}
+		}
+
+		public string DefineBuild()
+		{
+			var InBuild  = new List<MSBProject>();
+			var NotBuild = new List<MSBProject>();
+			var projects = GetProjects(false);
+			foreach (var project in projects)
+			{
+				try
+				{
+					var outputPath = project.OutputPath;
+					outputPath = outputPath.TrimEnd('\\');
+					outputPath = outputPath.TrimEnd('/');
+					if (String.Compare(outputPath, this.OutputDirectory, StringComparison.InvariantCultureIgnoreCase) == 0)
+					{
+						InBuild.Add(project);
+					}
+					else
+					{
+						NotBuild.Add(project);
+					}
+				}
+				catch (Exception)
+				{
+					Debug.Print("Unable to load file: {0}", project.FullPath);
+				}
+			}
+
+			var sb = new StringBuilder();
+			sb.Append("Files not in Build\n=========================================================================\n");
+			NotBuild.ForEach(project => { sb.AppendFormat("{0}\n", project.FullPath);});
+			sb.Append("Files In Build\n=========================================================================\n");
+			InBuild.ForEach(project => { sb.AppendFormat("{0}\n", project.FullPath);});
+			return sb.ToString();
 		}
 		#endregion
 	}

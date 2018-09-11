@@ -55,6 +55,10 @@ namespace msbuildrefactor
 		public int CountFoundFiles { get { return model.CountFoundFiles; } }
 		public ObservableConcurrentDictionary<String, ReferencedProperty> FoundProperties { get { return model.AllFoundProperties; } }
 		public string[] InputDirectories { get { return model.InputDirectories; } }
+		public string OutputDirectory {
+			get { return model.OutputDirectory; }
+			set { model.OutputDirectory = value; }
+		}
 		#endregion
 
 		#region Methods are called from UI Controls
@@ -198,6 +202,11 @@ namespace msbuildrefactor
 		public void AttachImportForAll()
 		{
 			model.AttachImportForAll();
+		}
+
+		public string DefineBuild()
+		{
+			return model.DefineBuild();
 		}
 		#endregion
 	}
