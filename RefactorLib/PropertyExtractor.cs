@@ -417,7 +417,8 @@ namespace Refactor
 			var fileList = csfileList.Concat(vcfileList);
 			CountFoundFiles = fileList.Count();
 			ConcurrentBag<MSBProject> bag = new ConcurrentBag<MSBProject>();
-			Parallel.ForEach(fileList, (file) =>
+			//Parallel.ForEach(fileList, (file) =>
+			foreach(string file in fileList)
 			{
 				try
 				{
@@ -438,7 +439,7 @@ namespace Refactor
 					Utils.WL(ConsoleColor.Red, String.Format("Bad File: {0}", file));
 					Utils.WL(ConsoleColor.DarkGray, e.Message);
 				}
-			});
+			}
 
 			var sorted = from proj in bag
 						 orderby proj.FullPath
@@ -650,8 +651,7 @@ namespace Refactor
 		{
 			var InBuild  = new List<MSBProject>();
 			var NotBuild = new List<MSBProject>();
-			var projects = GetProjects(false);
-			foreach (var project in projects)
+			foreach (var project in _allProjects)
 			{
 				try
 				{
@@ -677,8 +677,11 @@ namespace Refactor
 			sb.Append("=========================================================================\n");
 			sb.Append("MSBuild file specification\n");
 			sb.Append("=========================================================================\n");
+			sb.Append("<PropertyGroup>\n");
+			sb.AppendFormat("  <InputDir>{0}</InputDir>\n", inputDir);
+			sb.Append("</PropertyGroup>\n");
 			sb.Append("<ItemGroup>\n");
-			sb.Append("  <Files Include=\"[Path]\\**\\*.csproj\"\n");
+			sb.Append("  <Files Include=\"$(InputDir)\\**\\*.csproj\"\n");
 			sb.Append("         Exclude=\"");
 			bool first = true;
 			foreach(var project in NotBuild)
@@ -692,23 +695,24 @@ namespace Refactor
 					sb.Append("                  ");
 				}
 
+				var path = project.FullPath.Replace(inputDir, "$(InputDir)");
 				if (project == NotBuild.Last())
 				{
-					sb.AppendFormat("{0}", project.FullPath);
+					sb.AppendFormat("{0}", path);
 				}
 				else
 				{
-					sb.AppendFormat("{0};\n", project.FullPath);
+					sb.AppendFormat("{0};\n", path);
 				}
 			}
 			sb.Append("\" >\n");
 			sb.Append("</ItemGroup>\n");
 			sb.Append("=========================================================================\n");
-			sb.Append("Files not in Build\n");
+			sb.AppendFormat("{0} Files not in Build\n", NotBuild.Count);
 			sb.Append("=========================================================================\n");
 			NotBuild.ForEach(project => { sb.AppendFormat("{0}\n", project.FullPath);});
 			sb.Append("=========================================================================\n");
-			sb.Append("Files In Build\n");
+			sb.AppendFormat("{0} Files In Build\n", InBuild.Count);
 			sb.Append("=========================================================================\n");
 			InBuild.ForEach(project => { sb.AppendFormat("{0}\n", project.FullPath);});
 			return sb.ToString();
