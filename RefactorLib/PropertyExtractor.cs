@@ -674,9 +674,42 @@ namespace Refactor
 			}
 
 			var sb = new StringBuilder();
-			sb.Append("Files not in Build\n=========================================================================\n");
+			sb.Append("=========================================================================\n");
+			sb.Append("MSBuild file specification\n");
+			sb.Append("=========================================================================\n");
+			sb.Append("<ItemGroup>\n");
+			sb.Append("  <Files Include=\"[Path]\\**\\*.csproj\"\n");
+			sb.Append("         Exclude=\"");
+			bool first = true;
+			foreach(var project in NotBuild)
+			{
+				if (first)
+				{
+					first = false;
+				}
+				else
+				{
+					sb.Append("                  ");
+				}
+
+				if (project == NotBuild.Last())
+				{
+					sb.AppendFormat("{0}", project.FullPath);
+				}
+				else
+				{
+					sb.AppendFormat("{0};\n", project.FullPath);
+				}
+			}
+			sb.Append("\" >\n");
+			sb.Append("</ItemGroup>\n");
+			sb.Append("=========================================================================\n");
+			sb.Append("Files not in Build\n");
+			sb.Append("=========================================================================\n");
 			NotBuild.ForEach(project => { sb.AppendFormat("{0}\n", project.FullPath);});
-			sb.Append("Files In Build\n=========================================================================\n");
+			sb.Append("=========================================================================\n");
+			sb.Append("Files In Build\n");
+			sb.Append("=========================================================================\n");
 			InBuild.ForEach(project => { sb.AppendFormat("{0}\n", project.FullPath);});
 			return sb.ToString();
 		}
