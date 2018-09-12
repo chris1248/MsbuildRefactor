@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -352,18 +353,19 @@ namespace msbuildrefactor
 		private void BrowseOutputDir_Click(object sender, RoutedEventArgs e)
 		{
 			var browse = new System.Windows.Forms.FolderBrowserDialog();
+			browse.SelectedPath = searchPath.SelectedItem as string;
 			System.Windows.Forms.DialogResult result = browse.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK)
 			{
 				string directoryPath = browse.SelectedPath;
-				vm.OutputDirectory = directoryPath;
 				BuildOutputDir.Text = directoryPath;
 			}
 		}
 
 		private void DiscoverBuildExecute_Click(object sender, RoutedEventArgs e)
 		{
-			String builds = vm.DefineBuild();
+			bool? dllVerify = VerifyByDllPresenceBtn.IsChecked;
+			String builds = vm.DefineBuild(new DirectoryInfo(BuildOutputDir.Text), dllVerify.Value);
 			string windowTitle = String.Format("Projects defining build");
 			var stuff = new TextWindow(windowTitle, builds);
 			stuff.Show();

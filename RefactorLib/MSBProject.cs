@@ -42,12 +42,12 @@ namespace Refactor
 				if (String.Compare(".csproj", extension, StringComparison.OrdinalIgnoreCase) == 0)
 				{
 					var prop = this.GetProperty("OutputPath");
-					return ResolveValue(prop);
+					return prop != null ? ResolveValue(prop) : string.Empty;
 				}
 				else if (String.Compare(".vcxproj", extension, StringComparison.OrdinalIgnoreCase) == 0)
 				{
 					var prop = this.GetProperty("TargetPath");
-					return ResolveValue(prop);
+					return prop != null ? ResolveValue(prop) : string.Empty;
 				}
 				else
 				{
@@ -62,6 +62,15 @@ namespace Refactor
 			var basepath = Path.GetDirectoryName(this.FullPath);
 			var combined = Path.GetFullPath(Path.Combine(basepath, relative));
 			return combined;
+		}
+
+		public string OutputFileName
+		{
+			get
+			{
+				var assemblyname  = this.GetProperty("AssemblyName").EvaluatedValue;
+				return assemblyname + ".dll";
+			}
 		}
 	}
 }

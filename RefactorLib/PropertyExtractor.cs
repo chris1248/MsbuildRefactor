@@ -64,7 +64,6 @@ namespace Refactor
 		public MSBProject PropertySheet { get { return _propertySheet; } }
 		public int CountFoundFiles { get; private set; }
 		public string[] InputDirectories { get { return inputDirectories.ToArray(); } }
-		public string OutputDirectory { get; set; }
 		#endregion
 		#endregion
 
@@ -647,10 +646,31 @@ namespace Refactor
 			}
 		}
 
-		public string DefineBuild()
+		/// <summary>
+		/// Queries which projects output to the Output directory chosen
+		/// by the user.
+		/// </summary>
+		/// <param name="dllVerify"></param>
+		/// <returns></returns>
+		public string DefineBuild(DirectoryInfo outputDir, bool dllVerify)
 		{
 			var InBuild  = new List<MSBProject>();
 			var NotBuild = new List<MSBProject>();
+			var ReallyNotBuild = new List<MSBProject>();
+
+			var existing = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+			if (dllVerify)
+			{
+				foreach (FileInfo file in outputDir.GetFiles("*.*", SearchOption.AllDirectories))
+				{
+					if (file.Extension == ".dll" || file.Extension == ".exe")
+					{
+						existing.Add(file.Name);
+					}
+				}
+			}
+
+			var supposedToExist = new List<MSBProject>();
 			foreach (var project in _allProjects)
 			{
 				try
@@ -658,9 +678,13 @@ namespace Refactor
 					var outputPath = project.OutputPath;
 					outputPath = outputPath.TrimEnd('\\');
 					outputPath = outputPath.TrimEnd('/');
-					if (String.Compare(outputPath, this.OutputDirectory, StringComparison.InvariantCultureIgnoreCase) == 0)
+					if (String.Compare(outputPath, outputDir.FullName, StringComparison.InvariantCultureIgnoreCase) == 0)
 					{
 						InBuild.Add(project);
+						if (dllVerify)
+						{
+							supposedToExist.Add(project);
+						}
 					}
 					else
 					{
@@ -673,6 +697,23 @@ namespace Refactor
 				}
 			}
 
+			if (dllVerify)
+			{
+				InBuild.Clear();
+				foreach (MSBProject project in supposedToExist)
+				{
+					if (existing.Contains(project.OutputFileName))
+					{
+						InBuild.Add(project);
+					}
+					else
+					{
+						ReallyNotBuild.Add(project);
+					}
+				}
+			}
+
+			var reportedNotBuilt = dllVerify ? ReallyNotBuild : NotBuild;
 			var sb = new StringBuilder();
 			sb.Append("=========================================================================\n");
 			sb.Append("MSBuild file specification\n");
@@ -684,7 +725,7 @@ namespace Refactor
 			sb.Append("  <Files Include=\"$(InputDir)\\**\\*.csproj\"\n");
 			sb.Append("         Exclude=\"");
 			bool first = true;
-			foreach(var project in NotBuild)
+			foreach(var project in reportedNotBuilt)
 			{
 				if (first)
 				{
@@ -710,7 +751,17 @@ namespace Refactor
 			sb.Append("=========================================================================\n");
 			sb.AppendFormat("{0} Files not in Build\n", NotBuild.Count);
 			sb.Append("=========================================================================\n");
-			NotBuild.ForEach(project => { sb.AppendFormat("{0}\n", project.FullPath);});
+			NotBuild.ForEach(project => { sb.AppendFormat("{0}, instead outputs to: {1}\n", project.FullPath, project.OutputPath);});
+			if (dllVerify)
+			{
+				sb.Append("=========================================================================\n");
+				sb.AppendFormat("{0} File specified as output but not in Build\n", ReallyNotBuild.Count);
+				sb.Append("=========================================================================\n");
+				ReallyNotBuild.ForEach(project =>
+				{
+					sb.AppendFormat("{0}, expected file in output dir: {1}\n", project.FullPath, project.OutputFileName);
+				});
+			}
 			sb.Append("=========================================================================\n");
 			sb.AppendFormat("{0} Files In Build\n", InBuild.Count);
 			sb.Append("=========================================================================\n");
