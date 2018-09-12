@@ -409,8 +409,15 @@ namespace Refactor
 			}
 		}
 
+		private Microsoft.Build.Evaluation.ProjectCollection msprojectCollection;
 		public List<MSBProject> GetProjects(bool useGlobalProps = true)
 		{
+			if (msprojectCollection == null)
+			{
+				msprojectCollection = ProjectCollection.GlobalProjectCollection;
+			}
+			msprojectCollection.UnloadAllProjects();
+
 			var csfileList = Directory.EnumerateFiles(inputDir, "*.csproj", SearchOption.AllDirectories).AsParallel();
 			var vcfileList = Directory.EnumerateFiles(inputDir, "*.vcxproj", SearchOption.AllDirectories).AsParallel();
 			var fileList = csfileList.Concat(vcfileList);
@@ -432,6 +439,7 @@ namespace Refactor
 					}
 					
 					bag.Add(p);
+					msprojectCollection.LoadProject(p.FullPath);
 				}
 				catch (Exception e)
 				{

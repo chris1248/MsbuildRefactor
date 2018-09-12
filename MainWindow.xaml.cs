@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -73,11 +74,16 @@ namespace msbuildrefactor
 			{
 				string directoryPath = browse.SelectedPath;
 				vm.LoadAtDirectory(directoryPath);
-				searchPath.Text = directoryPath;
+				
 				if (!searchPath.Items.Contains(directoryPath))
 				{
 					searchPath.ItemsSource = vm.InputDirectories;
 				}
+				ConfigurationChoice.ItemsSource = vm.AllConfigurations;
+				PlatformChoice.ItemsSource = vm.AllPlatforms;
+				vm.UpdateConfigSelection();
+				vm.UpdatePlatformSelection();
+				searchPath.SelectedItem = directoryPath;
 			}
 			LoadingDirectory = false;
 		}
@@ -87,6 +93,13 @@ namespace msbuildrefactor
 			LoadingDirectory = true;
 			string path = searchPath.SelectedItem as string;
 			vm.LoadAtDirectory(path);
+
+			ConfigurationChoice.ItemsSource = vm.AllConfigurations;
+			PlatformChoice.ItemsSource = vm.AllPlatforms;
+			vm.UpdateConfigSelection();
+			vm.UpdatePlatformSelection();
+			searchPath.SelectedItem = path;
+
 			LoadingDirectory = false;
 		}
 
