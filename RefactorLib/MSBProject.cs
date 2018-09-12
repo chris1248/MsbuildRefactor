@@ -69,7 +69,15 @@ namespace Refactor
 			get
 			{
 				var assemblyname  = this.GetProperty("AssemblyName").EvaluatedValue;
-				return assemblyname + ".dll";
+				var type = this.GetProperty("OutputType").EvaluatedValue;
+				if (string.Compare("WinExe", type, StringComparison.InvariantCultureIgnoreCase) == 0)
+				{
+					return assemblyname + ".exe";
+				}
+				else
+				{
+					return assemblyname + ".dll";
+				}
 			}
 		}
 	}
