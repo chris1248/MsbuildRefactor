@@ -659,7 +659,7 @@ namespace Refactor
 		/// </summary>
 		/// <param name="dllVerify"></param>
 		/// <returns></returns>
-		public string DefineBuild(DirectoryInfo outputDir, bool dllVerify)
+		public string DefineBuild(DirectoryInfo outputDir, bool dllVerify, bool useDefaultProps)
 		{
 			var InBuild  = new List<MSBProject>();
 			var NotBuild = new List<MSBProject>();
@@ -678,7 +678,15 @@ namespace Refactor
 			}
 
 			var supposedToExist = new List<MSBProject>();
-			foreach (var project in _allProjects)
+
+
+			List<MSBProject> projects = _allProjects;
+			if (useDefaultProps)
+			{
+				projects = GetProjects(false);
+			}
+
+			foreach (var project in projects)
 			{
 				try
 				{

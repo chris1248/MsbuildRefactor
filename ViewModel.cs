@@ -201,9 +201,9 @@ namespace msbuildrefactor
 			model.AttachImportForAll();
 		}
 
-		public string DefineBuild(DirectoryInfo outputDirectory, bool dllVerify)
+		public string DefineBuild(DirectoryInfo outputDirectory, bool dllVerify, bool useDefaultProps)
 		{
-			return model.DefineBuild(outputDirectory, dllVerify);
+			return model.DefineBuild(outputDirectory, dllVerify, useDefaultProps);
 		}
 		#endregion
 	}

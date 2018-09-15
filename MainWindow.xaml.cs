@@ -378,7 +378,8 @@ namespace msbuildrefactor
 		private void DiscoverBuildExecute_Click(object sender, RoutedEventArgs e)
 		{
 			bool? dllVerify = VerifyByDllPresenceBtn.IsChecked;
-			String builds = vm.DefineBuild(new DirectoryInfo(BuildOutputDir.Text), dllVerify.Value);
+			bool? useDefaultProps = UseDefaultPropsBtn.IsChecked;
+			String builds = vm.DefineBuild(new DirectoryInfo(BuildOutputDir.Text), dllVerify.Value, useDefaultProps.Value);
 			string windowTitle = String.Format("Projects defining build");
 			var stuff = new TextWindow(windowTitle, builds);
 			stuff.Show();

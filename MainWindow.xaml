@@ -195,6 +195,7 @@
                 <Button Name="BrowseOutputDir" Margin="15,0,0,0" Width="57" Click="BrowseOutputDir_Click">Browse...</Button>
               </StackPanel>
               <CheckBox x:Name="VerifyByDllPresenceBtn" HorizontalAlignment="Center" Margin="0,5">Check for presense of DLL in build directory</CheckBox>
+              <CheckBox x:Name="UseDefaultPropsBtn" HorizontalAlignment="Center" Margin="0,5">Use Project Default Configuration and Platform Properties</CheckBox>
               <Button x:Name="DiscoverBuildExecute" Width="77" HorizontalAlignment="Center" Content="Execute" Click="DiscoverBuildExecute_Click" Margin="0,2,0,5"/>
             </StackPanel>
           </Border>
