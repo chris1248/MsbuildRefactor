@@ -423,8 +423,7 @@ namespace Refactor
 			var fileList = csfileList.Concat(vcfileList);
 			CountFoundFiles = fileList.Count();
 			ConcurrentBag<MSBProject> bag = new ConcurrentBag<MSBProject>();
-			//Parallel.ForEach(fileList, (file) =>
-			foreach(string file in fileList)
+			Parallel.ForEach(fileList, (file) =>
 			{
 				try
 				{
@@ -437,7 +436,7 @@ namespace Refactor
 					{
 						p = new MSBProject(file, toolsVersion);
 					}
-					
+
 					bag.Add(p);
 					msprojectCollection.LoadProject(p.FullPath);
 				}
@@ -446,7 +445,7 @@ namespace Refactor
 					Utils.WL(ConsoleColor.Red, String.Format("Bad File: {0}", file));
 					Utils.WL(ConsoleColor.DarkGray, e.Message);
 				}
-			}
+			});
 
 			var sorted = from proj in bag
 						 orderby proj.FullPath
